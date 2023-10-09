@@ -39,6 +39,25 @@
             <version>2.12.5</version> <!-- Thay version tùy thuộc vào phiên bản mới nhất -->
         </dependency>
 
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.30</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.12.0</version> <!-- Kiểm tra phiên bản mới nhất -->
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.4</version> <!-- Kiểm tra phiên bản mới nhất -->
+        </dependency>
+
     </dependencies>
 
     <build>

@@ -168,5 +168,25 @@
     "htmlTagStart2": " >",
     "htmlTagStart3": "",
     "htmlTagEnd": "</div><!-- End of div -->"
+  },
+  {
+    "name": "portal:MG1002002_01_000",
+    "className": "iframe",
+    "styleInFile": true,
+    "isHadAttribute": true,
+    "htmlTagStart": "<iframe frameborder=\"1\" src=\"MG1002002_01_000.html\" style=\"background-color:#FDFCFC\"",
+    "htmlTagStart2": " >",
+    "htmlTagStart3": "",
+    "htmlTagEnd": "</iframe>"
+  },
+  {
+    "name": "portal:MG1002007_01_000",
+    "className": "iframe",
+    "styleInFile": true,
+    "isHadAttribute": true,
+    "htmlTagStart": "<iframe frameborder=\"1\" src=\"MG1002007_01_000.html\" style=\"background-color:#FDFCFC\"",
+    "htmlTagStart2": " >",
+    "htmlTagStart3": "",
+    "htmlTagEnd": "</iframe>"
   }
 ]

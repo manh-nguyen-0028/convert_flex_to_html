@@ -41,9 +41,9 @@ public class Main {
             html.append(ConvertService.initHtml("MXML convert to HTML", xmlFileName));
 
             // style
-            StringBuilder styleHere = new StringBuilder();
+            StringBuilder cssInFile = new StringBuilder();
             if (doc.hasChildNodes()) {
-                ConvertService.printNote(doc.getChildNodes(), html, null, styleHere);
+                new ConvertService().printNote(doc.getChildNodes(), html, null, cssInFile);
             }
 
             html.append("</body></html>");
@@ -63,7 +63,7 @@ public class Main {
 
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(cssFilePath))) {
                 // Ghi nội dung vào file
-                writer.write(styleHere.toString());
+                writer.write(cssInFile.toString());
                 System.out.println("File created and content written successfully.");
             } catch (IOException e) {
                 // Xử lý nếu có lỗi

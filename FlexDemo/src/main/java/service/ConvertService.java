@@ -1,16 +1,16 @@
 package service;
 
 import dto.AttributeTag;
+import dto.HtmlAttributeTag;
 import dto.MxmlTag;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import utils.StringUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class ConvertService {
     public static HashMap<String, AttributeTag> hmAttributeTag;
@@ -28,39 +28,35 @@ public class ConvertService {
                 "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" +
                 "<title>{p_title}</title>" +
                 "<link rel=\"stylesheet\" href=\"css\\common.css\">" +
-//                "<link rel=\"stylesheet\" href=\"css\\control.css\">" +
+                "<link rel=\"stylesheet\" href=\"css\\control.css\">" +
                 "<link rel=\"stylesheet\" href=\"css\\{p_css}.css\">" +
-                "</head><body id=\"" + cssName + "_body\">";
+                "</head><body id=\"" + cssName + "_body\" >" ;
         htmlStart = htmlStart.replace("{p_css}", cssName).replace("{p_title}", title);
+
+//        cssName = "kkk";
         return htmlStart;
     }
 
-    public static void printNote(NodeList nodeList, StringBuilder html, String ownerNode, StringBuilder styleHere) throws IOException {
+    public void printNote(NodeList nodeList, StringBuilder html, String ownerNode, StringBuilder cssFileAdd) throws IOException {
         hmAttributeTag = XmlService.getAttributeConfig();
 
         hmXmlTag = XmlService.getMxmlConfig();
 
-        String attributeText = "";
-        String styleValue = "";
-        String sText = "";
+        HtmlAttributeTag htmlAttTag = new HtmlAttributeTag();
         List<Double> fillAlphas = new ArrayList<>();
         List<String> fillColors = new ArrayList<>();
 
-        String id = "";
+        boolean firstCanvas = true;
         for (int count = 0; count < nodeList.getLength(); count++) {
 
             Node tempNode = nodeList.item(count);
-
-            // make sure it's element node.
-            boolean firstCanvas = true;
             if (tempNode.getNodeType() == Node.ELEMENT_NODE) {
                 MxmlTag mxmlTagConfig = hmXmlTag.get(tempNode.getNodeName());
                 if (mxmlTagConfig != null) {
                     String htmlTagStart = mxmlTagConfig.getHtmlTagStart();
                     String htmlTagEnd = mxmlTagConfig.getHtmlTagEnd();
                     String className = mxmlTagConfig.getClassName();
-                    htmlTagStart = htmlTagStart.replace("{1}", className);
-                    String htmlNeedAdd = htmlTagStart;
+
 
                     if (tempNode.hasAttributes()) {
                         // get attributes names and values
@@ -71,115 +67,102 @@ public class ConvertService {
                             String nodeValue = nodeAtt.getNodeValue();
                             AttributeTag attributeTag = hmAttributeTag.get(nodeName);
                             if (attributeTag != null) {
-                                String startTag = attributeTag.getStartTag();
-                                String attType = attributeTag.getType();
-                                if (ATT_CSS.equals(attType)) {
-                                    styleValue = convertToCss(attributeTag, nodeValue, styleValue);
-                                } else if (ATT_TEXT.equals(attType)) {
-                                    if ("Controls:ACCRadioButton".equals(tempNode.getNodeName()) || "Controls:ACCCheckBox".equals(tempNode.getNodeName())) {
-                                        sText = sText + "<label for=\"rdoOneReam1\">" + nodeValue + "</label>";
-                                    } else {
-                                        sText = sText + nodeValue;
-                                    }
-                                } else if ("id".equals(attType)) {
-                                    id = nodeValue;
-                                    attributeText = attributeText + startTag + "='" + id + "'";
-                                } else if (ATT_OTHER.equals(attType)) {
-                                    if ("fillAlphas".equals(startTag)) {
-                                        String[] aAlpha = nodeValue.split(",");
-                                        for (String s : aAlpha) {
-                                            double alpha = Double.parseDouble(s.replace("[", "").replace("]", ""));
-                                            fillAlphas.add(alpha);
-                                        }
-                                    } else if ("fillColors".equals(startTag)) {
-                                        String[] aColor = nodeValue.split(",");
-                                        for (String s : aColor) {
-                                            fillColors.add(s.replace("[", "").replace("]", ""));
-                                        }
-                                    }
-                                } else if (ATT_ATTRIBUTE.equals(attType)) {
-                                    attributeText = convertToAtt(attributeTag, nodeValue, attributeText);
-                                } else if (ATT_JS.equals(attType)) {
-                                    attributeText = convertToJs(attributeTag, nodeValue, attributeText);
-                                } else {
-
-                                }
+                                handleAttributeTag(htmlAttTag, attributeTag, nodeAtt, tempNode, fillAlphas, fillColors);
                             }
                             System.out.println("attr name : " + nodeName);
                             System.out.println("attr value : " + nodeValue);
                         }
 
-                        if (id.isEmpty()) {
-                            id = "id_" + StringUtils.generateRandomText(3);
-                            attributeText = attributeText + "id='" + id + "'";
+                        if (StringUtils.isEmpty(htmlAttTag.getId())) {
+                            htmlAttTag.setId("id_" + utils.StringUtils.generateRandomText(3));
                         }
                     }
 
-//                    background: linear-gradient(#0000FF 0%, #00FF00 100%);
                     if (fillColors.size() > 0) {
-                        styleValue = styleValue + "background: linear-gradient(";
+                        StringBuilder styleValue = new StringBuilder("linear-gradient(");
                         for (int i = 0; i < fillColors.size(); i++) {
                             double alpha = fillAlphas.get(i);
                             int percentageValue = (int) alpha * 100;
-                            styleValue = styleValue + fillColors.get(i) + " " + percentageValue + "%, ";
+                            styleValue.append(fillColors.get(i)).append(" ").append(percentageValue).append("%, ");
                         }
-                        styleValue = styleValue.substring(0, styleValue.length() - 2) + ");";
+                        styleValue.substring(0,styleValue.length() - 2);
+                        styleValue.append(")");
+                        htmlAttTag.getStyles().put("background",styleValue.toString());
                     }
-                    try {
+                    /*try {
                         if (mxmlTagConfig != null && mxmlTagConfig.getHadAttribute() && mxmlTagConfig != null && attributeText.length() > 0) {
                             htmlNeedAdd = htmlNeedAdd + attributeText;
 //                            html.append(attributeText + "");
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace();
-                    }
-
-                    String styleHereNeedAdd = "";
+                    }*/
                     // style to file
-                    if (!styleValue.isEmpty()) {
-                        if (id != null && id != "") {
-                            styleHereNeedAdd = styleHereNeedAdd + "#" + id + " {" + styleValue + "} \n";
-//                            styleHere.append("#" + id + " {").append(styleValue + "} \n");
-                            if("Containers:ACCCanvas".equals(tempNode.getNodeName()) && firstCanvas) {
-//                                styleHere.append("body {").append(styleValue + "} \n");
-                                styleHereNeedAdd = styleHereNeedAdd + "body {"+styleValue + "} \n";
-                                firstCanvas = false;
-                            }
-                            System.out.println(styleHereNeedAdd);
-                        } else {
-                            htmlNeedAdd = htmlNeedAdd + "style ='" + styleValue + "'";
-//                            html.append("style ='" + styleValue + "'");
-                        }
+//                    StringBuilder cssFileAdd = new StringBuilder();
+                    StringBuilder cssInHtmlAdd = new StringBuilder();
+                    StringBuilder htmlTextAdd = new StringBuilder();
+                    StringBuilder cssElement = new StringBuilder();
+
+                    HashMap<String, String> cssMap = htmlAttTag.getStyles();
+                    // Sử dụng Iterator để duyệt qua các phần tử
+                    Iterator<Map.Entry<String, String>> iterator = cssMap.entrySet().iterator();
+                    while (iterator.hasNext()) {
+                        Map.Entry<String, String> entry = iterator.next();
+                        String key = entry.getKey();
+                        String value = entry.getValue();
+                        System.out.println("Key: " + key + ", Value: " + value);
+                        cssElement.append(key).append(": ").append(value).append(";");
                     }
 
                     if ("Containers:ACCHBox".equals(ownerNode) || "Containers:ACCVBox".equals(ownerNode)) {
-                        styleHereNeedAdd = styleHereNeedAdd.replace("position: absolute;","");
-                        styleValue = styleValue.replace("position: absolute;","");
+                        String strNeedReplace = "position: absolute;";
+                        int startIndex = cssElement.indexOf(strNeedReplace);
+                        int lengthOfStr = strNeedReplace.length();
+                        if (startIndex >= 0) {
+                            cssElement = cssElement.replace(startIndex, startIndex + lengthOfStr, "");
+                        }
                     }
+
+                    StringBuilder cssNeedAddFile = new StringBuilder();
+                    if (!CollectionUtils.sizeIsEmpty(htmlAttTag.getStyles())) {
+                        if (StringUtils.isNotEmpty(htmlAttTag.getId())) {
+                            cssNeedAddFile.append("#").append(htmlAttTag.getId()).append(" {").append(cssElement).append("} \n");
+                            if ("Containers:ACCCanvas".equals(tempNode.getNodeName()) && firstCanvas) {
+                                cssNeedAddFile.append("body {").append(cssElement).append("} \n");
+                                className = className + " acc-title-window";
+                                firstCanvas = false;
+                            }
+                        } else {
+                            cssInHtmlAdd = cssInHtmlAdd.append("style ='").append(cssElement).append("'");
+                        }
+                    }
+
+                    htmlTagStart = htmlTagStart.replace("{1}", className);
+                    String htmlNeedAdd = htmlTagStart;
 
                     if (mxmlTagConfig.getStyleInFile()) {
                         // remove position: absolute;
-                        styleHere.append(styleHereNeedAdd);
-//                        htmlNeedAdd = htmlNeedAdd.replace("{style}", "style ='" + styleValue + "'");
+                        cssFileAdd.append(cssNeedAddFile);
                     } else {
-                        htmlNeedAdd = htmlNeedAdd.replace("{style}", "style ='" + styleValue + "'");
+                        htmlNeedAdd = htmlNeedAdd.replace("{style}", "style ='" + cssElement + "'");
+//                        cssFileAdd = new StringBuilder();
                     }
 
+                    if(StringUtils.isNotEmpty(htmlAttTag.getId())) {
+                        htmlNeedAdd = htmlNeedAdd + "id='" + htmlAttTag.getId() +"'";
+                    }
                     html.append(htmlNeedAdd);
-                    mxmlTagConfig.setHtmlTagStart3(sText);
+                    mxmlTagConfig.setHtmlTagStart3(htmlAttTag.getText());
                     html.append(mxmlTagConfig.getHtmlTagStart2());
-                    if (mxmlTagConfig.getHtmlTagStart3().length() > 0) {
+                    if (StringUtils.isNotEmpty(mxmlTagConfig.getHtmlTagStart3())) {
                         html.append(mxmlTagConfig.getHtmlTagStart3());
                     }
-                    attributeText = "";
-                    styleValue = "";
-                    sText = "";
-                    id = "";
+                    htmlAttTag = new HtmlAttributeTag();
                     fillAlphas = new ArrayList<>();
                     fillColors = new ArrayList<>();
                     if (tempNode.hasChildNodes()) {
                         // loop again if has child nodes
-                        printNote(tempNode.getChildNodes(), html, tempNode.getNodeName(), styleHere);
+                        printNote(tempNode.getChildNodes(), html, tempNode.getNodeName(), cssFileAdd);
                     }
 
                     html.append(mxmlTagConfig.getHtmlTagEnd());
@@ -190,20 +173,58 @@ public class ConvertService {
         }
     }
 
-    private static String convertToCss(AttributeTag attributeTag, String nodeValue, String styleValue) {
+    public void handleAttributeTag(HtmlAttributeTag htmlAttTag, AttributeTag attributeTag, Node nodeAtt, Node tempNode, List<Double> fillAlphas, List<String> fillColors) {
+        String nodeValue = nodeAtt.getNodeValue();
+
+        String startTag = attributeTag.getStartTag();
+        String attType = attributeTag.getType();
+        if (ATT_CSS.equals(attType)) {
+            htmlAttTag = convertToCss(htmlAttTag, attributeTag, nodeValue);
+        } else if (ATT_TEXT.equals(attType)) {
+            if ("Controls:ACCRadioButton".equals(tempNode.getNodeName()) || "Controls:ACCCheckBox".equals(tempNode.getNodeName())) {
+                htmlAttTag.setText("<label for=\"rdoOneReam1\">" + nodeValue + "</label>");
+            } else {
+                htmlAttTag.setText(nodeValue);
+            }
+        } else if ("id".equals(attType)) {
+            htmlAttTag.setId(nodeValue);
+        } else if (ATT_OTHER.equals(attType)) {
+            if ("fillAlphas".equals(startTag)) {
+                String[] aAlpha = nodeValue.split(",");
+                for (String s : aAlpha) {
+                    double alpha = Double.parseDouble(s.replace("[", "").replace("]", ""));
+                    fillAlphas.add(alpha);
+                }
+            } else if ("fillColors".equals(startTag)) {
+                String[] aColor = nodeValue.split(",");
+                for (String s : aColor) {
+                    fillColors.add(s.replace("[", "").replace("]", ""));
+                }
+            }
+        } else if (ATT_ATTRIBUTE.equals(attType)) {
+            htmlAttTag = convertToAtt(htmlAttTag, attributeTag, nodeValue);
+        } else if (ATT_JS.equals(attType)) {
+            htmlAttTag = convertToJs(htmlAttTag, attributeTag, nodeValue);
+        } else {
+
+        }
+    }
+
+    private HtmlAttributeTag convertToCss(HtmlAttributeTag htmlAttTag, AttributeTag attributeTag, String nodeValue) {
         String startTag = attributeTag.getStartTag();
         String cssAdd = startTag + ":" + nodeValue + attributeTag.getEndTag() + ";";
         if ("opacity".equals(startTag)) {
             if (Double.parseDouble(nodeValue) > 0) {
-                styleValue = styleValue + cssAdd;
+                htmlAttTag.getStyles().put(startTag, nodeValue + attributeTag.getEndTag());
             }
         } else {
-            styleValue = styleValue + cssAdd;
+            htmlAttTag.getStyles().put(startTag, nodeValue + attributeTag.getEndTag());
         }
-        return styleValue;
+
+        return htmlAttTag;
     }
 
-    private static String convertToAtt(AttributeTag attributeTag, String nodeValue, String attributeText) {
+    private HtmlAttributeTag convertToAtt(HtmlAttributeTag htmlAttTag, AttributeTag attributeTag, String nodeValue) {
         // handle when att = img
         String startTag = attributeTag.getStartTag();
         boolean compareTrueWithValue = attributeTag.isValueCompareTrue();
@@ -212,17 +233,21 @@ public class ConvertService {
         }
         if (compareTrueWithValue) {
             if ("true".equals(nodeValue)) {
-                attributeText = attributeText + startTag + " ";
+                htmlAttTag.getAttributes().put(startTag, "true");
+//                attributeText = attributeText + startTag + " ";
             }
         } else {
-            attributeText = attributeText + startTag + "=\"" + nodeValue + "\"";
+//            attributeText = attributeText + startTag + "=\"" + nodeValue + "\"";
+            htmlAttTag.getAttributes().put(startTag, nodeValue);
         }
-        return attributeText;
+
+        return htmlAttTag;
     }
 
-    private static String convertToJs(AttributeTag attributeTag, String nodeValue, String attributeText) {
+    private static HtmlAttributeTag convertToJs(HtmlAttributeTag htmlAttTag, AttributeTag attributeTag, String nodeValue) {
         String startTag = attributeTag.getStartTag();
-        attributeText = attributeText + startTag + "=\"" + nodeValue + "\"";
-        return attributeText;
+        htmlAttTag.getAttributes().put(startTag, nodeValue);
+//        attributeText = attributeText + startTag + "=\"" + nodeValue + "\"";
+        return htmlAttTag;
     }
 }
