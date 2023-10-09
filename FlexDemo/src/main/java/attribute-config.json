@@ -1,0 +1,189 @@
+[
+  {
+    "name": "backgroundColor",
+    "startTag": "background-color",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "width",
+    "startTag": "width",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "height",
+    "startTag": "height",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "color",
+    "startTag": "color",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "fontStyle",
+    "startTag": "font-style",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "textDecoration",
+    "startTag": "text-decoration",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "id",
+    "startTag": "id",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "id"
+  },
+  {
+    "name": "class",
+    "startTag": "class",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "attribute"
+  },
+  {
+    "name": "tabOrder",
+    "startTag": "tabOrder",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "attribute"
+  },
+  {
+    "name": "inputMode",
+    "startTag": "inputMode",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "attribute"
+  },
+  {
+    "name": "required",
+    "startTag": "required",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "attribute"
+  },
+  {
+    "name": "readOnly",
+    "startTag": "readonly",
+    "endTag": "",
+    "valueCompareTrue": true,
+    "type": "attribute"
+  },
+  {
+    "name": "text",
+    "startTag": "text",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "text"
+  },
+  {
+    "name": "label",
+    "startTag": "text",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "text"
+  },{
+    "name": "fillAlphas",
+    "startTag": "fillAlphas",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "other"
+  },{
+    "name": "fillColors",
+    "startTag": "fillColors",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "other"
+  },
+  {
+    "name": "click",
+    "startTag": "click",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "js"
+  },
+  {
+    "name": "change",
+    "startTag": "change",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "js"
+  },
+  {
+    "name": "source",
+    "startTag": "src",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "attribute"
+  },
+  {
+    "name": "maxByte",
+    "startTag": "maxlength",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "attribute"
+  },
+  {
+    "name": "x",
+    "startTag": "position: absolute; left",
+    "endTag": "px",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "y",
+    "startTag": "top",
+    "endTag": "px",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "fontSize",
+    "startTag": "font-size",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "fontWeight",
+    "startTag": "font-weight",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "textAlign",
+    "startTag": "text-align",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "backgroundAlpha",
+    "startTag": "opacity",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "fontFamily",
+    "startTag": "font-family",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "css"
+  }
+]

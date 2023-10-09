@@ -1,0 +1,172 @@
+[
+  {
+    "name": "mx:Application",
+    "styleInFile": true,
+    "isHadAttribute": false,
+    "className": "application",
+    "htmlTagStart": "<body>",
+    "htmlTagStart2": "",
+    "htmlTagStart3": "",
+    "htmlTagEnd": "</body>"
+  },
+  {
+    "name": "mx:Panel",
+    "styleInFile": true,
+    "isHadAttribute": true,
+    "className": "panel",
+    "htmlTagStart": "<div class='{1}' ",
+    "htmlTagStart2": " >",
+    "htmlTagStart3": "",
+    "htmlTagEnd": "</div><!-- End of div -->"
+  },
+  {
+    "name": "mx:ViewStack",
+    "className": "viewstack",
+    "styleInFile": true,
+    "isHadAttribute": true,
+    "htmlTagStart": "<div class='{1}' ",
+    "htmlTagStart2": " >",
+    "htmlTagStart3": "",
+    "htmlTagEnd": "</div><!-- End of div -->"
+  },
+  {
+    "name": "mx:Canvas",
+    "className": "canvas",
+    "styleInFile": true,
+    "isHadAttribute": true,
+    "htmlTagStart": "<div class='{1}' ",
+    "htmlTagStart2": " >",
+    "htmlTagStart3": "",
+    "htmlTagEnd": "</div><!-- End of div -->"
+  },
+  {
+    "name": "mx:Label",
+    "className": "label",
+    "styleInFile": true,
+    "isHadAttribute": true,
+    "htmlTagStart": "<div class='{1}' ",
+    "htmlTagStart2": " >",
+    "htmlTagStart3": "",
+    "htmlTagEnd": "</div><!-- End of div -->"
+  },
+  {
+    "name": "mx:Image",
+    "className": "image",
+    "styleInFile": true,
+    "isHadAttribute": true,
+    "htmlTagStart": "<img class='{1}' ",
+    "htmlTagStart2": " >",
+    "htmlTagStart3": "",
+    "htmlTagEnd": "<!-- End of img -->"
+  },
+  {
+    "name": "mx:HBox",
+    "className": "flex-container",
+    "styleInFile": true,
+    "isHadAttribute": true,
+    "htmlTagStart": "<div class='{1}' ",
+    "htmlTagStart2": " >",
+    "htmlTagStart3": "",
+    "htmlTagEnd": "</div><!-- End of div -->"
+  },
+  {
+    "name": "mx:Button",
+    "className": "button",
+    "styleInFile": true,
+    "isHadAttribute": true,
+    "htmlTagStart": "<button class='{1}' ",
+    "htmlTagStart2": " >",
+    "htmlTagStart3": "",
+    "htmlTagEnd": "</button><!-- End of div -->"
+  },
+  {
+    "name": "Containers:ACCCanvas",
+    "className": "acc-canvas",
+    "styleInFile": true,
+    "isHadAttribute": true,
+    "htmlTagStart": "<div class='{1}' ",
+    "htmlTagStart2": " >",
+    "htmlTagStart3": "",
+    "htmlTagEnd": "</div><!-- End of div -->"
+  },
+  {
+    "name": "Controls:ACCLabel",
+    "className": "acc-label",
+    "styleInFile": true,
+    "isHadAttribute": true,
+    "htmlTagStart": "<div class='{1}' ",
+    "htmlTagStart2": " >",
+    "htmlTagStart3": "",
+    "htmlTagEnd": "</div><!-- End of div -->"
+  },
+  {
+    "name": "Controls:ACCTextInput",
+    "className": "acc-text-input",
+    "styleInFile": true,
+    "isHadAttribute": true,
+    "htmlTagStart": "<input class='{1}' type='text' ",
+    "htmlTagStart2": " >",
+    "htmlTagStart3": "",
+    "htmlTagEnd": "</input><!-- End of input -->"
+  },
+  {
+    "name": "Controls:ACCButton",
+    "className": "acc-button",
+    "styleInFile": true,
+    "isHadAttribute": true,
+    "htmlTagStart": "<button class='{1}' ",
+    "htmlTagStart2": " >",
+    "htmlTagStart3": "",
+    "htmlTagEnd": "</button><!-- End of div -->"
+  },
+  {
+    "name": "Controls:ACCRadioButton",
+    "className": "acc-radio",
+    "styleInFile": false,
+    "isHadAttribute": true,
+    "htmlTagStart": " <div class='{1}' {style} ><input type='radio' ",
+    "htmlTagStart2": " />",
+    "htmlTagStart3": "",
+    "htmlTagEnd": "</div>"
+  },
+  {
+    "name": "Controls:ACCCheckBox",
+    "className": "acc-checkbox",
+    "styleInFile": false,
+    "isHadAttribute": true,
+    "htmlTagStart": "<div class='{1}' {style} ><input type='checkbox' ",
+    "htmlTagStart2": " />",
+    "htmlTagStart3": "",
+    "htmlTagEnd": "</div><!-- End of div -->"
+  },
+  {
+    "name": "Containers:ACCVBox",
+    "className": "acc-vbox",
+    "styleInFile": true,
+    "isHadAttribute": true,
+    "htmlTagStart": "<div class='{1}' ",
+    "htmlTagStart2": " >",
+    "htmlTagStart3": "",
+    "htmlTagEnd": "</div><!-- End of div -->"
+  },
+  {
+    "name": "Containers:ACCHBox",
+    "className": "acc-hbox",
+    "styleInFile": true,
+    "isHadAttribute": true,
+    "htmlTagStart": "<div class='{1}' ",
+    "htmlTagStart2": " >",
+    "htmlTagStart3": "",
+    "htmlTagEnd": "</div><!-- End of div -->"
+  },
+  {
+    "name": "Controls:ACCRadioButtonGroup",
+    "className": "acc-radio-group",
+    "styleInFile": true,
+    "isHadAttribute": true,
+    "htmlTagStart": "<div class='{1}' ",
+    "htmlTagStart2": " >",
+    "htmlTagStart3": "",
+    "htmlTagEnd": "</div><!-- End of div -->"
+  }
+]
