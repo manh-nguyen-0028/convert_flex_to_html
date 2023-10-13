@@ -1,6 +1,5 @@
+FlexAirHtmlTool/target/classes/as/enums/ASEncapsulation.class
 .idea/
-FlexDemo/target/classes/Main.class
-FlexDemo/target/classes/
-out/production/AdobeFlexDemo/com/company/Main.class
-AdobeFlexDemo.iml
-FlexDemo/FlexDemo.iml
+FlexAirHtmlTool/target/classes/dto/mxml/parser/HtmlElementParser.class
+FlexAirHtmlTool/target/
+jsf-primefaces-apache-tomcat/target/

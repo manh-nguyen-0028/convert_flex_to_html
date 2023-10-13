@@ -1,0 +1,310 @@
+.acc-button {
+	border-radius: 10px;
+    padding-left: 0;
+    padding-right: 0;
+    font-weight: normal;
+}
+
+.window-title {
+  font-weight: bold;
+  font-family: "MS Gothic";
+}
+
+.acc-title-window {
+  font-size: 12px;
+    font-family: "MS Gothic";
+    color: #000000;
+    /*border-color: #e2f0fc;*/
+    border-alpha: 1;
+    /*background-alpha: 0.9;*/
+    background-color: #E2F0FC;
+    border-radius: 0;
+    modal-transparency: 0;
+    modal-transparency-blur: 0.0;
+    border-style: solid;
+    border-color: #0617BF;
+    border-thickness: 3px;
+}
+
+/* CSS cho ACCPrintWindow */
+.acc-print-window {
+  font-size: 12px;
+  /* 2011.10.19 HiSoft (Flex4 compatible) */
+  font-family: "MS Gothic";
+  modal-transparency: 0;
+  modal-transparency-blur: 0.0;
+  /* borderColor: #F9C5F6;
+  border-alpha: 1;
+  background-alpha: 0.9;
+  background-color: #F9C5F6;
+  corner-radius: 0;
+  color: #08248C; */
+  title-text-style-name: "WindowTitleStyle";
+  /* title-bar-colors: #F9C5F6, #F9C5F6; */
+}
+
+/* CSS cho ACCCanvas */
+.acc-canvas {
+  font-weight: normal;
+  disabled-overlay-alpha: 0;
+  position: absolute;
+  /* corner-radius: 0;
+  background-color: #F9C5F6;
+  background-alpha: 0.1;
+  color: #000000; */
+}
+
+/* CSS cho ACCPanel */
+.acc-panel {
+  /* corner-radius: 0;
+  background-color: #F9C5F6;
+  border-color: #F9C5F6;
+  border-alpha: 0.9;
+  background-alpha: 0.9;
+  disabled-overlay-alpha: 0;
+  color: #000000; */
+}
+
+/* CSS cho ACCHBox */
+.acc-hbox {
+	display: flex;
+
+  /* background-color: #F9C5F6;
+  color: #000000; */
+}
+
+/* CSS cho ACCVBox */
+.acc-vbox {
+	display: flex;
+	flex-direction: column;
+  /* background-color: #F9C5F6;
+  color: #000000; */
+}
+
+/* CSS cho ACCTabNavigator */
+.acc-tab-navigator {
+  /* background-alpha: 0.0;
+  background-color: #E5E6FD;
+  color: #000000; */
+  font-weight: normal;
+  padding-top: 0;
+}
+
+/* CSS cho ACCDataGrid */
+.acc-data-grid {
+  /* color: #000000; */
+  vertical-align: middle;
+  /* alternating-item-colors: #F7F7F7, #FFFFFF; */
+  target-item-color: #FF0000;
+  target-item-color-yellow: #FFFF00;
+  /* disabled-item-color: #D3D3D3; */
+}
+
+/* CSS cho ACCTelButton */
+.acc-tel-button {
+  /* borderColor: #FAFAFC;
+  color: #E9E9F5; */
+  border-radius: 100px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* CSS cho ACCCheckBox */
+.acc-check-box {
+  /* disabled-color: #08248C;
+  border-color: #FAFAFC;
+  color: #000000; */
+}
+
+/* CSS cho ACCAdvancedDataGrid */
+.acc-advanced-data-grid {
+  /* disabled-color: #08248C;
+  color: #000000; */
+}
+
+/* CSS cho ACCComboBoxCode */
+.acc-combo-box-code {
+  border-radius: 10px;
+  font-weight: normal;
+  /* theme-color: #2455E1;
+  disabled-color: #08248C;
+  color: #000000; */
+}
+
+/* CSS cho ACCComboBox */
+.acc-combo-box {
+  border-radius: 10px;
+  font-weight: normal;
+  /* disabled-color: #08248C;
+  theme-color: #2455E1;
+  color: #000000; */
+}
+
+/* CSS cho ACCDateField */
+.acc-date-field {
+  /* border-color: #FD051C;
+  color: #000000; */
+}
+
+/* CSS cho ACCLabel */
+.acc-label {
+  /* color: #000000; */
+  font-antialias-type: normal;
+  font-weight: normal;
+  padding-left: 0;
+  padding-top: 2px;
+}
+
+/* CSS cho ACCRadioButton */
+.acc-radio-button {
+  /* disabled-color: #08248C;
+  color: #000000; */
+}
+
+/* CSS cho ACCLinkButton */
+.acc-link-button {
+  /* color: #000000; */
+  font-antialias-type: normal;
+  font-weight: normal;
+  padding-left: 0;
+  padding-top: 2px;
+  text-align: left;
+  text-decoration: underline;
+}
+
+/* CSS cho ACCTextLabel */
+.acc-text-label {
+  /* color: #000000;
+  background-color: #FCE1FA; */
+  font-antialias-type: normal;
+  font-weight: normal;
+  padding-left: 0;
+  padding-top: 2px;
+}
+
+/* CSS cho .textInputRead */
+.textInputRead {
+  /* background-alpha: 0.5;
+  background-color: #FFFFFF;
+  background-color: #F9C5F6; */
+  border-style: inset;
+}
+
+/* CSS cho .textInputWrite */
+.textInputWrite {
+  /* color: #000000;
+  background-alpha: 1; */
+  border-style: inset;
+}
+
+/* CSS cho .textInputEnabled */
+.textInputEnabled {
+  /* background-alpha: 0.5;
+  background-color: #F9C5F6;
+  background-disabled-color: #F9C5F6;
+  disabled-color: #08248C;
+  color: #000000; */
+  border-color: #F9C5F6;
+  border-style: outset;
+  font-weight: normal;
+}
+
+/* CSS cho .textAreaRead */
+.textAreaRead {
+  /* background-alpha: 0.2;
+  background-color: #FFFFFF;
+  background-color: #F9C5F6;
+  color: #000000; */
+  border-style: inset;
+}
+
+/* CSS cho .textAreaWrite */
+.textAreaWrite {
+  /* color: #000000;
+  background-alpha: 1; */
+  border-style: inset;
+}
+
+/* CSS cho .requiredStyle */
+.requiredStyle {
+  /* background-alpha: 1.0;
+  background-color: #FFFFFF;
+  color: #0B333C; */
+  border-style: solid;
+  border-thickness: 2px;
+}
+
+/* CSS cho .errorStyle */
+.errorStyle {
+  /* color: #E2E2F5;
+  border-color: #B7BABC;
+  background-alpha: 1.0;
+  background-color: #FF0000; */
+  border-style: solid;
+  border-thickness: 0;
+}
+
+/* CSS cho .ACCChuiJyouhouTextInput */
+.accChuiJyouhouTextInput {
+  border-color: #F7F40A;
+  border-style: outset;
+  border-thickness: 0;
+  color: #0A0A0A;
+  background-alpha: 0.5;
+  background-color: #F7F40A;
+  text-align: center;
+  font-weight: bold;
+  background-disabled-color: #F7F40A;
+  disabled-color: #3D2929;
+}
+
+/* CSS cho .ACCKadenLabel */
+.accKadenLabel {
+  padding-left: 0;
+  padding-top: 1px;
+  background-alpha: 0.5;
+  background-color: #2E1FF6;
+  color: #FDFCFC;
+}
+
+/* CSS cho .ACCKadenTextInput */
+.accKadenTextInput {
+  border-style: none;
+  padding-top: 1px;
+  background-alpha: 0;
+  background-color: #2E1FF6;
+  disabled-color: #FDFCFC;
+  color: #FDFCFC;
+}
+
+/* CSS cho .ACCKadenInputCode */
+.accKadenInputCode {
+  border-style: none;
+  padding-top: 1px;
+  background-alpha: 0;
+  background-color: #2E1FF6;
+  disabled-color: #FDFCFC;
+  color: #FDFCFC;
+}
+
+/* CSS cho .ACCGridTitleRow */
+.accGridTitleRow {
+  background-color: #F4BC26;
+  /* disabled-color: #FDFCFC;
+  color: #FDFCFC; */
+}
+
+/* CSS cho .ACCGridRow */
+.accGridRow {
+  /* background-color: #FFFFFF; */
+}
+
+/* CSS cho .textDueNormalStyle */
+.textDueNormalStyle {
+  color: #000000;
+}
+
+/* CSS cho .textDueDateStyle */
+.textDueDateStyle {
+  color: #FF0000;
+}

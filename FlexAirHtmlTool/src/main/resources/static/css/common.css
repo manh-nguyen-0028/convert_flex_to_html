@@ -1,0 +1,36 @@
+body {
+	position: relative;
+	font-family: MS Gothic;
+	margin: 0 auto;
+	font-size: 12px;
+}
+
+img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover; /* Có thể thay đổi giữa 'cover', 'contain', hoặc các giá trị khác tùy theo yêu cầu */
+}
+
+.acc-canvas {
+	background-color: transparent;
+}
+
+.acc-button:hover {
+	background: linear-gradient(#B0AFAF, #FEFDFD);
+}
+		
+.flex-container {
+  display: flex;
+}
+
+.flex-item {
+  /* Các thuộc tính linh hoạt của Flexbox */
+  flex: 1; /* Chia đều không gian giữa các phần tử */
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+.tab-content {
+  display: none;
+  border: 1px solid #ccc;
+}
