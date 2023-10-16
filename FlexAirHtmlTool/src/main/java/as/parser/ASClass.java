@@ -23,6 +23,7 @@ public class ASClass {
     private List<ASMember> setters;
     private List<ASMember> staticGetters;
     private List<ASMember> staticSetters;
+    private List<ASMember> importsPkg;
     private boolean isInterface;
     private List<ASMember> membersWithAssignments;
     private Map<String, ASMember> fieldMap;
@@ -67,6 +68,7 @@ public class ASClass {
         classMap = new HashMap<>();
         classMapFiltered = new HashMap<>();
         packageMap = new HashMap<>();
+        importsPkg = new ArrayList<>();
     }
 
     /**
@@ -88,6 +90,16 @@ public class ASClass {
     //----------------------------------------------
     // getterとsetter生成
     //----------------------------------------------
+
+
+    public List<ASMember> getImportsPkg() {
+        return importsPkg;
+    }
+
+    public void setImportsPkg(List<ASMember> importsPkg) {
+        this.importsPkg = importsPkg;
+    }
+
     public String getPackageName() {
         return packageName;
     }

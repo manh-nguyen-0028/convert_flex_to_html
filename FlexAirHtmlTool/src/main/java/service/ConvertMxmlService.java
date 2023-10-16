@@ -2,6 +2,7 @@ package service;
 
 import constants.Constants;
 import dto.mxml.mapping.*;
+import dto.mxml.parser.HtmlElementParser;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -26,20 +27,6 @@ public class ConvertMxmlService {
     private static String ATT_OTHER = "other";
     private static String ATT_ATTRIBUTE = "attribute";
 
-    public static String initHtml(String title, String cssName) {
-        String htmlStart = "<html><head>" + "<meta charset=\"UTF-8\">" +
-                "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" +
-                "<title>{p_title}</title>" +
-                "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js\"></script>" +
-                "<link rel=\"stylesheet\" href=\"css\\common.css\">" +
-                "<script src=\"js\\common.js\"></script>" +
-                "<link rel=\"stylesheet\" href=\"css\\control.css\">" +
-                "<link rel=\"stylesheet\" href=\"css\\{p_css}.css\">" +
-                "</head><body id=\"" + cssName + "_body\" >";
-        htmlStart = htmlStart.replace("{p_css}", cssName).replace("{p_title}", title);
-        return htmlStart;
-    }
-
     private static void handleAttributes(Node tempNode, HtmlAttributeTag htmlAttTag, List<Double> fillAlphas, List<String> fillColors) {
         if (tempNode.hasAttributes()) {
             NamedNodeMap nodeAttMap = tempNode.getAttributes();
@@ -53,7 +40,9 @@ public class ConvertMxmlService {
         }
     }
 
-    public static void printNote(NodeList nodeList, StringBuilder html, String ownerNodeName, StringBuilder cssFileAdd, String fileName) throws IOException {
+    public static void printNote(boolean isFirstCanvas, NodeList nodeList, StringBuilder baseHtml, StringBuilder html, String ownerNodeName, StringBuilder cssFileAdd, String fileName) throws IOException {
+        HtmlElementParser htmlElementParser = new HtmlElementParser();
+
         xmlFileName = fileName;
 
         hmMappingTag = XmlService.getMappingTag();
@@ -71,13 +60,26 @@ public class ConvertMxmlService {
             if (tempNode.getNodeType() == Node.ELEMENT_NODE) {
                 MappingAttribute mappingAttribute = hmMappingAttribute.get(tempNode.getNodeName());
                 if (mappingAttribute != null) {
+                    // Set cac thong tin cua htmlElementParser
+                    htmlElementParser.setStartTag(mappingAttribute.getHtmlTagStart());
+                    htmlElementParser.setEndStartTag(mappingAttribute.getHtmlTagStart2());
+                    htmlElementParser.setEndTag(mappingAttribute.getHtmlTagEnd());
+
                     handleAttributes(tempNode, htmlAttTag, fillAlphas, fillColors);
+                    htmlElementParser.setText(tempNode.getNodeName());
 
                     handleAttFillColor(htmlAttTag, fillAlphas, fillColors);
 
-                    htmlAttTag.setId(StringUtils.defaultIfBlank(htmlAttTag.getId(), "id_" + utils.StringUtils.generateRandomText(3)));
+                    htmlAttTag.setId(htmlAttTag.getId());
 
                     StringBuilder cssElement = createCssElement(htmlAttTag, ownerNodeName);
+                    if (isFirstCanvas && (tempNode.getNodeName().equals("Containers:ACCCanvas") || tempNode.getNodeName().equals("Containers:ACCTitleWindow"))) {
+                        utils.StringUtils.replaceInStringBuilder(baseHtml, "style_composition_first", cssElement.toString());
+                        cssElement = new StringBuilder();
+                        isFirstCanvas = false;
+                        htmlAttTag.setIgnoreElement(true);
+                    }
+                    StringBuilder attributeElement = createAttributeElement(htmlAttTag, ownerNodeName);
 
                     StringBuilder cssNeedAddFile = new StringBuilder();
                     StringBuilder cssInHtmlAdd = new StringBuilder();
@@ -97,30 +99,34 @@ public class ConvertMxmlService {
                     }
 
                     // delete or replace element
-                    StringBuilder htmlNeedAdd = modifyHtml(mappingAttribute, htmlAttTag, cssElement, ownerNodeName);
+                    StringBuilder htmlNeedAdd = modifyHtml(mappingAttribute, htmlAttTag, cssElement, cssInHtmlAdd, ownerNodeName, attributeElement);
 
                     // replace tab element
                     utils.StringUtils.replaceInStringBuilder(htmlNeedAdd, "{tab_button_replace}", "<button class=\"tab-button\" onclick=\"openTabPosition('0')\">Tab 1</button>\n" +
                             "  <button class=\"tab-button\" onclick=\"openTabPosition('1')\">Tab 2</button>");
 
                     // Append for html
-                    html.append(htmlNeedAdd);
-
-                    if (mappingAttribute.getStyleInFile()) {
-                        // remove position: absolute;
-                        cssFileAdd.append(cssNeedAddFile);
+                    if (!htmlAttTag.isIgnoreElement()) {
+                        html.append(htmlNeedAdd);
+                        if (mappingAttribute.getStyleInFile()) {
+                            // remove position: absolute;
+                            cssFileAdd.append(cssNeedAddFile);
+                        } else {
+                            cssInHtmlAdd.append("style ='").append(cssElement).append("'");
+                        }
                     }
-
                     htmlAttTag = new HtmlAttributeTag();
                     fillAlphas = new ArrayList<>();
                     fillColors = new ArrayList<>();
 
                     if (tempNode.hasChildNodes()) {
                         // loop again if has child nodes
-                        printNote(tempNode.getChildNodes(), html, tempNode.getNodeName(), cssFileAdd, fileName);
+                        printNote(isFirstCanvas, tempNode.getChildNodes(), baseHtml, html, tempNode.getNodeName(), cssFileAdd, fileName);
                     }
-
-                    html.append(mappingAttribute.getHtmlTagEnd());
+                    if (!htmlAttTag.isIgnoreElement()) {
+                        html.append(mappingAttribute.getHtmlTagEnd());
+                    }
+                    System.out.println(htmlElementParser.getText());
                     System.out.println("Node Name =" + tempNode.getNodeName() + " [CLOSE]");
                 }
             }
@@ -163,8 +169,10 @@ public class ConvertMxmlService {
     /**
      * Delete or replace html element
      */
-    private static StringBuilder modifyHtml(MappingAttribute mappingAttribute, HtmlAttributeTag htmlAttributeTag, StringBuilder cssElement, String parentNodeName) {
+    private static StringBuilder modifyHtml(MappingAttribute mappingAttribute, HtmlAttributeTag htmlAttributeTag, StringBuilder cssElement, StringBuilder cssInHtmlAdd, String parentNodeName, StringBuilder attributeElement) {
         StringBuilder htmlNeedAdd = buildHtmlStartTag(mappingAttribute, htmlAttributeTag, cssElement, parentNodeName);
+        htmlNeedAdd.append(attributeElement).append(" ");
+        htmlNeedAdd.append(cssInHtmlAdd).append(" ");
 
         htmlNeedAdd.append(mappingAttribute.getHtmlTagStart2());
         if (StringUtils.isNotEmpty(htmlAttributeTag.getText())) {
@@ -306,6 +314,21 @@ public class ConvertMxmlService {
         }
 
         return cssElement;
+    }
+
+    private static StringBuilder createAttributeElement(HtmlAttributeTag htmlAttTag, String ownerNodeName) {
+        StringBuilder attributeElement = new StringBuilder();
+        HashMap<String, String> attributeMap = htmlAttTag.getAttributes();
+
+        for (Map.Entry<String, String> entry : attributeMap.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            System.out.println("Key: " + key + ", Value: " + value);
+            attributeElement.append(key).append("=\"").append(value).append("\"");
+        }
+
+
+        return attributeElement;
     }
 
     private static void handleAttFillColor(HtmlAttributeTag htmlAttTag, List<Double> fillAlphas, List<String> fillColors) {

@@ -5,8 +5,11 @@ import as.parser.ASParser;
 import as.parser.ParamOption;
 import as.parser.ParserOptions;
 import utils.Log;
+import utils.StringUtils;
 
 import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,11 +36,11 @@ public class ASConvert {
         option.setVerbose(true);
         // Compile data
         Map<String, String> result =  compile(option);
-//        // Save file
-//        String compiledSource = (String)result.get("compiledSource");
-//        if (!StringUtils.isNullOrEmpty(compiledSource)) {
-//            writeFileUTF8(outputPath + File.separator + "test.js", compiledSource);
-//        }
+        // Save file
+        String compiledSource = (String)result.get("classSource");
+        if (!StringUtils.isNullOrEmpty(compiledSource)) {
+            writeFileUTF8(inputPath + File.separator + "test.js", compiledSource);
+        }
     }
 
     /**
@@ -73,11 +76,21 @@ public class ASConvert {
             for (String pkg: pkgLists.get(path).keySet()) {
                 Log.log("Analyzing class path: " + pkgLists.get(path).get(pkg).getClassPath());
                 classes.put(pkgLists.get(path).get(pkg).getClassPath(), pkgLists.get(path).get(pkg).parse(parserOptions));
-                Log.debug(classes.get(pkgLists.get(path).get(path).getClassPath()));
+                Log.debug(classes.get(pkgLists.get(path).get(pkg).getClassPath()));
             }
         }
+        // Read class template
+        String classTemplate = readClassTemplate();
+        System.out.println(classTemplate);
 
+        // Create package
+        for (String key: classes.keySet() ) {
+            ASClass cls = classes.get(key);
+            classTemplate = classTemplate.replace("{{package}}", cls.getPackageName());
+            classTemplate = classTemplate.replace("{{imports}}", String.join("", cls.getImports()));
+        }
         Map<String, String> result = new HashMap<>();
+        result.put("classSource",classTemplate);
         return result;
     }
 
@@ -95,7 +108,7 @@ public class ASConvert {
                 }
                 readDirectory(location + File.separator + file.getName(), pkg + file.getName(), pkList);
             } else if (file.isFile() && file.getName().endsWith(".as")) {
-                readFileContentUTF8(file, pkList, pkgBuffer);
+                readFileContent(file, pkList, pkgBuffer);
             }
         }
     }
@@ -103,18 +116,14 @@ public class ASConvert {
     /**
      * Read file content with UTF-8 encoding
      */
-    public void readFileContentUTF8(File file, Map<String, ASParser>  pkList, String pkg) {
-        try {
-            if (!pkg.equals("")) {
-                pkg += ".";
-            }
-            pkg += file.getName().substring(0, file.getName().length() - 3);
-            String content = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
-            pkList.put(pkg, new ASParser(content, pkg));
-            Log.debug("Loaded file: " + file.getPath() + " (package: " + pkg + ")");
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void readFileContent(File file, Map<String, ASParser>  pkList, String pkg) {
+        if (!pkg.equals("")) {
+            pkg += ".";
         }
+        pkg += file.getName().substring(0, file.getName().length() - 3);
+        String content = readFileUTF8(file.toPath());
+        pkList.put(pkg, new ASParser(content, pkg));
+        Log.debug("Loaded file: " + file.getPath() + " (package: " + pkg + ")");
     }
 
     /**
@@ -132,7 +141,7 @@ public class ASConvert {
                 return pkList;
             }  else if (directory.isFile() && directory.getName().endsWith(".as")) {
                 // Read file only
-                readFileContentUTF8(directory, pkList, "");
+                readFileContent(directory, pkList, "");
                 // Return package list
                 return pkList;
             }
@@ -165,24 +174,23 @@ public class ASConvert {
             Log.warn(ex.getMessage());
         }
     }
+    private String readClassTemplate() {
 
-    private String readUnicodeClassic(String fileName) {
-
-        StringBuilder fileText = new StringBuilder();
-        File file = new File(fileName);
-
-        try (FileInputStream fis = new FileInputStream(file);
-             InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
-             BufferedReader reader = new BufferedReader(isr)
-        ) {
-
-            String str;
-            while ((str = reader.readLine()) != null) {
-                fileText.append(str);
-            }
-        } catch (IOException e) {
+        try {
+            URL templateUrl = getClass().getClassLoader().getResource("templates/classtemplate");
+            return readFileUTF8(Paths.get(templateUrl.toURI()));
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return fileText.toString();
+        return null;
+    }
+
+    private String readFileUTF8(Path path) {
+        try {
+            return new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

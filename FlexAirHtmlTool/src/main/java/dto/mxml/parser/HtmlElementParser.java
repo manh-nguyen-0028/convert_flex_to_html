@@ -16,4 +16,5 @@ public class HtmlElementParser {
     private List<CssParser> cssParsers;
     private boolean isHadAttribute;
     private boolean isHadCss;
+    private boolean isIgnoreElement;
 }

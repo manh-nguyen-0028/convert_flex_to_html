@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<ui:composition style="{style_composition_first}"
+    template="/jp/co/nissho_ele/acc/common/commonLayout.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:acc="http://xmlns.jcp.org/jsf/composite/acc_component">
+
+    <ui:define name="title">ログイン</ui:define>
+    <ui:define name="stylesheet">
+        <!-- <h:outputStylesheet library="acc_css" name="*.css" /> -->
+    </ui:define>
+
+    <ui:define name="script">
+        <!-- <h:outputScript library="acc_js" name="*.js" /> -->
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="p-grid p-nogutter p-align-center p-justify-center" style="height:374px;width:517px;">
+            <h:form id="MG1001001Form">
+                {form_content}
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>
+

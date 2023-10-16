@@ -213,5 +213,33 @@
     "endTag": "",
     "valueCompareTrue": false,
     "type": "css"
+  },
+  {
+    "name": "borderThicknessBottom",
+    "startTag": " border-bottom-width",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "borderThicknessLeft",
+    "startTag": "border-left-width",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "borderThicknessRight",
+    "startTag": "border-right-width",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "borderThicknessTop",
+    "startTag": "border-top-width",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "css"
   }
 ]

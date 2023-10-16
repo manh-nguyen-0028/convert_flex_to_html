@@ -29,7 +29,7 @@ public class StringUtils {
      * Matching text by pattern
      */
     public static boolean isMatched(String pattern, String value) {
-        return value != null && Pattern.compile(pattern).matcher(value).matches();
+        return !isNullOrEmpty(value) && Pattern.compile(pattern).matcher(value).find();
     }
 
     /**

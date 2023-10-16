@@ -1,123 +1,53 @@
 [
   {
-    "name": "mx:Application",
-    "styleInFile": true,
-    "isHadAttribute": false,
-    "className": "application",
-    "htmlTagStart": "<body>",
-    "htmlTagStart2": "",
-    "htmlTagStart3": "",
-    "htmlTagEnd": "</body>"
-  },
-  {
-    "name": "mx:Panel",
-    "styleInFile": true,
-    "isHadAttribute": true,
-    "className": "panel",
-    "htmlTagStart": "<div class='{class_replace}' ",
-    "htmlTagStart2": " >",
-    "htmlTagStart3": "",
-    "htmlTagEnd": "</div><!-- End of div -->"
-  },
-  {
-    "name": "mx:ViewStack",
-    "className": "viewstack",
-    "styleInFile": true,
-    "isHadAttribute": true,
-    "htmlTagStart": "<div class='{class_replace}' ",
-    "htmlTagStart2": " >",
-    "htmlTagStart3": "",
-    "htmlTagEnd": "</div><!-- End of div -->"
-  },
-  {
-    "name": "mx:Canvas",
-    "className": "canvas",
-    "styleInFile": true,
-    "isHadAttribute": true,
-    "htmlTagStart": "<div class='{class_replace}' ",
-    "htmlTagStart2": " >",
-    "htmlTagStart3": "",
-    "htmlTagEnd": "</div><!-- End of div -->"
-  },
-  {
-    "name": "mx:Label",
-    "className": "label",
-    "styleInFile": true,
-    "isHadAttribute": true,
-    "htmlTagStart": "<div class='{class_replace}' ",
-    "htmlTagStart2": " >",
-    "htmlTagStart3": "",
-    "htmlTagEnd": "</div><!-- End of div -->"
-  },
-  {
     "name": "mx:Image",
     "className": "image",
     "styleInFile": true,
     "isHadAttribute": true,
-    "htmlTagStart": "<img class='{class_replace}' ",
-    "htmlTagStart2": " >",
+    "htmlTagStart": "<p:panel class='{class_replace}' ",
+    "htmlTagStart2": " />",
     "htmlTagStart3": "",
     "htmlTagEnd": "<!-- End of img -->"
   },
   {
-    "name": "mx:HBox",
-    "className": "flex-container",
-    "styleInFile": true,
-    "isHadAttribute": true,
-    "htmlTagStart": "<div class='{class_replace}' ",
-    "htmlTagStart2": " >",
-    "htmlTagStart3": "",
-    "htmlTagEnd": "</div><!-- End of div -->"
-  },
-  {
-    "name": "mx:Button",
-    "className": "button",
-    "styleInFile": true,
-    "isHadAttribute": true,
-    "htmlTagStart": "<button class='{class_replace}' ",
-    "htmlTagStart2": " >",
-    "htmlTagStart3": "",
-    "htmlTagEnd": "</button><!-- End of div -->"
-  },
-  {
     "name": "Containers:ACCCanvas",
     "className": "acc-canvas",
-    "styleInFile": true,
+    "styleInFile": false,
     "isHadAttribute": true,
-    "htmlTagStart": "<div class='{class_replace}' ",
+    "htmlTagStart": "<ui:composition class='{class_replace}' ",
     "htmlTagStart2": " >",
     "htmlTagStart3": "",
-    "htmlTagEnd": "</div><!-- End of div -->"
+    "htmlTagEnd": "</ui:composition><!-- End of div -->"
   },
   {
     "name": "Containers:ACCTitleWindow",
     "className": "acc-title-window",
-    "styleInFile": true,
+    "styleInFile": false,
     "isHadAttribute": true,
-    "htmlTagStart": "<div class='{class_replace}' ",
+    "htmlTagStart": "<ui:composition class='{class_replace}' ",
     "htmlTagStart2": " >",
     "htmlTagStart3": "",
-    "htmlTagEnd": "</div><!-- End of div -->"
+    "htmlTagEnd": "</ui:composition><!-- End of div -->"
   },
   {
     "name": "Controls:ACCLabel",
     "className": "acc-label",
     "styleInFile": true,
     "isHadAttribute": true,
-    "htmlTagStart": "<div class='{class_replace}' ",
+    "htmlTagStart": "<p:outputLabel class='{class_replace}' ",
     "htmlTagStart2": " >",
     "htmlTagStart3": "",
-    "htmlTagEnd": "</div><!-- End of div -->"
+    "htmlTagEnd": "</p:outputLabel><!-- End of div -->"
   },
   {
     "name": "Controls:ACCTextInput",
     "className": "acc-text-input",
     "styleInFile": true,
     "isHadAttribute": true,
-    "htmlTagStart": "<input class='{class_replace}' type='text' ",
+    "htmlTagStart": "<p:inputText class='{class_replace}' ",
     "htmlTagStart2": " >",
     "htmlTagStart3": "",
-    "htmlTagEnd": "</input><!-- End of input -->"
+    "htmlTagEnd": "</p:inputText><!-- End of input -->"
   },
   {
     "name": "Controls:ACCTextInputMaskNumberOnly",
@@ -164,50 +94,50 @@
     "className": "acc-button",
     "styleInFile": true,
     "isHadAttribute": true,
-    "htmlTagStart": "<button class='{class_replace}' ",
+    "htmlTagStart": "<p:commandButton class='{class_replace}' ",
     "htmlTagStart2": " >",
     "htmlTagStart3": "",
-    "htmlTagEnd": "</button><!-- End of div -->"
+    "htmlTagEnd": "</p:commandButton><!-- End of div -->"
   },
   {
     "name": "Controls:ACCRadioButton",
     "className": "acc-radio",
     "styleInFile": false,
     "isHadAttribute": true,
-    "htmlTagStart": " <div class='{class_replace}' {style} ><input type='radio' ",
+    "htmlTagStart": " <f:selectItem class='{class_replace}' {style} ><input type='radio' ",
     "htmlTagStart2": " />",
     "htmlTagStart3": "",
-    "htmlTagEnd": "</div>"
+    "htmlTagEnd": "</f:selectItem>"
   },
   {
     "name": "Controls:ACCCheckBox",
     "className": "acc-checkbox",
     "styleInFile": false,
     "isHadAttribute": true,
-    "htmlTagStart": "<div class='{class_replace}' {style} ><input type='checkbox' ",
+    "htmlTagStart": "<p:selectBooleanCheckbox class='{class_replace}' {style} ><input type='checkbox' ",
     "htmlTagStart2": " />",
     "htmlTagStart3": "",
-    "htmlTagEnd": "</div><!-- End of div -->"
+    "htmlTagEnd": "</p:selectBooleanCheckbox><!-- End of div -->"
   },
   {
     "name": "Containers:ACCVBox",
     "className": "acc-vbox",
     "styleInFile": true,
     "isHadAttribute": true,
-    "htmlTagStart": "<div class='{class_replace}' ",
+    "htmlTagStart": "<p:panelGrid class='{class_replace}' ",
     "htmlTagStart2": " >",
     "htmlTagStart3": "",
-    "htmlTagEnd": "</div><!-- End of div -->"
+    "htmlTagEnd": "</p:panelGrid><!-- End of div -->"
   },
   {
     "name": "Containers:ACCHBox",
     "className": "acc-hbox",
     "styleInFile": true,
     "isHadAttribute": true,
-    "htmlTagStart": "<div class='{class_replace}' ",
+    "htmlTagStart": "<p:panelGrid class='{class_replace}' ",
     "htmlTagStart2": " >",
     "htmlTagStart3": "",
-    "htmlTagEnd": "</div><!-- End of div -->"
+    "htmlTagEnd": "</p:panelGrid><!-- End of div -->"
   },
   {
     "name": "Containers:ACCTabNavigator",
@@ -218,35 +148,98 @@
     "htmlTagStart2": " >{tab_button_replace}",
     "htmlTagStart3": "",
     "htmlTagEnd": "</div><!-- End of div -->"
+  },{
+    "name": "Controls:ACCTree",
+    "className": "acc-tab-navigator",
+    "styleInFile": true,
+    "isHadAttribute": true,
+    "htmlTagStart": "<p:panelMenu class='{class_replace}' ",
+    "htmlTagStart2": " >{tab_button_replace}",
+    "htmlTagStart3": "",
+    "htmlTagEnd": "</p:panelMenu><!-- End of div -->"
+  },{
+    "name": "Controls:ACCAdvancedDataGrid",
+    "className": "acc-tab-navigator",
+    "styleInFile": true,
+    "isHadAttribute": true,
+    "htmlTagStart": "<p:dataTable class='{class_replace}' ",
+    "htmlTagStart2": " >{tab_button_replace}",
+    "htmlTagStart3": "",
+    "htmlTagEnd": "</p:dataTable><!-- End of div -->"
+  },{
+    "name": "mx:AdvancedDataGridColumn",
+    "className": "acc-tab-navigator",
+    "styleInFile": true,
+    "isHadAttribute": true,
+    "htmlTagStart": "<p:column class='{class_replace}' ",
+    "htmlTagStart2": " >{tab_button_replace}",
+    "htmlTagStart3": "",
+    "htmlTagEnd": "</p:column><!-- End of div -->"
+  },{
+    "name": "Controls:ACCComboBoxCode",
+    "className": "acc-tab-navigator",
+    "styleInFile": true,
+    "isHadAttribute": true,
+    "htmlTagStart": "<p:selectOneMenu class='{class_replace}' ",
+    "htmlTagStart2": " >{tab_button_replace}",
+    "htmlTagStart3": "",
+    "htmlTagEnd": "</p:selectOneMenu><!-- End of div -->"
   },
   {
     "name": "Containers:ACCPanel",
     "className": "acc-panel",
     "styleInFile": true,
     "isHadAttribute": true,
-    "htmlTagStart": "<div class='{class_replace}' ",
+    "htmlTagStart": "<p:panel class='{class_replace}' ",
     "htmlTagStart2": " >",
     "htmlTagStart3": "",
-    "htmlTagEnd": "</div><!-- End of div -->"
+    "htmlTagEnd": "</p:panel><!-- End of div -->"
   },
   {
     "name": "Controls:ACCRadioButtonGroup",
     "className": "acc-radio-group",
     "styleInFile": true,
     "isHadAttribute": true,
-    "htmlTagStart": "<div class='{class_replace}' ",
+    "htmlTagStart": "<p:selectOneRadio class='{class_replace}' ",
     "htmlTagStart2": " >",
     "htmlTagStart3": "",
-    "htmlTagEnd": "</div><!-- End of div -->"
+    "htmlTagEnd": "</p:selectOneRadio><!-- End of div -->"
   },{
     "name": "Controls:ACCDataGrid",
     "className": "acc-data-grid",
     "styleInFile": true,
     "isHadAttribute": true,
-    "htmlTagStart": "<div style='border:1px solid #cccc' class='{class_replace}' ",
+    "htmlTagStart": "<p:dataTable style='border:1px solid #cccc' class='{class_replace}' ",
     "htmlTagStart2": " >",
     "htmlTagStart3": "",
-    "htmlTagEnd": "</div><!-- End of div -->"
+    "htmlTagEnd": "</p:dataTable><!-- End of div -->"
+  },{
+    "name": "mx:DataGridColumn",
+    "className": "acc-data-grid",
+    "styleInFile": true,
+    "isHadAttribute": true,
+    "htmlTagStart": "<p:column style='border:1px solid #cccc' class='{class_replace}' ",
+    "htmlTagStart2": " >",
+    "htmlTagStart3": "",
+    "htmlTagEnd": "</p:column><!-- End of div -->"
+  },{
+    "name": "Controls:ACCSectionInfoComboBox",
+    "className": "acc-data-grid",
+    "styleInFile": true,
+    "isHadAttribute": true,
+    "htmlTagStart": "<acc:sectionInfoComboBox style='border:1px solid #cccc' class='{class_replace}' ",
+    "htmlTagStart2": " >",
+    "htmlTagStart3": "",
+    "htmlTagEnd": "</acc:sectionInfoComboBox><!-- End of div -->"
+  },{
+    "name": "mx:Label",
+    "className": "acc-data-grid",
+    "styleInFile": true,
+    "isHadAttribute": true,
+    "htmlTagStart": "<p:outputLabel style='border:1px solid #cccc' class='{class_replace}' ",
+    "htmlTagStart2": " >",
+    "htmlTagStart3": "",
+    "htmlTagEnd": "</p:outputLabel><!-- End of div -->"
   },
   {
     "name": "portal:MG1002002_01_000",
@@ -273,10 +266,10 @@
     "className": "iframe",
     "styleInFile": true,
     "isHadAttribute": true,
-    "htmlTagStart": "<iframe frameborder=\"1\" src=\"MG1001001_01_000.html\" style=\"background-color:#FDFCFC\"",
-    "htmlTagStart2": " >",
+    "htmlTagStart": "<ui:include src=\"MG1001001_01_000\"",
+    "htmlTagStart2": " />",
     "htmlTagStart3": "",
-    "htmlTagEnd": "</iframe>"
+    "htmlTagEnd": ""
   },
   {
     "name": "tougouchusyutsu:MG3001001_01_000",
