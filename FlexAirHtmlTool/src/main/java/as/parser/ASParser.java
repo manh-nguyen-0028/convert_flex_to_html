@@ -1,18 +1,22 @@
 package as.parser;
 
-import as.enums.ASKeyword;
-import as.enums.ASParseState;
-import as.enums.ASPattern;
+import as.enums.*;
+import as.types.ASArgument;
+import as.types.ASFunction;
 import as.types.ASMember;
+import as.types.ASVariable;
 import constants.Constants;
+import constants.ReservedWords;
 import utils.Log;
 import utils.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 import java.util.regex.Pattern;
 
 public class ASParser {
-    public static String PREVIOUS_BLOCK;
+    private static String PREVIOUS_BLOCK;
     private Stack<String> stack;
     private String src;
     private String classPath;
@@ -34,9 +38,9 @@ public class ASParser {
         stack = new Stack<>();
         stack.push(ASParseState.START);
         parseHelper(classDefinition, getSrc());
-//        if (classDefinition.getClassName() == null) {
-//            throw new Error("Error, no class provided for package: " + classPath);
-//        }
+        if (classDefinition.getClassName() == null) {
+            throw new Error("Error, no class provided for package: " + classPath);
+        }
         return classDefinition;
     }
     private void parseHelper(ASClass cls, String src) {
@@ -52,7 +56,7 @@ public class ASParser {
                 //String together letters only until we reach a non-letter
                 currToken = this.nextWord(src, index, ASPattern.IDENTIFIER[0], ASPattern.IDENTIFIER[1]);
                 index = currToken.getIndex() - 1; //Update to the new position
-                if (currToken.getToken().equals(Constants.PACKAGE)) {
+                if (currToken.getToken().equals(ReservedWords.PACKAGE)) {
                     stack.push(ASParseState.PACKAGE_NAME);
                 }
             } else if (getState() == ASParseState.PACKAGE_NAME) {
@@ -85,10 +89,12 @@ public class ASParser {
                     prevTokenImport = currToken;
                     stack.add(ASParseState.IMPORT_PACKAGE);
                     Log.debug("Found import keyword...");
-                } else if (currToken.getToken().equals(ASKeyword.REQUIRE)) {
-                    stack.add(ASParseState.REQUIRE_MODULE);
-                    Log.debug("Found require keyword...");
                 }
+//TODO: No require keyword
+//                else if (currToken.getToken().equals(ASKeyword.REQUIRE)) {
+//                    stack.add(ASParseState.REQUIRE_MODULE);
+//                    Log.debug("Found require keyword...");
+//                }
             } else if (getState() == ASParseState.IMPORT_PACKAGE) {
                 //The current token is a class import
                 currToken = ASParser.nextWord(src, index, ASPattern.IMPORT[0], ASPattern.IMPORT[1]);
@@ -102,22 +108,272 @@ public class ASParser {
                     } else {
                         // cls.getImports().add(currToken.getToken()); //No need to resolve
                         // Remove CURLY_BRACE
-                        String prevExtra = prevTokenImport.getExtra();
-                        int braceIndex = prevExtra.indexOf(Constants.CURLY_BRACE);
-                        if (braceIndex > 0)
-                        {
-                            prevExtra = prevExtra.substring(braceIndex + 1, prevExtra.length());
-                        }
+                        String prevExtra = removeCurlyBrace(prevTokenImport.getExtra());
+                        // Import token contains special characters as \n \r \t to format data
                         String importToken = prevExtra + prevTokenImport.getToken() + currToken.getExtra() + currToken.getToken();
                         importToken = importToken.replaceAll("\\t", "");
                         cls.getImports().add(importToken); //No need to resolve
                     }
                     stack.add(ASParseState.PACKAGE);
                 }
+            } else if (getState() == ASParseState.CLASS_NAME) {
+                currToken = ASParser.nextWord(src, index, ASPattern.IDENTIFIER[0], ASPattern.IDENTIFIER[1]);
+                tmpToken = ASParser.nextWord(src, index, ASPattern.CURLY_BRACE[0], ASPattern.CURLY_BRACE[1]);
+                index = currToken.getIndex();
+                if (currToken.getToken() == null || tmpToken.getToken() == null) {
+                    throw new Error("Error parsing class name.");
+                } else if (tmpToken.getIndex() < currToken.getIndex()) {
+                    throw new Error("Error, no class name found before curly brace.");
+                } else {
+                    //Set the class name and replace suffix '_AS'
+                    cls.setClassName(removeSuffixAS(currToken.getToken()));
+                    //Store origin class name
+                    cls.setOrgClassName(currToken.getToken());
+
+                    // Update fully qualified class path if needed
+                    classPath = classPath != null ? classPath : fixClassPath(cls.getPackageName() + "." + cls.getClassName()); //Remove extra "." for top level packages
+
+                    cls.getClassMap().put(cls.getClassName(), cls); //Register self into the import map (used for static detection)
+                    //Now we will check for parent class and any interfaces
+                    currToken = ASParser.nextWord(src, index, ASPattern.IDENTIFIER[0], ASPattern.IDENTIFIER[1]);
+                    if ((currToken.getToken().equals(ASKeyword.EXTENDS) || currToken.getToken().equals(ASKeyword.IMPLEMENTS))
+                            && currToken.getIndex() < tmpToken.getIndex()) {
+                        index = currToken.getIndex();
+                        currToken = ASParser.nextWord(src, index, ASPattern.IDENTIFIER[0], ASPattern.IDENTIFIER[1]);
+                        index = currToken.getIndex();
+                        // TODO: Extends ACCControllerBase
+                        currToken.setToken(ASKeyword.ACC_CONTROLLER_BASE);
+                        //The token following 'extends' must be the parent class
+                         cls.setParent(currToken.getToken());
+                        //Prep the next token
+                        currToken = ASParser.nextWord(src, index, ASPattern.IDENTIFIER[0], ASPattern.IDENTIFIER[1]);
+                        Log.debug("Found parent: " + cls.getParent());
+                    }
+// TODO: Rule implement Object will be convert to extends
+//                    if (currToken.getToken().equals(ASKeyword.IMPLEMENTS) && currToken.getIndex() < tmpToken.getIndex()) {
+//                        index = currToken.getIndex();
+//                        currToken = ASParser.nextWord(src, index, ASPattern.IDENTIFIER[0], ASPattern.IDENTIFIER[1]);
+//                        index = currToken.getIndex();
+//                        //The token following 'implements' must be an interface
+//                        cls.getInterfaces().add(currToken.getToken());
+//                        Log.debug("Found interface: " + currToken.getToken());
+//                        currToken = ASParser.nextWord(src, index, ASPattern.IDENTIFIER[0], ASPattern.IDENTIFIER[1]);
+//                        //While we are at a token before the next curly brace
+//                        while (currToken.getIndex() < tmpToken.getIndex() && currToken.getIndex() < src.length()) {
+//                            //Consider self token another interface being implemented
+//                            index = currToken.getIndex();
+//                            Log.debug("Found interface: " + currToken.getToken());
+//                            cls.getInterfaces().add(currToken.getToken());
+//                            currToken = ASParser.nextWord(src, index, ASPattern.IDENTIFIER[0], ASPattern.IDENTIFIER[1]);
+//                            index = currToken.getIndex();
+//                        }
+//                    }
+                    Log.debug("Parsed class name: " + cls.getClassName());
+                    //Now parsing inside of the class
+                    stack.add(ASParseState.CLASS);
+                    Log.debug("Attempting to parse class...");
+
+                    //Extract out the next method block
+                    ASParser.PREVIOUS_BLOCK = cls.getClassName() + ":Class";
+                    tmpStr = extractBlock(src, index, null, null)[0];
+                    index += tmpStr.length() - 1;
+
+                    //Recursively call parseHelper again under this new state (Once returned, package will be exited)
+                    parseHelper(cls, tmpStr);
+                }
+            } else if (getState() == ASParseState.CLASS) {
+                currMember = currMember != null ? currMember : new ASMember(); //Declare a new member to work with if it doesn't exist yet
+                currToken = ASParser.nextWord(src, index, ASPattern.IDENTIFIER[0], ASPattern.IDENTIFIER[1]);
+                index = currToken.getIndex() - 1;
+                if (currToken.getToken() != null
+                        && (currToken.getToken().equals(ASEncapsulation.PUBLIC)
+                        || currToken.getToken().equals(ASEncapsulation.PRIVATE)
+                        || currToken.getToken().equals(ASEncapsulation.PROTECTED))) {
+                    currMember.setEncapsulation(currToken.getToken());
+                    currMember.setComment(removeCurlyBrace(currToken.getExtra()));
+                    Log.debug("->Member encapsulation set to " + currMember.getEncapsulation());
+                } else if (currToken.getToken() != null && currToken.getToken().equals(ASKeyword.STATIC)) {
+                    currMember.setStatic(true);
+                    Log.debug("-->Static flag set");
+                } else if (currToken.getToken() != null && (currToken.getToken().equals(ASMemberType.VAR) || currToken.getToken().equals(ASMemberType.CONST))) {
+                    //Main.debug('--->Member type "variable" set.');
+                    currMember = currMember.createVariable(); //Transform the member into a variable
+                    stack.add(ASParseState.MEMBER_VARIABLE);
+                } else if (currToken.getToken() != null && currToken.getToken().equals(ASMemberType.FUNCTION)) {
+                    currToken = ASParser.nextWord(src, index + 1, ASPattern.IDENTIFIER[0], ASPattern.IDENTIFIER[1]);
+                    //Check for getter/setter
+                    if (currToken.getToken() != null
+                            && (currToken.getToken().equals(ASKeyword.GET) || currToken.getToken().equals(ASKeyword.SET))
+                            && src.charAt(index + 1 + currToken.getToken().length() + 1) != '(') {
+                        Log.debug("--->Member sub-type " + currToken.getToken() + " set.");
+                        currMember.setSubType(currToken.getToken());
+                        index = currToken.getIndex() - 1;
+                    }
+                    currMember = currMember.createFunction(); //Transform the member into a function
+                    stack.add(ASParseState.MEMBER_FUNCTION);
+                    Log.debug("---->Member type function set.");
+                }
+            } else if (getState() == ASParseState.MEMBER_VARIABLE) {
+                currToken = ASParser.nextWord(src, index, ASPattern.IDENTIFIER[0], ASPattern.IDENTIFIER[1]);
+                currMember.setName(currToken.getToken()); //Set the member name
+                Log.debug("---->Variable name declared: " + currToken.getToken());
+                index = currToken.getIndex();
+                if (src.charAt(index) == ':') {
+                    currToken = ASParser.nextWord(src, index, ASPattern.VARIABLE_TYPE[0], ASPattern.VARIABLE_TYPE[1]);
+                    index = currToken.getIndex();
+                    String type = currToken.getToken();
+                    if (type.equals(cls.getClassName())) {
+                        // Model type
+                        type += ReservedWords.MODEL;
+                    }
+                    currMember.setType(type);//Set the value type name
+
+                    Log.debug("---->Variable type for " + currMember.getName() + " declared as: " + currToken.getToken());
+                }
+                currToken = ASParser.nextWord(src, index, ASPattern.ASSIGN_START[0], ASPattern.ASSIGN_START[1]);
+                if (currToken.getToken().equals(Constants.EQUAL)) {
+                    //Use all characters after self symbol to set value
+                    index = currToken.getIndex();
+                    tmpArr = extractUpTo(src, index, "[;\r\n]");
+                    //Store value
+                    currMember.setValue(tmpArr[0].trim());
+                    index = Integer.parseInt(tmpArr[1]);
+
+                    cls.getMembersWithAssignments().add(currMember);
+                }
+
+                //Store and delete current member and exit
+                cls.getMembers().add(currMember);
+                cls.registerField(currMember.getName(), currMember);
+                currMember = null;
+                stack.pop();
+            } else if (getState() == ASParseState.MEMBER_FUNCTION) {
+                //Parse the arguments
+                currToken = ASParser.nextWord(src, index, ASPattern.IDENTIFIER[0], ASPattern.IDENTIFIER[1]);
+                index = currToken.getIndex();
+                currMember.setName(currToken.getToken()); //Set the member name
+                Log.debug("****>Function name declared: " + currToken.getToken());
+
+                ASParser.PREVIOUS_BLOCK = currMember.getName() + ":Function";
+                tmpArr = extractBlock(src, index, "(", ")");
+                index = Integer.parseInt(tmpArr[1]) - 1; //Ending index of parsed block
+                tmpStr = tmpArr[0].trim(); //Parsed block
+                if (tmpStr.length() - 1 < 1 ) {
+                    tmpStr = "";
+                } else {
+                    tmpStr = tmpStr.substring(1, tmpStr.length() - 1); //Remove outer parentheses
+                }
+                ASFunction tmpFunction = null;
+                tmpArr = null; //Trash this
+                tmpArr = tmpStr.split(","); //Split args by commas
+                //Don't bother if there are no arguments
+                if (tmpArr.length > 0 && !StringUtils.isNullOrEmpty(tmpArr[0])) {
+                    //Truncate spaces and assign values to arguments as needed
+                    for (int i = 0; i < tmpArr.length; i++) {
+                        tmpStr = tmpArr[i];
+                        //Grab the function name
+                        tmpToken = ASParser.nextWord(tmpStr, 0, ASPattern.VARIABLE[0], ASPattern.VARIABLE[1]); //Parse out the function name
+                        if (currMember instanceof  ASFunction) {
+                            tmpFunction = (ASFunction) currMember;
+                        }
+                        tmpFunction.getArgList().add(new ASArgument());
+                        if (tmpStr.indexOf("...") == 0) {
+                            //This is a ...rest argument, stop here
+                            tmpFunction.getArgList().get(tmpFunction.getArgList().size() - 1).setName(tmpStr.substring(3));
+                            ((ASArgument)tmpFunction.getArgList().get(tmpFunction.getArgList().size() - 1)).setRestParam(true);
+                            Log.debug("----->Parsed a ...rest param: " + tmpFunction.getArgList().get(tmpFunction.getArgList().size() - 1).getName());
+                            break;
+                        } else {
+                            tmpFunction.getArgList().get(tmpFunction.getArgList().size() - 1).setName(tmpToken.getToken()); //Set the argument name
+                            Log.debug("----->Function argument found: " + tmpToken.getToken());
+                            //If a colon was next, we'll assume it was typed and grab it
+                            if (tmpToken.getIndex() < tmpStr.length() && tmpStr.charAt(tmpToken.getIndex()) == ':') {
+                                tmpToken = ASParser.nextWord(tmpStr, tmpToken.getIndex(), ASPattern.VARIABLE_TYPE[0], ASPattern.VARIABLE_TYPE[1]); //Parse out the argument type
+                                tmpFunction.getArgList().get(tmpFunction.getArgList().size() - 1).setType(tmpToken.getToken()); //Set the argument type
+                                Log.debug("----->Function argument typed to: " + tmpToken.getToken());
+                            }
+                            tmpToken = ASParser.nextWord(tmpStr, tmpToken.getIndex(), ASPattern.ASSIGN_START[0], ASPattern.ASSIGN_START[1]);
+                            if (tmpToken.getToken() != null && tmpToken.getToken().equals("=")) {
+                                //Use all characters after self symbol to set value
+                                tmpToken = ASParser.nextWord(tmpStr, tmpToken.getIndex(), ASPattern.ASSIGN_UPTO[0], ASPattern.ASSIGN_UPTO[1]);
+                                if (tmpToken == null) {
+                                    throw new Error("Error during variable assignment in arg" + tmpFunction.getArgList().get(tmpFunction.getArgList().size() - 1).getName());
+                                }
+                                //Store value
+                                tmpFunction.getArgList().get(tmpFunction.getArgList().size() - 1).setValue(tmpToken.getToken().trim());
+                                Log.debug("----->Function argument defaulted to: " + tmpToken.getToken().trim());
+                            }
+                        }
+                    }
+                }
+                Log.debug("------>Completed paring args: ", ((ASFunction) currMember).getArgList().toString());
+                //Type the function if needed
+                if (src.charAt(index + 1) == ':') {
+                    tmpToken = ASParser.nextWord(src, index + 1, ASPattern.VARIABLE_TYPE[0], ASPattern.VARIABLE_TYPE[1]); //Parse out the function type if needed
+                    index = tmpToken.getIndex();
+                    currMember.setType(tmpToken.getToken());
+                    Log.debug("------>Typed the function to: ", currMember.getType());
+                }
+                if (cls.isInterface()) {
+                    //Store and delete current member and exit
+                    currMember.setValue("{}");
+                    if (currMember.getSubType().equals(ASKeyword.GET)) {
+                        if ((currMember.isStatic())) {
+                            cls.getStaticGetters().add(currMember);
+                        } else {
+                            cls.getGetters().add(currMember);
+                        }
+                    } else if (currMember.getSubType().equals(ASKeyword.SET)) {
+                        if ((currMember.isStatic())) {
+                            cls.getStaticSetters().add(currMember);
+                        } else {
+                            cls.getSetters().add(currMember);
+                        }
+                    } else if (currMember.isStatic()) {
+                        cls.getStaticMembers().add(currMember);
+                    } else {
+                        cls.getMembers().add(currMember);
+                    }
+                    cls.registerField(currMember.getName(), currMember);
+                    //Done parsing function
+                    currMember = null;
+                    stack.pop();
+                } else {
+                    //Save the function body
+                    ASParser.PREVIOUS_BLOCK = currMember.getName() + ":Function";
+                    tmpArr = extractBlock(src, index, null, null);
+                    index = Integer.parseInt(tmpArr[1]);
+                    currMember.setValue(tmpArr[0].trim());
+
+                    //Store and delete current member and exit
+                    if (currMember.getSubType() != null && currMember.getSubType().equals(ASKeyword.GET)) {
+                        if ((currMember.isStatic())) {
+                            cls.getStaticGetters().add(currMember);
+                        } else {
+                            cls.getGetters().add(currMember);
+                        }
+                    } else if (currMember.getSubType() != null && currMember.getSubType().equals(ASKeyword.SET)) {
+                        if ((currMember.isStatic())) {
+                            cls.getStaticSetters().add(currMember);
+                        } else {
+                            cls.getSetters().add(currMember);
+                        }
+                    } else if (currMember.isStatic()) {
+                        cls.getStaticMembers().add(currMember);
+                    } else {
+                        cls.getMembers().add(currMember);
+                    }
+                    cls.registerField(currMember.getName(), currMember);
+
+                    currMember = null;
+                    stack.pop();
+                }
             }
         }
     }
 
+
+    
     /**
      * Get a token word from source content, start at index with pattern and characters word detect.
      */
@@ -132,10 +388,10 @@ public class ASParser {
         for (; index < src.length(); index++) {
             char c = src.charAt(index);
             String tmpStrComment = "";
-            if (src.length() > index + 2) {
+            if (src.length() > index + 2) { // && (c == '*' || c == '/')
                 tmpStrComment = src.substring(index, index + 2);
             }
-            if (String.valueOf(c).matches(characters)) {
+            if (String.valueOf(c).matches(characters) || ((tokenBuffer + c).matches(characters))) {
                 tokenBuffer = !StringUtils.isNullOrEmpty(tokenBuffer) ? tokenBuffer + c : String.valueOf(c); // Create new token buffer if
                 // needed, otherwise append
             }else if (innerState == null && ASParser.checkForCommentOpen(tmpStrComment) != null
@@ -201,9 +457,520 @@ public class ASParser {
         // types
     }
 
+    /**
+     * Extract block code start with open and close brace
+     */
+    private static String[] extractBlock(String text, int start, String opening, String closing) {
+        opening = StringUtils.getDefaultValueString(opening, "{");
+        closing = StringUtils.getDefaultValueString(closing, "}");
+        String buffer = "";
+        int i = start;
+        int count = 0;
+        boolean started = false;
+        String insideString = null;
+        String insideComment = null;
+        boolean escapingChar = false;
+        while (!(count == 0 && started) && i < text.length()) {
+            if (insideComment != null) {
+                // Inside of a comment, wait until we get out
+                if (insideComment.equals("//") && (text.charAt(i) == '\n' || text.charAt(i) == '\r')) {
+                    insideComment = null; // End inline comment
+                    // Main.debug("Exited comment");
+                } else if (insideComment.equals("/*") && text.charAt(i) == '*' && i + 1 < text.length()
+                        && text.charAt(i + 1) == '/') {
+                    insideComment = null; // End multiline comment
+                    // Main.debug("Exited comment");
+                }
+            } else if (insideString != null) {
+                // Inside of a string, wait until we get out
+                if (!escapingChar && text.charAt(i) == '\\') {
+                    escapingChar = true; // Start escape sequence
+                } else if (!escapingChar && String.valueOf(text.charAt(i)).equals(insideString)) {
+                    insideString = null; // Found closing quote
+                } else {
+                    escapingChar = false; // Forget escape sequence
+                }
+            } else if (text.charAt(i) == opening.charAt(0)) {
+                started = true;
+                count++; // Found opening
+            } else if (text.charAt(i) == closing.charAt(0)) {
+                count--; // Found closing
+            } else if ((text.charAt(i) == '\"' || text.charAt(i) == '\'')) {
+                insideString = String.valueOf(text.charAt(i)); // Now inside of a string
+            } else if (text.charAt(i) == '/' && i + 1 < text.length() && text.charAt(i + 1) == '/') {
+                // Main.debug("Entering comment... " + "(//)");
+                insideComment = "//";
+            } else if (text.charAt(i) == '/' && i + 1 < text.length() && text.charAt(i + 1) == '*') {
+                // Main.debug("Entering comment..." + "(/*)");
+                insideComment = "/*";
+            }
+            if (started) {
+                buffer += text.charAt(i);
+            }
+            i++;
+        }
+        if (!started) {
+            throw new Error("Error, no starting '" + opening + "' found for method body while parsing "
+                    + ASParser.PREVIOUS_BLOCK);
+        } else if (count > 0) {
+            throw new Error("Error, no closing '" + closing + "' found for method body while parsing "
+                    + ASParser.PREVIOUS_BLOCK);
+        } else if (count < 0) {
+            throw new Error("Error, malformed enclosing '" + opening + closing + " body while parsing "
+                    + ASParser.PREVIOUS_BLOCK);
+        }
+        return new String[]{buffer, String.valueOf(i)};
+    }
+
+    public static String[] extractUpTo(String text, int start, String target) {
+        String buffer = "";
+        int i = start;
+        String insideString = null;
+        String insideComment = null;
+        boolean escapingChar = false;
+        Pattern pattern = Pattern.compile(target);
+        while (i < text.length()) {
+            if (insideComment != null) {
+                // Inside of a comment, wait until we get out
+                if (insideComment.equals("//")
+                        && (text.charAt(i) == '\n'
+                        || text.charAt(i) == '\r')) {
+                    insideComment = null; // End inline comment
+                    // Main.debug("Exited comment");
+                } else if (insideComment.equals("/*") && text.charAt(i) == '*' && i + 1 < text.length()
+                        && text.charAt(i + 1) == '/') {
+                    insideComment = null; // End multiline comment
+                    // Main.debug("Exited comment");
+                }
+            } else if (insideString != null) {
+                // Inside of a string, wait until we get out
+                if (!escapingChar && text.charAt(i) == '\\') {
+                    escapingChar = true; // Start escape sequence
+                } else if (!escapingChar && String.valueOf(text.charAt(i)).equals(insideString)) {
+                    insideString = null; // Found closing quote
+                } else {
+                    escapingChar = false; // Forget escape sequence
+                }
+            } else if ((text.charAt(i) == '\"' || text.charAt(i) == '\'')) {
+                insideString = String.valueOf(text.charAt(i)); // Now inside of a string
+            } else if (text.charAt(i) == '/' && i + 1 < text.length() && text.charAt(i + 1) == '/') {
+                // Main.debug("Entering comment... " + "(//)");
+                insideComment = "//";
+            } else if (text.charAt(i) == '/' && i + 1 < text.length() && text.charAt(i + 1) == '*') {
+                // Main.debug("Entering comment..." + "(/*)");
+                insideComment = "/*";
+            } else if (pattern.matcher(String.valueOf(text.charAt(i))).matches()) {
+                break; // Done
+            }
+            buffer += text.charAt(i);
+            i++;
+        }
+        return new String[]{buffer, String.valueOf(i)};
+    }
+
+    public static String[] parseFunc(ASClass cls, String fnText, List<ASVariable> stack, boolean statFlag) {
+        int index = 0;
+        String result = "";
+        String tmpStr = "";
+        List<ASArgument> tmpArgs;
+        ASMember tmpMember;
+        ASClass tmpClass = null;
+        ASMember tmpField;
+        ASToken prevToken;
+        ASToken currToken = null;
+        String[] tmpParse;
+        boolean tmpStatic = false;
+        Peek tmpPeek;
+        String objBuffer = ""; //Tracks the current object that is being "pathed" (e.g. "object.field1" or "object.field1[index + 1]", etc)
+        boolean justCreatedVar = false; //Keeps track if we just started a var statement (to help test if we're setting a type))
+
+        for (index = 0; index < fnText.length(); index++) {
+            objBuffer = "";
+            prevToken = currToken;
+            currToken = ASParser.nextWord(fnText, index, ASPattern.VARIABLE[0], ASPattern.VARIABLE[1]);
+            result += currToken.getExtra(); //<-Puts all other non-identifier characters into the buffer first
+            tmpMember = ASParser.checkStack(stack, currToken.getToken()); //<-Check the stack for a member with this identifier already
+            index = currToken.getIndex();
+            if (!StringUtils.isNullOrEmpty(currToken.getToken())) {
+                if (currToken.getToken().equals("function")) {
+                    ASToken t1 = nextWord(fnText, index, ASPattern.VARIABLE[0], ASPattern.VARIABLE[1]);
+                    int t2 = fnText.indexOf('(', index);
+                    //If the parenthesis si less than the last index of the next parsed variable name
+                    result += (t2 < t1.getIndex()) ? "function" : "function " + t1.getToken();
+                    tmpParse = extractBlock(fnText, index, "(", ")"); //Parse out argument block
+                    index = Integer.parseInt(tmpParse[1]); //Update index
+                    tmpArgs = parseArguments(tmpParse[0]); //Extract arg types
+                    //Join the args together without types
+                    result += "(" + getListArgument(tmpArgs) + ")";
+                    tmpParse = extractBlock(fnText, index, "{", "}"); //Extract function block
+                    index = Integer.parseInt(tmpParse[1]) - 1; //Update index
+                    stack.addAll(tmpArgs);
+                    tmpParse = parseFunc(cls, tmpParse[0], stack, statFlag); //Recurse into function
+                    result += " " + tmpParse[0];
+                } else {
+                    if (currToken.getToken().equals("this"))
+                    {
+                        //No need to perform any extra checks on the subsequent token
+                        tmpStatic = false;
+                        tmpClass = cls;
+                        objBuffer += currToken.getToken();
+                        result += currToken.getToken();
+                    }
+                    else {
+                        if (cls.getClassMap().get(currToken.getToken()) != null
+                                && cls.getParentDefinition() != cls.getClassMap().get(currToken.getToken())
+                                && !(justCreatedVar && currToken.getExtra().matches(":\\s*"))) {
+                            // If this is a token that matches a class from a potential import statement, store it in the filtered classMap
+                            cls.getClassMapFiltered().put(currToken.getToken(), cls.getClassMap().get(currToken.getToken()));
+                        }
+                        tmpStatic = (cls.getOrgClassName().equals(currToken.getToken())
+                                || cls.retrieveField(currToken.getToken(), true) != null);
+
+                        //Find field in class, then make sure we didn't already have a local member defined with this name, and skip next block if static since the definition is the class itself
+                        //Note: tmpMember needs to be checked, if something is in there it means we have a variable with the same name in local scope
+                        if (cls.retrieveField(currToken.getToken(), tmpStatic) != null
+                                && !cls.getClassName().equals(currToken.getToken())
+                                && tmpMember == null && !(prevToken != null
+                                && prevToken.getToken().equals("var"))) {
+                            tmpMember = cls.retrieveField(currToken.getToken(), tmpStatic); //<-Reconciles the type of the current variable
+                            {
+                                if (tmpStatic) {
+                                    objBuffer += (cls.getClassName().equals(currToken.getToken())) ? currToken.getToken() : cls.getClassName() + "." + currToken.getToken();
+                                    result += (cls.getClassName().equals(currToken.getToken())) ? currToken.getToken() : cls.getClassName() + "." + currToken.getToken();
+                                } else {
+                                    objBuffer += currToken.getToken();
+                                    result += currToken.getToken();
+                                }
+                            }
+                        } else {
+                            //Likely a local variable, argument, or static reference
+                            objBuffer += currToken.getToken();
+                            // Check variable is view = document as ClassName
+                            if (prevToken != null
+                                    && ReservedWords.AS.equals(prevToken.getToken())
+                                    && currToken.getToken().equals(cls.getClassName())) {
+                                result = result.substring(0, result.indexOf(Constants.EQUAL) + 1 + 1); //Extra space
+                                result += currToken.getToken() + ReservedWords.MODEL + "()";
+                                index = currToken.getIndex();
+                            } else {
+                                result += currToken.getToken();
+                            }
+                        }
+                        if (tmpStatic) {
+                            //Just use the class itself, we will reference fields from it. If parser injected the static prefix manually, we'll try to determome the type of var instead
+                            tmpClass = (cls.getClassName().equals(currToken.getToken())) ? cls : (tmpMember != null) ? cls.getClassMap().get(tmpMember.getType()) : null;
+                        } else {
+                            //Use the member's type to determine the class it's mapped to
+                            tmpClass = (tmpMember != null && tmpMember.getType() != null && !tmpMember.getType().equals("*")) ? cls.getClassMap().get(tmpMember.getType()) : null;
+                            //If no mapping was found, this may be a static reference
+                            if (tmpClass == null && cls.getClassMap().get(currToken.getToken()) != null) {
+                                tmpClass = cls.getClassMap().get(currToken.getToken());
+                                tmpStatic = true;
+                            }
+                        }
+                        //If tmpClass is null, it's possible we were trying to retrieve a Vector type. Let's fix this:
+                        if (tmpClass == null && tmpMember != null && tmpMember.getType() != null && tmpMember.getType().replace("/Vector\\.<(.*?)>/g", "$1") != tmpMember.getType()) {
+                            //Extract Vector type if necessary by testing regex
+                            tmpClass = cls.getClassMap().get(tmpMember.getType().replace("/Vector\\.<(.*?)>/g", "$1"));
+                        }
+                    }
+                    //Note: At this point, tmpMember is no longer used, it was only needed to remember the type of the first token. objBuffer will be building out the token
+                    //If this had a variable declaration before it, we will add it to the local var stack and move on to the next token
+                    if (prevToken != null && prevToken.getToken().equals("var")) {
+                        justCreatedVar = true;
+                        if (cls.retrieveField(currToken.getToken(), tmpStatic) != null) {
+                            //Appends current character index to the result, add dummy var to stack, and move on
+                            result += fnText.charAt(index);
+                            ASMember localVar = new ASMember();
+                            localVar.setName(currToken.getToken());
+                            stack.add((ASVariable) localVar); //<-Ensures we don't add "this." or anything in front of this variable anymore
+                            continue;
+                        }
+                    } else {
+                        justCreatedVar = false;
+                    }
+
+                    //We have parsed the current token, and the index sits at the next level down in the object
+                    for (; index < fnText.length(); index++) {
+                        //Loop until we stop parsing a variable declaration
+                        if (fnText.charAt(index) == '.') {
+                            boolean parsingVector = (prevToken != null && prevToken.getToken().equals("new") && currToken.getToken().equals("Vector"));
+                            prevToken = currToken;
+                            if (parsingVector) {
+                                //We need to allow asterix
+                                currToken = ASParser.nextWord(fnText, index, ASPattern.VARIABLE_TYPE[0], ASPattern.VARIABLE_TYPE[1]);
+                            } else {
+                                currToken = ASParser.nextWord(fnText, index, ASPattern.VARIABLE[0], ASPattern.VARIABLE[1]);
+                            }
+                            result += currToken.getExtra(); //<-Puts all other non-identifier characters into the buffer first
+                            index = currToken.getIndex();
+                            if (tmpClass != null) {
+                                //This means we are coming from a typed variable
+                                tmpField = tmpClass.retrieveField(currToken.getToken(), tmpStatic);
+                                if (tmpField != null) {
+                                    //console.log("parsing: " + tmpField.name + ":" + tmpField.getType())
+                                    //We found a field that matched this value within the class
+                                    if (tmpField instanceof ASFunction) {
+                                        if (tmpField.getSubType() != null && (tmpField.getSubType().equals("get") || tmpField.getSubType().equals("set"))) {
+                                            tmpPeek = ASParser.lookAhead(fnText, index);
+                                            if (tmpPeek != null) {
+                                                //Handle differently if we are assigning a setter
+                                                objBuffer += ".get_" + currToken.getToken() + "()";
+                                                result += "set_" + currToken.getToken() + "(";
+                                                index = tmpPeek.getEndIndex();
+                                                if (tmpPeek.getToken().equals("++")) {
+                                                    result += objBuffer + " + 1";
+                                                } else if (tmpPeek.getToken().equals("--")) {
+                                                    result += objBuffer + " - 1";
+                                                } else {
+                                                    tmpParse = parseFunc(cls, tmpPeek.getExtracted(), stack, false); //Recurse into the assignment to parse vars
+                                                    if (tmpPeek.getToken().equals("=")) {
+                                                        result += tmpParse[0].trim();
+                                                    } else {
+                                                        result += objBuffer + " " + tmpPeek.getToken().charAt(0) + " (" + tmpParse[0] + ")";
+                                                    }
+                                                }
+                                                result += ")";
+                                            } else {
+                                                objBuffer += ".get_" + currToken.getToken() + "()";
+                                                result += "get_" + currToken.getToken() + "()";
+                                            }
+                                            //console.log("set get flag: " + currToken.getToken());
+                                        } else {
+                                            objBuffer += "." + currToken.getToken();
+                                            result += currToken.getToken();
+                                        }
+                                    } else {
+                                        objBuffer += "." + currToken.getToken();
+                                        result += currToken.getToken();
+                                    }
+                                } else {
+                                    objBuffer += "." + currToken.getToken();
+                                    result += currToken.getToken();
+                                    //console.log("appened typed: " + currToken.getToken());
+                                }
+                                //Update the type if this is not a static prop
+                                if (tmpClass != null && tmpField != null && tmpField.getType() != null && !tmpField.getType().equals("*")) {
+                                    //Extract Vector type if necessary by testing regex
+                                    tmpClass = (tmpField.getType().replaceFirst("Vector\\.<(.*?)>", "$1") != tmpField.getType())
+                                            ? tmpClass.getClassMap().get(tmpField.getType().replaceFirst("Vector\\.<(.*?)>", "$1")) : tmpClass.getClassMap().get(tmpField.getType());
+                                } else {
+                                    tmpClass = null;
+                                }
+                            } else {
+                                //console.log("appened untyped: " + currToken.getToken());
+                                objBuffer += "." + currToken.getToken();
+                                result += currToken.getToken();
+                            }
+                        } else if (fnText.charAt(index) == '[') {
+                            //We now have to recursively parse the inside of this open bracket
+                            tmpParse = extractBlock(fnText, index, "[", "]");
+                            index = Integer.parseInt(tmpParse[1]);
+                            tmpParse = parseFunc(cls, tmpParse[0], stack, false); //Recurse into the portion that was extracted
+                            //console.log("recursed into: " + tmpParse[0]);
+                            objBuffer += tmpParse[0]; //Append this text to the object buffer string so we can remember the variable we have accessed
+                            result += tmpParse[0];
+                        }
+                        tmpStatic = false; //Static can no longer be possible after the second field
+                        if (!String.valueOf(fnText.charAt(index)).matches("[.\\[]")) {
+                            objBuffer = ""; //Clear out the current object buffer
+                            index--;
+                            break;
+                        }
+                        index--;
+                    }
+                }
+            } else {
+                index = currToken.getIndex() - 1;
+            }
+        }
+        return new String[]{result, String.valueOf(index)};
+    }
+    public static Peek lookAhead(String str, int index) {
+        //Look ahead in the function for assignments
+        int originalIndex = index;
+        int startIndex = -1;
+        int endIndex = -1;
+        int semicolonIndex = -1;
+        String token = "";
+        String extracted = "";
+        //Not a setter if there is a dot operator immediately after
+        if (str.charAt(index) == '.') {
+            return new Peek(null, "", startIndex, endIndex);
+        }
+        for (; index < str.length(); index++) {
+            if (String.valueOf(str.charAt(index)).matches("[+-\\/=*]")) {
+                //Append to the assignment instruction
+                token += str.charAt(index);
+                startIndex = index;
+            } else if (startIndex < 0 && String.valueOf(str.charAt(index)).matches("[\\t\\s]")) { //Skip these characters
+                continue;
+            } else {
+                break; //Exits when token has already been started and no more regexes pass
+            }
+        }
+
+        //Only allow these patterns
+        if (!(token.equals("=") || token.equals("++") || token.equals("--") || token.equals("+=") || token.equals("-=") || token.equals("*=") || token.equals("/="))) {
+            token = null;
+        }
+
+        if (token != null) {
+            //Pick whatever is closer, new line or semicolon
+            endIndex = str.indexOf('\n', startIndex);
+            if (endIndex < 0) {
+                endIndex = str.length() - 1;
+            }
+            //Windows fix
+            if (str.charAt(endIndex - 1) == '\r') {
+                endIndex--;
+            }
+            //We want to place closing parens before semicolon if it exists
+            semicolonIndex = str.indexOf(";", startIndex);
+            if (semicolonIndex < endIndex) {
+                endIndex = semicolonIndex;
+            }
+            extracted = str.substring(startIndex + token.length(), endIndex);
+        }
+
+        return new Peek(token, extracted, startIndex, endIndex);
+    }
+
+    private static String getListArgument(List<ASArgument> tmpArgs) {
+        List<String> arr = new ArrayList<>();
+        for (int i = 0; i < tmpArgs.size(); i++) {
+            if (tmpArgs.get(i).equals("...rest")) {
+                break;
+            }
+            arr.add(tmpArgs.get(i).getName());
+        }
+        String str = String.join(", ", arr);
+        return str;
+    }
+    /**
+     * Parser Arguments
+     */
+    public static ArrayList<ASArgument> parseArguments(String str) {
+        ArrayList<ASArgument> args = new ArrayList<ASArgument>();
+        ASToken tmpToken;
+        String[] tmpArr = extractBlock(str, 0, "(", ")");
+        String[] tmpExtractArr = null;
+        int index = Integer.parseInt(tmpArr[1]) - 1; // Ending index of parsed block
+        String tmpStr = tmpArr[0].trim(); // Parsed block
+        if (tmpStr.length() - 2 < 1){
+            tmpStr = "";
+        } else {
+            tmpStr = tmpStr.substring(1, tmpStr.length() - 2); // Remove outer parentheses
+        }
+        tmpArr = null; // Trash this
+        tmpArr = tmpStr.split(Constants.COMMA_STRING); // Split args by commas
+        // Don't bother if there are no arguments
+        if (tmpArr.length > 0 && !StringUtils.isNullOrEmpty(tmpArr[0])) {
+            // Truncate spaces and assign values to arguments as needed
+            for (int i = 0; i < tmpArr.length; i++) {
+                tmpStr = tmpArr[i].trim();
+                args.add(new ASArgument());
+                if (tmpStr.indexOf(Constants.ELLIPSIS_POINTS_STRING) == 0) {
+                    // This is a ...rest argument, stop here
+                    args.get(args.size() - 1).setName(tmpStr.substring(3));
+                    args.get(args.size() - 1).setRestParam(true);
+                    Log.debug("----->Parsed a ...rest param: " + args.get(args.size() - 1).getName());
+                    break;
+                } else {
+                    // Grab the function name
+                    tmpToken = ASParser.nextWord(tmpStr, 0, ASPattern.VARIABLE[0], ASPattern.VARIABLE[1]); // Parse
+                    // out the
+                    // function
+                    // name
+                    args.get(args.size() - 1).setName(tmpToken.getToken()); // Set the argument name
+                    Log.debug("----->Sub-Function argument found: " + tmpToken.getToken());
+                    // If a colon was next, we'll assume it was typed and grab it
+                    if (tmpToken.getIndex() < tmpStr.length() && tmpStr.charAt(tmpToken.getIndex()) == Constants.COLON_CHAR) {
+                        tmpToken = ASParser.nextWord(tmpStr, tmpToken.getIndex(), ASPattern.VARIABLE_TYPE[0],
+                                ASPattern.VARIABLE_TYPE[1]); // Parse out the argument type
+                        args.get(args.size() - 1).setType(tmpToken.getToken()); // Set the argument type
+                        Log.debug("----->Sub-Function argument typed to: " + tmpToken.getToken());
+                    }
+                    tmpToken = ASParser.nextWord(tmpStr, tmpToken.getIndex(), ASPattern.ASSIGN_START[0],
+                            ASPattern.ASSIGN_START[1]);
+                    if (Constants.EQUAL.equals(tmpToken.getToken())) {
+                        // Use all characters after self symbol to set value
+                        tmpExtractArr = ASParser.extractUpTo(tmpStr, tmpToken.getIndex(), "[;\r\n]");
+                        // Store value
+                        args.get(args.size() - 1).setValue(tmpExtractArr[0].trim());
+                        // Store value
+                        // Main.debug('----->Sub-Function argument defaulted to: ' +
+                        // tmpExtractArr[0].trim());
+                    }
+                }
+            }
+        }
+        return args;
+    }
+    public String cleanup(String text) {
+        String type;
+        String[] params;
+        String val;
+        String[] matches = StringUtils.matches(ASPattern.VECTOR[0],text);
+        //For each Vector.<>() found in the text
+        for (int i = 0; i < matches.length; i++) {
+            //Strip the type and provided params
+            type = matches[i].replace(ASPattern.VECTOR[0], "$1").trim();
+            params = matches[i].replace(ASPattern.VECTOR[0], "$2").split(",");
+            //Set the default based on var type
+            if (type.equals("int") || type.equals("uint") || type.equals("Number")) {
+                val = "0";
+            } else if (type.equals("Boolean")) {
+                val = "false";
+            } else {
+                val = "null";
+            }
+            //Replace accordingly
+            if (params.length > 0 && params[0].trim() != "") {
+                text = text.replace(ASPattern.VECTOR[1], "Utils.createArray(" + params[0] + ", " + val + ")");
+            } else {
+                text = text.replace(ASPattern.VECTOR[1], "[]");
+            }
+        }
+        matches = StringUtils.matches(ASPattern.ARRAY[0], text);
+        //For each Array() found in the text
+        for (int i = 0; i < matches.length; i++) {
+            //Strip the provided params
+            params = null;
+            params = new String[]{matches[i].replace(ASPattern.ARRAY[0], "$1").trim()};
+            //Replace accordingly
+            if (params.length > 0 && params[0].trim() != "") {
+                text = text.replace(ASPattern.ARRAY[1], "Utils.createArray(" + params[0] + ", null)");
+            } else {
+                text = text.replace(ASPattern.ARRAY[1], "[]");
+            }
+        }
+
+        matches = StringUtils.matches(ASPattern.DICTIONARY[0], text);
+        //For each instantiated Dictionary found in the text
+        for (int i = 0; i < matches.length; i++) {
+            // Replace with empty object
+            text = text.replace(ASPattern.DICTIONARY[0], "{}");
+        }
+        //Now cleanup variable types
+        text = text.replaceAll("([^0-9a-zA-Z_$.])(?:var|const)(\\s*[a-zA-Z_$*][0-9a-zA-Z_$.<>]*)\\s*:\\s*([a-zA-Z_$*][0-9a-zA-Z_$.<>]*)", "$1var$2");
+
+        return text;
+    }
     private String fixClassPath(String clsPath) {
         // Class paths at the root level might accidentally be prepended with a "."
         return clsPath.replaceFirst("^\\.", "");
+    }
+    public static ASMember checkStack(List<ASVariable> stack, String name) {
+        if (name == null) {
+            return null;
+        }
+        for (int i = stack.size() - 1; i >= 0; i--) {
+            if (stack.get(i).getName().equals(name)) {
+                return stack.get(i);
+            }
+        }
+        return null;
     }
     /**
      * Get state on the top of the stack
@@ -217,7 +984,14 @@ public class ASParser {
      * Check string is comment line(//) or multiline(/*) open
      */
     public static String checkForCommentOpen(String str) {
-        return (str == "//") ? ASParseState.COMMENT_INLINE : (str == "/*") ? ASParseState.COMMENT_MULTILINE : null;
+        if ("//".equals(str)) {
+            return  ASParseState.COMMENT_INLINE;
+        }
+        if ("/*".equals(str)) {
+            return ASParseState.COMMENT_MULTILINE;
+        }
+        return null;
+        // return ("//".equals(str)) ? ASParseState.COMMENT_INLINE : ("/*".equals(str)) ? ASParseState.COMMENT_MULTILINE : null;
     }
 
     /**
@@ -226,7 +1000,7 @@ public class ASParser {
     public static boolean checkForCommentClose(String state, String str) {
         return (state == ASParseState.COMMENT_INLINE
                 && (str.charAt(0) == '\n' || str.charAt(0) == '\r' || str.charAt(0) == 0)) ? true
-                : (state == ASParseState.COMMENT_MULTILINE && str == "*/") ? true : false;
+                : (state == ASParseState.COMMENT_MULTILINE && "*/".equals(str)) ? true : false;
     }
 
     /**
@@ -245,6 +1019,33 @@ public class ASParser {
     public static boolean checkForStringClose(String state, String str) {
         return (state == ASParseState.STRING_DOUBLE_QUOTE && str == "\"") ? true
                 : (state == ASParseState.STRING_SINGLE_QUOTE && str == "'") ? true : false;
+    }
+
+    /**
+     * Remove curly brace '{'
+     */
+    private String removeCurlyBrace(String value) {
+        if (StringUtils.isNullOrEmpty(value)) return "";
+        int braceIndex = value.indexOf(Constants.CURLY_BRACE);
+        if (braceIndex != -1)
+        {
+            return value.substring(braceIndex + 1);
+        }
+        return value;
+    }
+
+    /**
+     * Remove '_AS' class suffix
+     * ex: MG1001001_01_000_AS => MG1001001_01_000
+     */
+    private String removeSuffixAS(String value) {
+        if (StringUtils.isNullOrEmpty(value)) {
+            return value;
+        }
+        if (value.length() > 3 && value.endsWith(ASKeyword.ASSUFFIX)) {
+            return value.substring(0, value.length() - 3);
+        }
+        return value;
     }
     //----------------------------------------------
     // getterとsetter生成

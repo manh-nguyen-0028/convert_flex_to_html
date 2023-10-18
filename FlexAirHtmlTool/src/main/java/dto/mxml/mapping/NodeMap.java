@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MappingAttribute {
+public class NodeMap {
     private String name;
     private Boolean isHadAttribute;
     private String className;
@@ -14,4 +14,5 @@ public class MappingAttribute {
     private String htmlTagStart3;
     private String htmlTagEnd;
     private Boolean styleInFile;
+    private Boolean isGenerateHtml;
 }

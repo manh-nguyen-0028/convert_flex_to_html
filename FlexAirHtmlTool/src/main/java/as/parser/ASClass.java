@@ -1,15 +1,21 @@
 package as.parser;
 
+import as.enums.ASKeyword;
+import as.enums.ASPattern;
+import as.types.ASArgument;
+import as.types.ASFunction;
 import as.types.ASMember;
+import as.types.ASVariable;
+import constants.ReservedWords;
+import constants.Templates;
+import utils.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ASClass {
     private String packageName;
     private String className;
+    private String orgClassName;
     private List<String> imports;
     private List<String> requires;
     private List<String> importWildcards;
@@ -76,7 +82,7 @@ public class ASClass {
      */
     public void registerField(String name, ASMember value) {
         // Return if register field is null
-        if (value != null) {
+        if (value == null) {
             return;
         }
         // Static field
@@ -85,6 +91,194 @@ public class ASClass {
         } else {
             // Normal field
             fieldMap.put(name, fieldMap.getOrDefault(name, value));
+        }
+    }
+    public String generateString() {
+        StringBuilder buffer = new StringBuilder();
+        //Process require package
+        // Import
+
+        String[] tmpArr = null;
+        // Add Class source
+        String strClass = Templates.CLASS_TEMPLATE.replace("{className}", getClassName() + ReservedWords.CONTROLLER)
+                .replace("{parentType}", ReservedWords.EXTENDS)
+                .replace("{parentName}", getParent());
+        buffer.append(strClass);
+        buffer.append("\n{");
+        // Deal with static member assignments
+        if (this.members.size() > 0) {
+            //Place defaults first
+            for (ASMember m : this.members) {
+                if (m instanceof ASFunction) {
+                    buffer.append(stringifyFunc(m));
+                } else {
+                    ASVariable currentVar = (ASVariable)m;
+                    String type = ASKeyword.STRING;
+                    String value = null;
+                    if (ASKeyword.NUMBER.equals(currentVar.getType())
+                            || ASKeyword.INT.equals(currentVar.getType())
+                            || ASKeyword.UINT.equals(currentVar.getType())) {
+                        type = ReservedWords.INT;
+                        if (!StringUtils.isNumeric(currentVar.getValue())) {
+                            value = "0";
+                        }
+                    } else if (ASKeyword.BOOLEAN.equals(currentVar.getType())) {
+                        type = ReservedWords.BOOLEAN;
+                    } else if (ASKeyword.STRING.equals(currentVar.getType())) {
+                        type = ReservedWords.STRING;
+                    } else if (ASKeyword.DATEFORMATTER.equals(currentVar.getType())) {
+                        type = ReservedWords.SIMPLEDATEFORMAT;
+                    }
+//                    else if (getClassName().equals(currentVar.getType())) {
+//                        type = getClassName() + ReservedWords.MODEL;
+//                    }
+                    else {
+                        type = currentVar.getType();
+                    }
+                    buffer.append(currentVar.getComment());
+                    String tmpVar = "";
+                   if (currentVar.isStatic()) {
+                       tmpVar = Templates.VARIABLE_STATIC;
+                   } else {
+                       tmpVar = Templates.VARIABLE;
+                   }
+                    tmpVar = tmpVar.replace("{type}", type)
+                            .replace("{name}", m.getName())
+                            .replace("{value}", StringUtils.isNullOrEmpty(value) ? m.getValue() == null ? "null" :  m.getValue() : value);
+                    buffer.append(tmpVar);
+                    buffer.append(";");
+                }
+            }
+            buffer.append("\n");
+        }
+        buffer.append("\n}");
+        return buffer.toString();
+    }
+    public String stringifyFunc(ASMember fn) {
+        StringBuilder buffer = new StringBuilder();
+        if (fn instanceof ASFunction) {
+            ASFunction function = (ASFunction)fn;
+            String fncStr = function.getComment();
+            if (function.isStatic()) {
+                // Static functions
+                fncStr += Templates.FUNCTION_STATIC;
+            } else if (getOrgClassName().equals(function.getName())) {
+                // Constructor
+                fncStr += Templates.FUNCTION_CTOR;
+            }
+            else {
+                // Normal functions
+                fncStr += Templates.FUNCTION;
+            }
+            // Encapsulation
+            fncStr = fncStr.replace("{encap}", function.getEncapsulation());
+            // Type
+            fncStr = fncStr.replace("{type}", function.getType());
+            // Name
+            fncStr = fncStr.replace("{name}", function.getName());
+            // Params
+            List<String> tmpArr = new ArrayList<>();
+            for (ASVariable arg : ((ASFunction)fn).getArgList()) {
+                if (!((ASArgument)arg).isRestParam()) {
+                    String paramVar = "";
+                    paramVar = Templates.VARIABLE_PARAM.replace("{type}", arg.getType())
+                                                        .replace("{name}", arg.getName());
+                    tmpArr.add(paramVar);
+                }
+            }
+            fncStr = fncStr.replace("{params}", String.join(", ", tmpArr));
+
+            buffer.append(fncStr);
+            buffer.append(cleanup(fn.getValue())).append("\n");
+        }
+        return buffer.toString();
+    }
+    public String cleanup(String text) {
+        String type;
+        String[] params;
+        String val;
+        String[] matches = StringUtils.matches(ASPattern.VECTOR[0],text);
+        //For each Vector.<>() found in the text
+        for (int i = 0; i < matches.length; i++) {
+            //Strip the type and provided params
+            type = matches[i].replace(ASPattern.VECTOR[0], "$1").trim();
+            params = matches[i].replace(ASPattern.VECTOR[0], "$2").split(",");
+            //Set the default based on var type
+            if (type.equals("int") || type.equals("uint") || type.equals("Number")) {
+                val = "0";
+            } else if (type.equals("Boolean")) {
+                val = "false";
+            } else {
+                val = "null";
+            }
+            //Replace accordingly
+            if (params.length > 0 && params[0].trim() != "") {
+                text = text.replace(ASPattern.VECTOR[1], "Utils.createArray(" + params[0] + ", " + val + ")");
+            } else {
+                text = text.replace(ASPattern.VECTOR[1], "[]");
+            }
+        }
+        matches = StringUtils.matches(ASPattern.ARRAY[0], text);
+        //For each Array() found in the text
+        for (int i = 0; i < matches.length; i++) {
+            //Strip the provided params
+            params = null;
+            params = new String[]{matches[i].replace(ASPattern.ARRAY[0], "$1").trim()};
+            //Replace accordingly
+            if (params.length > 0 && params[0].trim() != "") {
+                text = text.replace(ASPattern.ARRAY[1], "Utils.createArray(" + params[0] + ", null)");
+            } else {
+                text = text.replace(ASPattern.ARRAY[1], "[]");
+            }
+        }
+
+        matches = StringUtils.matches(ASPattern.DICTIONARY[0], text);
+        //For each instantiated Dictionary found in the text
+        for (int i = 0; i < matches.length; i++) {
+            // Replace with empty object
+            text = text.replace(ASPattern.DICTIONARY[0], "{}");
+        }
+        //Now cleanup variable types
+        text = text.replaceAll("([^0-9a-zA-Z_$.])(?:var|const)(\\s*[a-zA-Z_$*][0-9a-zA-Z_$.<>]*)\\s*:\\s*([a-zA-Z_$*][0-9a-zA-Z_$.<>]*)", "$1var$2");
+
+        return text;
+    }
+    public ASMember retrieveField(String name, boolean isStatic) {
+        if (isStatic) {
+            if (staticFieldMap.containsKey(name)) {
+                return staticFieldMap.get(name);
+            } else if (parentDefinition != null) {
+                return parentDefinition.retrieveField(name, isStatic);
+            } else {
+                return null;
+            }
+        } else {
+            if (fieldMap.containsKey(name)) {
+                return fieldMap.get(name);
+            } else if (parentDefinition != null) {
+                return parentDefinition.retrieveField(name, isStatic);
+            } else {
+                return null;
+            }
+        }
+    }
+
+    public void process() {
+        ASClass self = this;
+        int i;
+
+        for (i = 0; i < members.size(); i++) {
+            if (members.get(i) instanceof ASFunction) {
+                //Pars function
+                ASFunction func = (ASFunction)members.get(i);
+                func.setValue(ASParser.parseFunc(self, func.getValue(), func.buildLocalVariableStack(), func.isStatic())[0]);
+            }
+            if (members.get(i) instanceof ASVariable) {
+                ASVariable tmpVar = (ASVariable) members.get(i);
+                if (tmpVar.getValue() != null && retrieveField(tmpVar.getValue().replaceFirst("^([a-zA-Z_$][0-9a-zA-Z_$]*)(.*?)$", "$1"), true) != null) {
+                    tmpVar.setValue(className + '.' + members.get(i).getValue());
+                }
+            }
         }
     }
     //----------------------------------------------
@@ -114,6 +308,14 @@ public class ASClass {
 
     public void setClassName(String className) {
         this.className = className;
+    }
+
+    public String getOrgClassName() {
+        return orgClassName;
+    }
+
+    public void setOrgClassName(String orgClassName) {
+        this.orgClassName = orgClassName;
     }
 
     public List<String> getImports() {

@@ -10,18 +10,21 @@
     xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
     xmlns:acc="http://xmlns.jcp.org/jsf/composite/acc_component">
 
-    <ui:define name="title">ログイン</ui:define>
+    {title_form_content}
+
     <ui:define name="stylesheet">
+        {css_include_content}
         <!-- <h:outputStylesheet library="acc_css" name="*.css" /> -->
     </ui:define>
 
     <ui:define name="script">
+        {js_include_content}
         <!-- <h:outputScript library="acc_js" name="*.js" /> -->
     </ui:define>
 
     <ui:define name="content">
         <div class="p-grid p-nogutter p-align-center p-justify-center" style="height:374px;width:517px;">
-            <h:form id="MG1001001Form">
+            <h:form id="{form_id_content}">
                 {form_content}
             </h:form>
         </div>

@@ -1,7 +1,11 @@
 package utils;
 
 import java.security.SecureRandom;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,6 +14,7 @@ public class StringUtils {
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private static final SecureRandom random = new SecureRandom();
     private static Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
+    private static final String YYYYMMDD_FORMAT = "yyyy/MM/dd";
 
     public static String generateRandomText(int length) {
         StringBuilder sb = new StringBuilder(length);
@@ -63,6 +68,14 @@ public class StringUtils {
      */
     public static boolean isNullOrEmpty(String value) {
         return value == null || value == "";
+    }
+
+    public static String getDefaultValueString(String value, String fallback) {
+        return value == null ? fallback : value;
+    }
+    public static String getDateYYYYMMDD() {
+        DateFormat df = new SimpleDateFormat(YYYYMMDD_FORMAT);
+        return df.format(new Date());
     }
 
     public static void replaceInStringBuilder(StringBuilder builder, String target, String replacement) {

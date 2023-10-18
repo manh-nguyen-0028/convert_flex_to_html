@@ -1,9 +1,12 @@
 package main;
 
+import as.enums.ASKeyword;
 import as.parser.ASClass;
 import as.parser.ASParser;
 import as.parser.ParamOption;
 import as.parser.ParserOptions;
+import as.types.ASMember;
+import constants.ReservedWords;
 import utils.Log;
 import utils.StringUtils;
 
@@ -36,10 +39,12 @@ public class ASConvert {
         option.setVerbose(true);
         // Compile data
         Map<String, String> result =  compile(option);
-        // Save file
-        String compiledSource = (String)result.get("classSource");
-        if (!StringUtils.isNullOrEmpty(compiledSource)) {
-            writeFileUTF8(inputPath + File.separator + "test.js", compiledSource);
+        for (String key:result.keySet()) {
+            // Save file
+            String compiledSource = result.get(key);
+            if (!StringUtils.isNullOrEmpty(compiledSource)) {
+                writeFileUTF8(inputPath + File.separator + key + ".java", compiledSource);
+            }
         }
     }
 
@@ -48,6 +53,7 @@ public class ASConvert {
      */
     public Map<String, String> compile(ParamOption options) {
         Map<String, String> packages = new HashMap<>();  //Will contain the final map of package names to source text
+        Map<String, String> result = new HashMap<>();
         String tmp;
         options = options != null ? options : new ParamOption();
         List<String> srcPaths = options.getSrcPaths();
@@ -86,11 +92,24 @@ public class ASConvert {
         // Create package
         for (String key: classes.keySet() ) {
             ASClass cls = classes.get(key);
+            cls.process();
             classTemplate = classTemplate.replace("{{package}}", cls.getPackageName());
             classTemplate = classTemplate.replace("{{imports}}", String.join("", cls.getImports()));
+
+            // Generate Controller Class
+            String strClassName = cls.getClassName() + ReservedWords.CONTROLLER;
+            classTemplate = classTemplate.replace("{{classname}}", strClassName);
+            // Generate Created date
+            classTemplate = classTemplate.replace("{{created_dt}}", StringUtils.getDateYYYYMMDD());
+
+            // Generate controller source
+            String compileSource = cls.generateString();
+            classTemplate = classTemplate.replace("{{classsource}}", compileSource);
+            // Set result
+            result.put(key,classTemplate);
+
         }
-        Map<String, String> result = new HashMap<>();
-        result.put("classSource",classTemplate);
+
         return result;
     }
 

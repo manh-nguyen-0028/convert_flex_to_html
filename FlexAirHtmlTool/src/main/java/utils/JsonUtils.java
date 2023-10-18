@@ -15,7 +15,6 @@ public class JsonUtils<T> {
         List<T> results = null;
         InputStream inputStream = XmlService.class.getClassLoader().getResourceAsStream(filePath);
         if (inputStream != null) {
-            // Sử dụng Gson để đọc và chuyển đổi JSON thành đối tượng
             Gson gson = new Gson();
             InputStreamReader reader = new InputStreamReader(inputStream);
 

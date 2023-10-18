@@ -10,6 +10,7 @@ public class ASMember {
     private String value;
     private String encapsulation;
     private boolean isStatic;
+    private String comment;
     public ASMember() {
         name = null;
         type = "*";
@@ -27,6 +28,7 @@ public class ASMember {
         obj.setValue(value);
         obj.setEncapsulation(encapsulation);
         obj.setStatic(isStatic);
+        obj.setComment(comment);
         return obj;
     }
 
@@ -38,6 +40,7 @@ public class ASMember {
         obj.setValue(value);
         obj.setEncapsulation(encapsulation);
         obj.setStatic(isStatic);
+        obj.setComment(comment);
         return obj;
     }
     public String getName() {
@@ -86,5 +89,13 @@ public class ASMember {
 
     public void setStatic(boolean aStatic) {
         isStatic = aStatic;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

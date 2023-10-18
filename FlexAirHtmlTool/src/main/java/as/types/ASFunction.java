@@ -16,7 +16,6 @@ public class ASFunction extends ASMember{
 
     /**
      * Check exist current variable in argument list
-     * @return
      */
     public boolean hasArgument() {
         for(ASMember m : argList) {

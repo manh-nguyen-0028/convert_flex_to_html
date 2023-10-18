@@ -78,14 +78,7 @@
   },
   {
     "name": "tabOrder",
-    "startTag": "tabOrder",
-    "endTag": "",
-    "valueCompareTrue": false,
-    "type": "attribute"
-  },
-  {
-    "name": "inputMode",
-    "startTag": "inputMode",
+    "startTag": "tabIndex",
     "endTag": "",
     "valueCompareTrue": false,
     "type": "attribute"
@@ -106,10 +99,66 @@
   },
   {
     "name": "text",
-    "startTag": "text",
+    "startTag": "value",
     "endTag": "",
     "valueCompareTrue": false,
-    "type": "text"
+    "type": "attribute"
+  },
+  {
+    "name": "title",
+    "startTag": "title",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "attribute"
+  },
+  {
+    "name": "headerText",
+    "startTag": "headerText",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "attribute"
+  },
+  {
+    "name": "rowCount",
+    "startTag": "rows",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "attribute"
+  },
+  {
+    "name": "dropEnabled",
+    "startTag": "droppable",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "attribute"
+  },
+  {
+    "name": "creationComplete",
+    "startTag": "onTabShow",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "attribute"
+  },
+  {
+    "name": "dragEnabled",
+    "startTag": "draggable",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "attribute"
+  },
+  {
+    "name": "dragDrop",
+    "startTag": "dragListener",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "attribute"
+  },
+  {
+    "name": "groupName",
+    "startTag": "groupName",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "attribute"
   },
   {
     "name": "label",
@@ -117,13 +166,15 @@
     "endTag": "",
     "valueCompareTrue": false,
     "type": "text"
-  },{
+  },
+  {
     "name": "fillAlphas",
     "startTag": "fillAlphas",
     "endTag": "",
     "valueCompareTrue": false,
     "type": "other"
-  },{
+  },
+  {
     "name": "fillColors",
     "startTag": "fillColors",
     "endTag": "",
