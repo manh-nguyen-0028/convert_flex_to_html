@@ -17,4 +17,5 @@ public class ASKeyword {
     public static final String BOOLEAN = "Boolean";
     public static final String DATEFORMATTER = "DateFormatter";
     public static final String ASSUFFIX = "_AS";
+    public static final String FORMATSTRING_METHOD = "formatString";
 }

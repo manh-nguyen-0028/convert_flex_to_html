@@ -1,8 +1,8 @@
 package service;
 
-import dto.mxml.mapping.AttributeMap;
+import dto.mxml.mapping.ComponentMap;
 import dto.mxml.mapping.MappingElementModify;
-import dto.mxml.mapping.NodeMap;
+import dto.mxml.mapping.PropertyMap;
 import dto.mxml.mapping.TabConfig;
 import utils.JsonUtils;
 
@@ -14,23 +14,23 @@ public class XmlService {
     private XmlService() {
     }
 
-    public static Map<String, NodeMap> getNodeMap() {
-        Map<String, NodeMap> hmXmlTag = new HashMap<>();
-        String filePath = "json/node-map.json";
-        List<NodeMap> mxmlTags = new JsonUtils<NodeMap>().readJsonFile(filePath, NodeMap.class);
+    public static Map<String, ComponentMap> getNodeMap() {
+        Map<String, ComponentMap> hmXmlTag = new HashMap<>();
+        String filePath = "json/component-mapping-config.json";
+        List<ComponentMap> mxmlTags = new JsonUtils<ComponentMap>().readJsonFile(filePath, ComponentMap.class);
 
-        for (NodeMap mxmlTag : mxmlTags) {
+        for (ComponentMap mxmlTag : mxmlTags) {
             hmXmlTag.put(mxmlTag.getName(), mxmlTag);
         }
 
         return hmXmlTag;
     }
 
-    public static Map<String, AttributeMap> getAttributeMap() {
-        Map<String, AttributeMap> hmAttributeTag = new HashMap<>();
-        String filePath = "json/attribute-config.json";
-        List<AttributeMap> attributeTags = new JsonUtils<AttributeMap>().readJsonFile(filePath, AttributeMap.class);
-        for (AttributeMap attributeTag : attributeTags) {
+    public static Map<String, PropertyMap> getAttributeMap() {
+        Map<String, PropertyMap> hmAttributeTag = new HashMap<>();
+        String filePath = "json/properties-mapping-config.json";
+        List<PropertyMap> attributeTags = new JsonUtils<PropertyMap>().readJsonFile(filePath, PropertyMap.class);
+        for (PropertyMap attributeTag : attributeTags) {
             hmAttributeTag.put(attributeTag.getName(), attributeTag);
         }
         return hmAttributeTag;

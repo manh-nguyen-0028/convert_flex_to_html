@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AttributeMap {
+public class PropertyMap {
     private String name;
     private String startTag;
     private String endTag;

@@ -85,14 +85,14 @@ public class ASConvert {
                 Log.debug(classes.get(pkgLists.get(path).get(pkg).getClassPath()));
             }
         }
-        // Read class template
-        String classTemplate = readClassTemplate();
-        System.out.println(classTemplate);
+
 
         // Create package
         for (String key: classes.keySet() ) {
             ASClass cls = classes.get(key);
             cls.process();
+            // Read class template
+            String classTemplate = readClassTemplate();
             classTemplate = classTemplate.replace("{{package}}", cls.getPackageName());
             classTemplate = classTemplate.replace("{{imports}}", String.join("", cls.getImports()));
 

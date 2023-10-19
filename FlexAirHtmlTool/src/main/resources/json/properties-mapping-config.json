@@ -74,91 +74,91 @@
     "startTag": "class",
     "endTag": "",
     "valueCompareTrue": false,
-    "type": "attribute"
+    "type": "property"
   },
   {
     "name": "tabOrder",
     "startTag": "tabIndex",
     "endTag": "",
     "valueCompareTrue": false,
-    "type": "attribute"
+    "type": "property"
   },
   {
     "name": "required",
     "startTag": "required",
     "endTag": "",
     "valueCompareTrue": false,
-    "type": "attribute"
+    "type": "property"
   },
   {
     "name": "readOnly",
     "startTag": "readonly",
     "endTag": "",
     "valueCompareTrue": true,
-    "type": "attribute"
+    "type": "property"
   },
   {
     "name": "text",
     "startTag": "value",
     "endTag": "",
     "valueCompareTrue": false,
-    "type": "attribute"
+    "type": "property"
   },
   {
     "name": "title",
     "startTag": "title",
     "endTag": "",
     "valueCompareTrue": false,
-    "type": "attribute"
+    "type": "property"
   },
   {
     "name": "headerText",
     "startTag": "headerText",
     "endTag": "",
     "valueCompareTrue": false,
-    "type": "attribute"
+    "type": "property"
   },
   {
     "name": "rowCount",
     "startTag": "rows",
     "endTag": "",
     "valueCompareTrue": false,
-    "type": "attribute"
+    "type": "property"
   },
   {
     "name": "dropEnabled",
     "startTag": "droppable",
     "endTag": "",
     "valueCompareTrue": false,
-    "type": "attribute"
+    "type": "property"
   },
   {
     "name": "creationComplete",
     "startTag": "onTabShow",
     "endTag": "",
     "valueCompareTrue": false,
-    "type": "attribute"
+    "type": "property"
   },
   {
     "name": "dragEnabled",
     "startTag": "draggable",
     "endTag": "",
     "valueCompareTrue": false,
-    "type": "attribute"
+    "type": "property"
   },
   {
     "name": "dragDrop",
     "startTag": "dragListener",
     "endTag": "",
     "valueCompareTrue": false,
-    "type": "attribute"
+    "type": "property"
   },
   {
     "name": "groupName",
     "startTag": "groupName",
     "endTag": "",
     "valueCompareTrue": false,
-    "type": "attribute"
+    "type": "property"
   },
   {
     "name": "label",
@@ -183,7 +183,7 @@
   },
   {
     "name": "click",
-    "startTag": "click",
+    "startTag": "onclick",
     "endTag": "",
     "valueCompareTrue": false,
     "type": "js"
@@ -200,14 +200,14 @@
     "startTag": "src",
     "endTag": "",
     "valueCompareTrue": false,
-    "type": "attribute"
+    "type": "property"
   },
   {
     "name": "maxByte",
     "startTag": "maxlength",
     "endTag": "",
     "valueCompareTrue": false,
-    "type": "attribute"
+    "type": "property"
   },
   {
     "name": "x",

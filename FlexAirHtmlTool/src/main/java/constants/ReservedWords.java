@@ -80,5 +80,7 @@ public class ReservedWords {
     public static final String SIMPLEDATEFORMAT = "SimpleDateFormat";
     public static final String MODEL = "Model";
     public static final String CONTROLLER = "Controller";
+    public static final String WRITEINFOLOG = "writeInfoLog";
+    public static final String WRITEERRORLOG = "writeErrorLog";
 
 }

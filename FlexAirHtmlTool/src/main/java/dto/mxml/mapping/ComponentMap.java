@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class NodeMap {
+public class ComponentMap {
     private String name;
     private Boolean isHadAttribute;
     private String className;

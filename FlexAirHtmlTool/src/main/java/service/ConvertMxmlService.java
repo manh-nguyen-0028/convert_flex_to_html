@@ -1,8 +1,8 @@
 package service;
 
 import constants.Constants;
-import dto.mxml.mapping.AttributeMap;
-import dto.mxml.mapping.NodeMap;
+import dto.mxml.mapping.ComponentMap;
+import dto.mxml.mapping.PropertyMap;
 import dto.mxml.modify.ElementReplace;
 import dto.mxml.modify.RadioGroupReplace;
 import dto.mxml.parser.AttributeParser;
@@ -19,15 +19,18 @@ import java.util.Map;
 import java.util.Optional;
 
 public class ConvertMxmlService {
-    private final Map<String, AttributeMap> hmAttributeMap;
+    private final Map<String, PropertyMap> hmAttributeMap;
 
-    private final Map<String, NodeMap> hmNodeMap;
+    private final Map<String, ComponentMap> hmNodeMap;
+
+    private final String xmlFileName;
 
     private final ElementReplace elementReplace;
 
-    public ConvertMxmlService(Map<String, NodeMap> hmNodeMap, Map<String, AttributeMap> hmAttributeMap, ElementReplace elementReplace) {
+    public ConvertMxmlService(Map<String, ComponentMap> hmNodeMap, Map<String, PropertyMap> hmAttributeMap, String xmlFileName, ElementReplace elementReplace) {
         this.hmNodeMap = hmNodeMap;
         this.hmAttributeMap = hmAttributeMap;
+        this.xmlFileName = xmlFileName;
         this.elementReplace = elementReplace;
     }
 
@@ -36,9 +39,9 @@ public class ConvertMxmlService {
             NamedNodeMap nodeAttMap = node.getAttributes();
             for (int i = 0; i < nodeAttMap.getLength(); i++) {
                 Node nodeAtt = nodeAttMap.item(i);
-                AttributeMap attributeMap = hmAttributeMap.get(nodeAtt.getNodeName());
-                if (attributeMap != null) {
-                    handleAttributeTag(htmlElementParser, attributeMap, nodeAtt);
+                PropertyMap propertyMap = hmAttributeMap.get(nodeAtt.getNodeName());
+                if (propertyMap != null) {
+                    handleAttributeTag(htmlElementParser, propertyMap, nodeAtt);
                 }
             }
         }
@@ -50,16 +53,16 @@ public class ConvertMxmlService {
             String nodeName = nodeItem.getNodeName();
             Log.log("Node Name =" + nodeName + " [OPEN]");
             if (nodeItem.getNodeType() == Node.ELEMENT_NODE) {
-                NodeMap nodeMap = hmNodeMap.get(nodeName);
-                if (nodeMap != null) {
-                    handleNodeMap(nodeMap, nodeItem, nodeName, baseHtml, isFirstCanvas, html);
+                ComponentMap componentMap = hmNodeMap.get(nodeName);
+                if (componentMap != null) {
+                    handleNodeMap(componentMap, nodeItem, nodeName, baseHtml, isFirstCanvas, html);
                 }
             }
         }
     }
 
-    private void handleNodeMap(NodeMap nodeMap, Node nodeItem, String nodeName, StringBuilder baseHtml, boolean isFirstCanvas, StringBuilder html) {
-        HtmlElementParser htmlElementParser = new HtmlElementParser(nodeName, nodeMap.getHtmlTagStart(), nodeMap.getHtmlTagStart2(), nodeMap.getHtmlTagEnd(), nodeMap.getIsGenerateHtml());
+    private void handleNodeMap(ComponentMap componentMap, Node nodeItem, String nodeName, StringBuilder baseHtml, boolean isFirstCanvas, StringBuilder html) {
+        HtmlElementParser htmlElementParser = new HtmlElementParser(nodeName, componentMap.getHtmlTagStart(), componentMap.getHtmlTagStart2(), componentMap.getHtmlTagEnd(), componentMap.getIsGenerateHtml());
 
         handleNodeAttributes(nodeItem, htmlElementParser);
 
@@ -123,28 +126,28 @@ public class ConvertMxmlService {
         }
     }
 
-    public void handleAttributeTag(HtmlElementParser htmlElementParser, AttributeMap attributeMap, Node nodeAtt) {
+    public void handleAttributeTag(HtmlElementParser htmlElementParser, PropertyMap propertyMap, Node nodeAtt) {
         String nodeValue = nodeAtt.getNodeValue();
-        String attType = attributeMap.getType();
+        String attType = propertyMap.getType();
 
         switch (attType) {
             case "css":
-                convertToCss(htmlElementParser, attributeMap, nodeValue);
+                convertToCss(htmlElementParser, propertyMap, nodeValue);
                 break;
 
             case "text":
                 break;
 
             case "id":
-                convertToAtt(htmlElementParser, attributeMap, nodeValue);
+                convertToAtt(htmlElementParser, propertyMap, nodeValue);
                 htmlElementParser.setId(nodeValue);
                 break;
-            case "attribute":
-                convertToAtt(htmlElementParser, attributeMap, nodeValue);
+            case "property":
+                convertToAtt(htmlElementParser, propertyMap, nodeValue);
                 break;
 
             case "js":
-                convertToJs(htmlElementParser, attributeMap, nodeValue);
+                convertToJs(htmlElementParser, propertyMap, nodeValue);
                 break;
 
             default:
@@ -152,23 +155,23 @@ public class ConvertMxmlService {
         }
     }
 
-    private HtmlElementParser convertToCss(HtmlElementParser elementParser, AttributeMap attributeMap, String nodeValue) {
-        String startTag = attributeMap.getStartTag();
+    private HtmlElementParser convertToCss(HtmlElementParser elementParser, PropertyMap propertyMap, String nodeValue) {
+        String startTag = propertyMap.getStartTag();
         if ("opacity".equals(startTag)) {
             if (Double.parseDouble(nodeValue) > 0) {
-                elementParser.getCssParsers().add(new CssParser(attributeMap.getStartTag(), nodeValue));
+                elementParser.getCssParsers().add(new CssParser(propertyMap.getStartTag(), nodeValue));
             }
         } else {
-            elementParser.getCssParsers().add(new CssParser(attributeMap.getStartTag(), nodeValue));
+            elementParser.getCssParsers().add(new CssParser(propertyMap.getStartTag(), nodeValue));
         }
 
         return elementParser;
     }
 
-    private HtmlElementParser convertToAtt(HtmlElementParser elementParser, AttributeMap attributeMap, String nodeValue) {
+    private HtmlElementParser convertToAtt(HtmlElementParser elementParser, PropertyMap propertyMap, String nodeValue) {
         // handle when att = img
-        String startTag = attributeMap.getStartTag();
-        boolean compareTrueWithValue = attributeMap.isValueCompareTrue();
+        String startTag = propertyMap.getStartTag();
+        boolean compareTrueWithValue = propertyMap.isValueCompareTrue();
         if ("src".equals(startTag)) {
             nodeValue = nodeValue.replace("@Embed('", "").replace("')", "");
         }
@@ -182,8 +185,11 @@ public class ConvertMxmlService {
         return elementParser;
     }
 
-    private HtmlElementParser convertToJs(HtmlElementParser elementParser, AttributeMap attributeMap, String nodeValue) {
-        String startTag = attributeMap.getStartTag();
+    private HtmlElementParser convertToJs(HtmlElementParser elementParser, PropertyMap propertyMap, String nodeValue) {
+        String startTag = propertyMap.getStartTag();
+        if ("script.".equals(nodeValue)) {
+            nodeValue = nodeValue.replaceAll("script\\.(.*?)\\(\\)", "#{" + xmlFileName + Constants.CLASS_CONTROLLER + Constants.SYNTAX_DOT + "$1}");
+        }
         elementParser.getAttributeParsers().add(new AttributeParser(startTag, nodeValue));
         return elementParser;
     }

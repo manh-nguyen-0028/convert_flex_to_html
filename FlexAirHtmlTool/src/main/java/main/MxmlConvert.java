@@ -1,7 +1,7 @@
 package main;
 
-import dto.mxml.mapping.AttributeMap;
-import dto.mxml.mapping.NodeMap;
+import dto.mxml.mapping.ComponentMap;
+import dto.mxml.mapping.PropertyMap;
 import dto.mxml.modify.ElementReplace;
 import dto.mxml.modify.RadioGroupReplace;
 import org.jsoup.Jsoup;
@@ -26,9 +26,9 @@ public class MxmlConvert {
 
     public static void convert(String inputPath, String outputPath) {
 //        String fileInputPath = inputPath + File.separator + "MG3001001_01_000.mxml";
-//        String fileInputPath = inputPath + File.separator + "MG1001001_00_000.mxml";
+        String fileInputPath = inputPath + File.separator + "MG1001001_00_000.mxml";
 //        String fileInputPath = inputPath + File.separator + "MG1001001_01_000.mxml";
-        String fileInputPath = inputPath + File.separator + "MG5002001_01_000.mxml";
+//        String fileInputPath = inputPath + File.separator + "MG5002001_01_000.mxml";
 
         try {
             Path inputFilePath = Paths.get(fileInputPath);
@@ -57,13 +57,13 @@ public class MxmlConvert {
                 // style
                 StringBuilder cssInFile = new StringBuilder();
 
-                Map<String, NodeMap> hmNodeMap = XmlService.getNodeMap();
+                Map<String, ComponentMap> hmNodeMap = XmlService.getNodeMap();
 
-                Map<String, AttributeMap> hmAttributeMap = XmlService.getAttributeMap();
+                Map<String, PropertyMap> hmAttributeMap = XmlService.getAttributeMap();
 
                 // Get mapping config
                 if (doc.hasChildNodes()) {
-                    new ConvertMxmlService(hmNodeMap, hmAttributeMap, elementReplace).printNote(true, doc.getChildNodes(), baseHtml, html);
+                    new ConvertMxmlService(hmNodeMap, hmAttributeMap, xmlFileName, elementReplace).printNote(true, doc.getChildNodes(), baseHtml, html);
                 }
 
                 StringUtils.replaceInStringBuilder(baseHtml, "{form_content}", html.toString());

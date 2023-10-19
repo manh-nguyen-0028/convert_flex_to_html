@@ -6,6 +6,7 @@ import as.types.ASArgument;
 import as.types.ASFunction;
 import as.types.ASMember;
 import as.types.ASVariable;
+import constants.Constants;
 import constants.ReservedWords;
 import constants.Templates;
 import utils.StringUtils;
@@ -126,7 +127,8 @@ public class ASClass {
                         type = ReservedWords.BOOLEAN;
                     } else if (ASKeyword.STRING.equals(currentVar.getType())) {
                         type = ReservedWords.STRING;
-                    } else if (ASKeyword.DATEFORMATTER.equals(currentVar.getType())) {
+                    }
+                    else if (ASKeyword.DATEFORMATTER.equals(currentVar.getType())) {
                         type = ReservedWords.SIMPLEDATEFORMAT;
                     }
 //                    else if (getClassName().equals(currentVar.getType())) {
@@ -238,8 +240,6 @@ public class ASClass {
             // Replace with empty object
             text = text.replace(ASPattern.DICTIONARY[0], "{}");
         }
-        //Now cleanup variable types
-        text = text.replaceAll("([^0-9a-zA-Z_$.])(?:var|const)(\\s*[a-zA-Z_$*][0-9a-zA-Z_$.<>]*)\\s*:\\s*([a-zA-Z_$*][0-9a-zA-Z_$.<>]*)", "$1var$2");
 
         return text;
     }
