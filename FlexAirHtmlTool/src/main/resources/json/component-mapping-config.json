@@ -125,7 +125,7 @@
     "className": "acc-checkbox",
     "styleInFile": false,
     "isHadAttribute": true,
-    "htmlTagStart": "<p:selectBooleanCheckbox {style} ><input type='checkbox' ",
+    "htmlTagStart": "<p:selectBooleanCheckbox",
     "htmlTagStart2": "/>",
     "htmlTagStart3": "",
     "isGenerateHtml": true,
@@ -170,7 +170,7 @@
     "styleInFile": true,
     "isHadAttribute": true,
     "htmlTagStart": "<p:panelMenu ",
-    "htmlTagStart2": " >{tab_button_replace}",
+    "htmlTagStart2": ">",
     "htmlTagStart3": "",
     "isGenerateHtml": true,
     "htmlTagEnd": "</p:panelMenu>"
@@ -181,7 +181,7 @@
     "styleInFile": true,
     "isHadAttribute": true,
     "htmlTagStart": "<p:dataTable ",
-    "htmlTagStart2": " >{tab_button_replace}",
+    "htmlTagStart2": ">",
     "htmlTagStart3": "",
     "isGenerateHtml": true,
     "htmlTagEnd": "</p:dataTable>"
@@ -192,7 +192,7 @@
     "styleInFile": true,
     "isHadAttribute": true,
     "htmlTagStart": "<p:column ",
-    "htmlTagStart2": " >{tab_button_replace}",
+    "htmlTagStart2": ">",
     "htmlTagStart3": "",
     "isGenerateHtml": true,
     "htmlTagEnd": "</p:column>"
@@ -331,25 +331,25 @@
   },
   {
     "name": "portal:MG1002002_01_000",
-    "className": "iframe",
+    "className": "include",
     "styleInFile": true,
     "isHadAttribute": true,
-    "htmlTagStart": "<iframe frameborder=\"1\" src=\"MG1002002_01_000.html\" style=\"background-color:#FDFCFC\"",
+    "htmlTagStart": "<ui:include src=\"MG1002002_01_000.xhtml\"",
     "htmlTagStart2": ">",
     "htmlTagStart3": "",
     "isGenerateHtml": true,
-    "htmlTagEnd": "</iframe>"
+    "htmlTagEnd": "</ui:include>"
   },
   {
     "name": "portal:MG1002007_01_000",
-    "className": "iframe",
+    "className": "include",
     "styleInFile": true,
     "isHadAttribute": true,
-    "htmlTagStart": "<iframe frameborder=\"1\" src=\"MG1002007_01_000.html\" style=\"background-color:#FDFCFC\"",
+    "htmlTagStart": "<ui:include src=\"MG1002007_01_000.xhtml\"",
     "htmlTagStart2": ">",
     "htmlTagStart3": "",
     "isGenerateHtml": true,
-    "htmlTagEnd": "</iframe>"
+    "htmlTagEnd": "</ui:include>"
   },
   {
     "name": "login:MG1001001_01_000",

@@ -1,25 +1,73 @@
+import constants.Constants;
 import main.ASConvert;
 import main.MxmlConvert;
+import utils.FileUtils;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.apache.commons.cli.*;
 
 public class Main {
     public static void main(String[] args) {
-        String resourcePath = Main.class.getClassLoader().getResource("").getPath();
-        ASConvert asConvert = new ASConvert();
-        // Use resource path if you want
-        // String inputPath = resourcePath + "\\input";
+        ASConvert asConvert;
+        MxmlConvert mxmlConvert;
+        Options options = new Options();
 
-        String outputPath = "D:\\output";
-        String inputPath = "D:\\input";
+        Option input = new Option("i", "input", true, "input folder");
+        input.setRequired(true);
+        options.addOption(input);
 
-        Path inputFilePath = Paths.get(inputPath);
+        Option output = new Option("o", "output", true, "output folder");
+        output.setRequired(true);
+        options.addOption(output);
 
-        System.out.println(inputPath);
+        CommandLineParser parser = new DefaultParser();
+        HelpFormatter formatter = new HelpFormatter();
+        CommandLine cmd = null;// not a good practice, it serves it purpose
+        try {
+            cmd = parser.parse(options, args);
+        } catch (org.apache.commons.cli.ParseException e) {
+            System.out.println(e.getMessage());
+            formatter.printHelp("utility-name", options);
 
-        MxmlConvert.convert(inputPath, outputPath);
-        // Call convert as file
-//        asConvert.convert(inputPath, outputPath);
+            System.exit(1);
+        }
+        // Get params argument
+        String outputPath = cmd.getOptionValue("output");
+        String inputPath = cmd.getOptionValue("input");
+        // Get all files from input folder
+        Map<String, List<String>> files = FileUtils.getAllFiles(inputPath);
+        // parse all files
+        for (String pk: files.keySet()) {
+            List<String> filePath = files.get(pk);
+            String savePath = outputPath + File.separator + pk;
+            // Create if output folder is not exist
+            FileUtils.createIfNotExistFolder(outputPath);
+            // mxml files
+            List<String> mxmlFiles = filePath.stream().filter(f -> f.endsWith(Constants.MXML_EXT)).collect(Collectors.toList());
+            //TODO parse mxml files
+            for (String file: mxmlFiles) {
+                // Mxml convert
+                mxmlConvert = new MxmlConvert();
+                mxmlConvert.convert(file, savePath);
+                // Script inline convert
+                ASConvert asConvertInline = new ASConvert();
+                asConvertInline.convertScriptInline(mxmlConvert.getScriptInline(), mxmlConvert.getXmlObjectInline(), savePath, file);
+            }
+
+            // as files
+            List<String> asFiles = filePath.stream().filter(f -> f.endsWith(Constants.AS_EXT)).collect(Collectors.toList());
+            for (String file: asFiles) {
+                asConvert = new ASConvert();
+                // Action script convert
+                asConvert.convert(file, savePath);
+            }
+        }
     }
 }

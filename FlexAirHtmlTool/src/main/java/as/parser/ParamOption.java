@@ -9,12 +9,11 @@ public class ParamOption {
     private boolean ignoreFlash;
     private boolean safeRequire;
     private boolean silent;
-    private List<String> srcPaths;
+    private String srcPaths;
     private List<String> rawPackages;
     private boolean verbose;
 
     public ParamOption() {
-        this.srcPaths = new ArrayList<>();
         this.rawPackages = new ArrayList<>();
     }
 
@@ -74,11 +73,11 @@ public class ParamOption {
         this.silent = silent;
     }
 
-    public List<String> getSrcPaths() {
+    public String getSrcPaths() {
         return srcPaths;
     }
 
-    public void setSrcPaths(List<String> srcPaths) {
+    public void setSrcPaths(String srcPaths) {
         this.srcPaths = srcPaths;
     }
 }

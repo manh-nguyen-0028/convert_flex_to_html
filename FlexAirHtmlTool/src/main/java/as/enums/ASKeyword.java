@@ -9,7 +9,6 @@ public class ASKeyword {
     public static final String STATIC = "static";
     public static final String GET = "get";
     public static final String SET = "set";
-    public static final String ACC_CONTROLLER_BASE = "ACCControllerBase";
     public static final String NUMBER = "Number";
     public static final String INT = "int";
     public static final String UINT = "uint";

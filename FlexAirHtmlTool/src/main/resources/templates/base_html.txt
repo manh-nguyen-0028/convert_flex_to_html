@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<ui:composition style="{style_composition_first}"
+<ui:composition {style_composition_first}
     template="/jp/co/nissho_ele/acc/common/commonLayout.xhtml"
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:f="http://xmlns.jcp.org/jsf/core"

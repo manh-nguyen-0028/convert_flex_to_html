@@ -1,35 +1,71 @@
 package main;
 
-import as.enums.ASKeyword;
+import as.enums.ASParseState;
 import as.parser.ASClass;
 import as.parser.ASParser;
 import as.parser.ParamOption;
 import as.parser.ParserOptions;
-import as.types.ASMember;
+import constants.Constants;
 import constants.ReservedWords;
 import utils.Log;
 import utils.StringUtils;
 
 import java.io.*;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ASConvert {
-    public ASConvert() {
+    private String asFileName;
+    private String javaFileName;
+    public void convertScriptInline(String scriptInline, Map<String, List<String>> xmlObjectInline, String saveFile, String srcPath) {
+        Log.log("START: Convert Script inline-------------------------------");
+        // Prepare parameter
+        ParserOptions parserOptions = new ParserOptions();
+        parserOptions.setIgnoreFlash(false);
+        parserOptions.setSafeRequire(false);
+        Path path = Paths.get(srcPath);
+        asFileName = path.getFileName().toString().split(Constants.MXML_EXT)[0];
+        // Read the contents of each file in the input folder and save to list of path package.
+        ASParser parser = new ASParser(scriptInline, asFileName);
+
+        //First, parse through the file-based classes and get the basic information
+        Log.log("Analyzing class path: " + parser.getClassPath());
+        Stack<String> stack = new Stack<>();
+        stack.push(ASParseState.CLASS);
+        ASClass rawClass = parser.parse(parserOptions, stack);
+        // Create package
+        rawClass.process();
+        // Read class template
+        String classTemplate = readClassTemplate("templates/classmodel");
+        //classTemplate = classTemplate.replace("{{package}}", rawClass.getPackageName());
+        classTemplate = classTemplate.replace("{{imports}}", String.join("", rawClass.getImports()));
+
+        // Generate Controller Class
+        javaFileName = rawClass.getClassName();
+        classTemplate = classTemplate.replace("{{classname}}", javaFileName);
+        // Generate Created date
+        classTemplate = classTemplate.replace("{{created_dt}}", StringUtils.getDateYYYYMMDD());
+
+        // Generate controller source
+        String compileSource = rawClass.generateModelString();
+        classTemplate = classTemplate.replace("{{classSource}}", compileSource);
+
+        String outputFile = saveFile + File.separator + javaFileName + Constants.JAVA_EXT;
+        Log.log("Save output file: " + outputFile);
+        if (!StringUtils.isNullOrEmpty(classTemplate)) {
+            writeFileUTF8(outputFile, classTemplate);
+        }
+        Log.log("END: Convert Script inline-------------------------------");
     }
     public void convert(String inputPath, String outputPath) {
-//TODO
+        Log.log("START: Convert Actionscript-------------------------------");
         // Prepare parameter
         ParamOption option = new ParamOption();
-        option.setSrcPaths(new ArrayList(){{add(inputPath);}});
+        option.setSrcPaths(inputPath);
         option.setEntry("");
         option.setEntryMode("");
         option.setIgnoreFlash(false);
@@ -38,25 +74,24 @@ public class ASConvert {
         option.setSilent(false);
         option.setVerbose(true);
         // Compile data
-        Map<String, String> result =  compile(option);
-        for (String key:result.keySet()) {
-            // Save file
-            String compiledSource = result.get(key);
-            if (!StringUtils.isNullOrEmpty(compiledSource)) {
-                writeFileUTF8(inputPath + File.separator + key + ".java", compiledSource);
-            }
+        String compiledSource =  compile(option);
+        String outputFile = outputPath + File.separator + javaFileName + Constants.JAVA_EXT;
+        Log.log("Save output file: " + outputFile);
+        if (!StringUtils.isNullOrEmpty(compiledSource)) {
+            writeFileUTF8(outputFile, compiledSource);
         }
+        Log.log("END: Convert Actionscript-------------------------------");
     }
 
     /**
      * Compile(Read, Parse, Convert) file
      */
-    public Map<String, String> compile(ParamOption options) {
+    public String compile(ParamOption options) {
         Map<String, String> packages = new HashMap<>();  //Will contain the final map of package names to source text
         Map<String, String> result = new HashMap<>();
         String tmp;
         options = options != null ? options : new ParamOption();
-        List<String> srcPaths = options.getSrcPaths();
+        String srcPaths = options.getSrcPaths();
         List<String> rawPackages = options.getRawPackages() == null ? new ArrayList<>() : options.getRawPackages();
         ParserOptions parserOptions = new ParserOptions();
         parserOptions.setIgnoreFlash(options.isIgnoreFlash());
@@ -66,108 +101,46 @@ public class ASConvert {
         Log.SILENT = options.isSilent();
         //Temp classes for holding raw class info
         ASClass rawClass;
-        ASParser rawParser;
-        // List of class in package
-        Map<String, ASClass> classes = new HashMap<>();
-        String buffer = "";
-
         // Read the contents of each file in the input folder and save to list of path package.
-        Map<String, Map<String, ASParser>> pkgLists = new HashMap<>();
-        for (String path : srcPaths) {
-            pkgLists.put(path, buildPackageList(path));
-        }
+        ASParser parser = readFileContent(srcPaths);
 
         //First, parse through the file-based classes and get the basic information
-        for (String path : pkgLists.keySet()) {
-            for (String pkg: pkgLists.get(path).keySet()) {
-                Log.log("Analyzing class path: " + pkgLists.get(path).get(pkg).getClassPath());
-                classes.put(pkgLists.get(path).get(pkg).getClassPath(), pkgLists.get(path).get(pkg).parse(parserOptions));
-                Log.debug(classes.get(pkgLists.get(path).get(pkg).getClassPath()));
-            }
-        }
+        Log.log("Analyzing class path: " + parser.getClassPath());
+        Stack<String> stack = new Stack<>();
+        stack.push(ASParseState.START);
+        rawClass = parser.parse(parserOptions, stack);
+        Log.debug(parser.getClassPath());
 
 
         // Create package
-        for (String key: classes.keySet() ) {
-            ASClass cls = classes.get(key);
-            cls.process();
-            // Read class template
-            String classTemplate = readClassTemplate();
-            classTemplate = classTemplate.replace("{{package}}", cls.getPackageName());
-            classTemplate = classTemplate.replace("{{imports}}", String.join("", cls.getImports()));
+        rawClass.process();
+        // Read class template
+        String classTemplate = readClassTemplate("templates/classcontroller");
+        classTemplate = classTemplate.replace("{{package}}", rawClass.getPackageName());
+        classTemplate = classTemplate.replace("{{imports}}", String.join("", rawClass.getImports()));
 
-            // Generate Controller Class
-            String strClassName = cls.getClassName() + ReservedWords.CONTROLLER;
-            classTemplate = classTemplate.replace("{{classname}}", strClassName);
-            // Generate Created date
-            classTemplate = classTemplate.replace("{{created_dt}}", StringUtils.getDateYYYYMMDD());
+        // Generate Controller Class
+        javaFileName = rawClass.getClassName() + ReservedWords.CONTROLLER;
+        classTemplate = classTemplate.replace("{{classname}}", javaFileName);
+        // Generate Created date
+        classTemplate = classTemplate.replace("{{created_dt}}", StringUtils.getDateYYYYMMDD());
 
-            // Generate controller source
-            String compileSource = cls.generateString();
-            classTemplate = classTemplate.replace("{{classsource}}", compileSource);
-            // Set result
-            result.put(key,classTemplate);
-
-        }
-
-        return result;
-    }
-
-    /**
-     * Read all file in directory input
-     */
-    private void readDirectory(String location, String pkgBuffer, Map<String, ASParser> pkList) {
-        File directory = new File(location);
-        File[] files = directory.listFiles();
-        for (File file : files) {
-            String pkg = pkgBuffer;
-            if (file.isDirectory()) {
-                if (!pkg.equals("")) {
-                    pkg += ".";
-                }
-                readDirectory(location + File.separator + file.getName(), pkg + file.getName(), pkList);
-            } else if (file.isFile() && file.getName().endsWith(".as")) {
-                readFileContent(file, pkList, pkgBuffer);
-            }
-        }
+        // Generate controller source
+        String compileSource = rawClass.generateString();
+        classTemplate = classTemplate.replace("{{classsource}}", compileSource);
+        // Set result
+        return classTemplate;
     }
 
     /**
      * Read file content with UTF-8 encoding
      */
-    public void readFileContent(File file, Map<String, ASParser>  pkList, String pkg) {
-        if (!pkg.equals("")) {
-            pkg += ".";
-        }
-        pkg += file.getName().substring(0, file.getName().length() - 3);
-        String content = readFileUTF8(file.toPath());
-        pkList.put(pkg, new ASParser(content, pkg));
-        Log.debug("Loaded file: " + file.getPath() + " (package: " + pkg + ")");
-    }
-
-    /**
-     * Build package list
-     */
-    public Map<String, ASParser>  buildPackageList(String location) {
-        Map<String, ASParser>  pkList = new HashMap<>();
-        location = location.replace("/", File.separator);
-        try {
-            File directory = new File(location);
-            if (directory.exists() && directory.isDirectory()) {
-                // Read all folder file
-                readDirectory(location, "", pkList);
-                // Return package list
-                return pkList;
-            }  else if (directory.isFile() && directory.getName().endsWith(".as")) {
-                // Read file only
-                readFileContent(directory, pkList, "");
-                // Return package list
-                return pkList;
-            }
-            return null;
-        }catch (Exception e) {
-            throw e;
-        }
+    public ASParser readFileContent(String filePath) {
+        Path path = Paths.get(filePath);
+        asFileName = path.getFileName().toString().split(Constants.AS_EXT)[0];
+        String content = readFileUTF8(path);
+        Log.debug("Loaded file: " + filePath + " (package: " + asFileName + ")");
+        return new ASParser(content, asFileName);
     }
 
     /**
@@ -193,10 +166,10 @@ public class ASConvert {
             Log.warn(ex.getMessage());
         }
     }
-    private String readClassTemplate() {
+    private String readClassTemplate(String resourceName) {
 
         try {
-            URL templateUrl = getClass().getClassLoader().getResource("templates/classtemplate");
+            URL templateUrl = getClass().getClassLoader().getResource(resourceName);
             return readFileUTF8(Paths.get(templateUrl.toURI()));
         } catch (Exception e) {
             e.printStackTrace();

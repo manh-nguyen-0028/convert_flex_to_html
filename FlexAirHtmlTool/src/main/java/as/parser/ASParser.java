@@ -12,7 +12,6 @@ import utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Stack;
 import java.util.regex.Pattern;
 
@@ -32,12 +31,11 @@ public class ASParser {
     /**
      * Parse content
      */
-    public ASClass parse(ParserOptions options) {
+    public ASClass parse(ParserOptions options, Stack<String> stack) {
         parserOptions = options == null ? new ParserOptions() : options;
 
         ASClass classDefinition = new ASClass(parserOptions);
-        stack = new Stack<>();
-        stack.push(ASParseState.START);
+        this.stack = stack;
         parseHelper(classDefinition, getSrc());
         if (classDefinition.getClassName() == null) {
             throw new Error("Error, no class provided for package: " + classPath);
@@ -143,32 +141,13 @@ public class ASParser {
                         currToken = ASParser.nextWord(src, index, ASPattern.IDENTIFIER[0], ASPattern.IDENTIFIER[1]);
                         index = currToken.getIndex();
                         // TODO: Extends ACCControllerBase
-                        currToken.setToken(ASKeyword.ACC_CONTROLLER_BASE);
+                        currToken.setToken(ReservedWords.ACC_CONTROLLER_BASE);
                         //The token following 'extends' must be the parent class
                          cls.setParent(currToken.getToken());
                         //Prep the next token
                         currToken = ASParser.nextWord(src, index, ASPattern.IDENTIFIER[0], ASPattern.IDENTIFIER[1]);
                         Log.debug("Found parent: " + cls.getParent());
                     }
-// TODO: Rule implement Object will be convert to extends
-//                    if (currToken.getToken().equals(ASKeyword.IMPLEMENTS) && currToken.getIndex() < tmpToken.getIndex()) {
-//                        index = currToken.getIndex();
-//                        currToken = ASParser.nextWord(src, index, ASPattern.IDENTIFIER[0], ASPattern.IDENTIFIER[1]);
-//                        index = currToken.getIndex();
-//                        //The token following 'implements' must be an interface
-//                        cls.getInterfaces().add(currToken.getToken());
-//                        Log.debug("Found interface: " + currToken.getToken());
-//                        currToken = ASParser.nextWord(src, index, ASPattern.IDENTIFIER[0], ASPattern.IDENTIFIER[1]);
-//                        //While we are at a token before the next curly brace
-//                        while (currToken.getIndex() < tmpToken.getIndex() && currToken.getIndex() < src.length()) {
-//                            //Consider self token another interface being implemented
-//                            index = currToken.getIndex();
-//                            Log.debug("Found interface: " + currToken.getToken());
-//                            cls.getInterfaces().add(currToken.getToken());
-//                            currToken = ASParser.nextWord(src, index, ASPattern.IDENTIFIER[0], ASPattern.IDENTIFIER[1]);
-//                            index = currToken.getIndex();
-//                        }
-//                    }
                     Log.debug("Parsed class name: " + cls.getClassName());
                     //Now parsing inside of the class
                     stack.add(ASParseState.CLASS);
@@ -186,33 +165,66 @@ public class ASParser {
                 currMember = currMember != null ? currMember : new ASMember(); //Declare a new member to work with if it doesn't exist yet
                 currToken = ASParser.nextWord(src, index, ASPattern.IDENTIFIER[0], ASPattern.IDENTIFIER[1]);
                 index = currToken.getIndex() - 1;
-                if (currToken.getToken() != null
-                        && (currToken.getToken().equals(ASEncapsulation.PUBLIC)
-                        || currToken.getToken().equals(ASEncapsulation.PRIVATE)
-                        || currToken.getToken().equals(ASEncapsulation.PROTECTED))) {
-                    currMember.setEncapsulation(currToken.getToken());
-                    currMember.setComment(removeCurlyBrace(currToken.getExtra()));
-                    Log.debug("->Member encapsulation set to " + currMember.getEncapsulation());
-                } else if (currToken.getToken() != null && currToken.getToken().equals(ASKeyword.STATIC)) {
-                    currMember.setStatic(true);
-                    Log.debug("-->Static flag set");
-                } else if (currToken.getToken() != null && (currToken.getToken().equals(ASMemberType.VAR) || currToken.getToken().equals(ASMemberType.CONST))) {
-                    //Main.debug('--->Member type "variable" set.');
-                    currMember = currMember.createVariable(); //Transform the member into a variable
-                    stack.add(ASParseState.MEMBER_VARIABLE);
-                } else if (currToken.getToken() != null && currToken.getToken().equals(ASMemberType.FUNCTION)) {
-                    currToken = ASParser.nextWord(src, index + 1, ASPattern.IDENTIFIER[0], ASPattern.IDENTIFIER[1]);
-                    //Check for getter/setter
-                    if (currToken.getToken() != null
-                            && (currToken.getToken().equals(ASKeyword.GET) || currToken.getToken().equals(ASKeyword.SET))
-                            && src.charAt(index + 1 + currToken.getToken().length() + 1) != '(') {
-                        Log.debug("--->Member sub-type " + currToken.getToken() + " set.");
-                        currMember.setSubType(currToken.getToken());
-                        index = currToken.getIndex() - 1;
+                if (currToken.getToken() == null) continue;
+                //------------------------------------------------------
+                //For generate model class
+                if (currToken.getToken().equals(ASKeyword.IMPORT)) {
+                    if (StringUtils.isNullOrEmpty(cls.getClassName())) {
+                        cls.setClassName(getClassPath() + ReservedWords.MODEL);
+                        cls.setOrgClassName(getClassPath());
                     }
-                    currMember = currMember.createFunction(); //Transform the member into a function
-                    stack.add(ASParseState.MEMBER_FUNCTION);
-                    Log.debug("---->Member type function set.");
+                    prevTokenImport = currToken;
+                    Log.debug("Found import keyword...");
+                    //The current token is a class import
+                    currToken = ASParser.nextWord(src, index, ASPattern.IMPORT[0], ASPattern.IMPORT[1]);
+                    index = currToken.getIndex() - 1;
+                    if (currToken.getToken() == null) {
+                        throw new Error("Error parsing import.");
+                    } else {
+                        Log.debug("Parsed import name: " + currToken.getToken());
+                        if (currToken.getToken().indexOf("*") >= 0) {
+                            cls.getImportWildcards().add(currToken.getToken()); //To be resolved later
+                        } else {
+                            // cls.getImports().add(currToken.getToken()); //No need to resolve
+                            // Remove CURLY_BRACE
+                            String prevExtra = removeCurlyBrace(prevTokenImport.getExtra());
+                            // Import token contains special characters as \n \r \t to format data
+                            String importToken = prevExtra + prevTokenImport.getToken() + currToken.getExtra() + currToken.getToken();
+                            importToken = importToken.replaceAll("\\t", "");
+                            cls.getImports().add(importToken); //No need to resolve
+                        }
+                    }
+                }
+                //------------------------------------------------------
+                else {
+                    if (currToken.getToken() != null
+                            && (currToken.getToken().equals(ASEncapsulation.PUBLIC)
+                            || currToken.getToken().equals(ASEncapsulation.PRIVATE)
+                            || currToken.getToken().equals(ASEncapsulation.PROTECTED))) {
+                        currMember.setEncapsulation(currToken.getToken());
+                        currMember.setComment(removeCurlyBrace(currToken.getExtra()));
+                        Log.debug("->Member encapsulation set to " + currMember.getEncapsulation());
+                    } else if (currToken.getToken() != null && currToken.getToken().equals(ASKeyword.STATIC)) {
+                        currMember.setStatic(true);
+                        Log.debug("-->Static flag set");
+                    } else if (currToken.getToken() != null && (currToken.getToken().equals(ASMemberType.VAR) || currToken.getToken().equals(ASMemberType.CONST))) {
+                        //Main.debug('--->Member type "variable" set.');
+                        currMember = currMember.createVariable(); //Transform the member into a variable
+                        stack.add(ASParseState.MEMBER_VARIABLE);
+                    } else if (currToken.getToken() != null && currToken.getToken().equals(ASMemberType.FUNCTION)) {
+                        currToken = ASParser.nextWord(src, index + 1, ASPattern.IDENTIFIER[0], ASPattern.IDENTIFIER[1]);
+                        //Check for getter/setter
+                        if (currToken.getToken() != null
+                                && (currToken.getToken().equals(ASKeyword.GET) || currToken.getToken().equals(ASKeyword.SET))
+                                && src.charAt(index + 1 + currToken.getToken().length() + 1) != '(') {
+                            Log.debug("--->Member sub-type " + currToken.getToken() + " set.");
+                            currMember.setSubType(currToken.getToken());
+                            index = currToken.getIndex() - 1;
+                        }
+                        currMember = currMember.createFunction(); //Transform the member into a function
+                        stack.add(ASParseState.MEMBER_FUNCTION);
+                        Log.debug("---->Member type function set.");
+                    }
                 }
             } else if (getState() == ASParseState.MEMBER_VARIABLE) {
                 currToken = ASParser.nextWord(src, index, ASPattern.IDENTIFIER[0], ASPattern.IDENTIFIER[1]);
@@ -232,7 +244,7 @@ public class ASParser {
                     Log.debug("---->Variable type for " + currMember.getName() + " declared as: " + currToken.getToken());
                 }
                 currToken = ASParser.nextWord(src, index, ASPattern.ASSIGN_START[0], ASPattern.ASSIGN_START[1]);
-                if (currToken.getToken().equals(Constants.EQUAL)) {
+                if (currToken.getToken().equals(Constants.EQUAL_OPERATOR)) {
                     //Use all characters after self symbol to set value
                     index = currToken.getIndex();
                     tmpArr = extractUpTo(src, index, "[;\r\n]");
@@ -652,7 +664,7 @@ public class ASParser {
                             if (prevToken != null
                                     && ReservedWords.AS.equals(prevToken.getToken())
                                     && currToken.getToken().equals(cls.getClassName())) {
-                                result = result.substring(0, result.indexOf(Constants.EQUAL) + 1 + 1); //Extra space
+                                result = result.substring(0, result.indexOf(Constants.EQUAL_OPERATOR) + 1 + 1); //Extra space
                                 result += currToken.getToken() + ReservedWords.MODEL + "()";
                                 index = currToken.getIndex();
                             } if (prevToken != null
@@ -927,7 +939,7 @@ public class ASParser {
                     }
                     tmpToken = ASParser.nextWord(tmpStr, tmpToken.getIndex(), ASPattern.ASSIGN_START[0],
                             ASPattern.ASSIGN_START[1]);
-                    if (Constants.EQUAL.equals(tmpToken.getToken())) {
+                    if (Constants.EQUAL_OPERATOR.equals(tmpToken.getToken())) {
                         // Use all characters after self symbol to set value
                         tmpExtractArr = ASParser.extractUpTo(tmpStr, tmpToken.getIndex(), "[;\r\n]");
                         // Store value

@@ -94,6 +94,57 @@ public class ASClass {
             fieldMap.put(name, fieldMap.getOrDefault(name, value));
         }
     }
+    public String generateModelString() {
+        StringBuilder buffer = new StringBuilder();
+        //Process require package
+        // Deal with static member assignments
+        if (this.members.size() > 0) {
+            //Place defaults first
+            for (ASMember m : this.members) {
+                if (m instanceof ASFunction) {
+                    buffer.append(stringifyFunc(m));
+                } else {
+                    ASVariable currentVar = (ASVariable) m;
+                    String type = ASKeyword.STRING;
+                    String value = null;
+                    if (ASKeyword.NUMBER.equals(currentVar.getType())
+                            || ASKeyword.INT.equals(currentVar.getType())
+                            || ASKeyword.UINT.equals(currentVar.getType())) {
+                        type = ReservedWords.INT;
+                        if (!StringUtils.isNumeric(currentVar.getValue())) {
+                            value = "0";
+                        }
+                    } else if (ASKeyword.BOOLEAN.equals(currentVar.getType())) {
+                        type = ReservedWords.BOOLEAN;
+                    } else if (ASKeyword.STRING.equals(currentVar.getType())) {
+                        type = ReservedWords.STRING;
+                    } else if (ASKeyword.DATEFORMATTER.equals(currentVar.getType())) {
+                        type = ReservedWords.SIMPLEDATEFORMAT;
+                    }
+//                    else if (getClassName().equals(currentVar.getType())) {
+//                        type = getClassName() + ReservedWords.MODEL;
+//                    }
+                    else {
+                        type = currentVar.getType();
+                    }
+                    buffer.append(currentVar.getComment());
+                    String tmpVar = "";
+                    if (currentVar.isStatic()) {
+                        tmpVar = Templates.VARIABLE_STATIC;
+                    } else {
+                        tmpVar = Templates.VARIABLE;
+                    }
+                    tmpVar = tmpVar.replace("{type}", type)
+                            .replace("{name}", m.getName())
+                            .replace("{value}", StringUtils.isNullOrEmpty(value) ? m.getValue() == null ? "null" : m.getValue() : value);
+                    buffer.append(tmpVar);
+                    buffer.append(";");
+                }
+            }
+            buffer.append("\n");
+        }
+        return buffer.toString();
+    }
     public String generateString() {
         StringBuilder buffer = new StringBuilder();
         //Process require package
@@ -493,4 +544,5 @@ public class ASClass {
     public void setIgnoreFlash(boolean ignoreFlash) {
         this.ignoreFlash = ignoreFlash;
     }
+
 }

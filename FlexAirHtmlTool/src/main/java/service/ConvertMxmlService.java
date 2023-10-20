@@ -47,7 +47,7 @@ public class ConvertMxmlService {
         }
     }
 
-    public void printNote(boolean isFirstCanvas, NodeList nodeList, StringBuilder baseHtml, StringBuilder html) {
+    public void printNote(HtmlElementParser elementParser, boolean isFirstCanvas, NodeList nodeList, StringBuilder baseHtml, StringBuilder html) {
         for (int count = 0; count < nodeList.getLength(); count++) {
             Node nodeItem = nodeList.item(count);
             String nodeName = nodeItem.getNodeName();
@@ -55,42 +55,27 @@ public class ConvertMxmlService {
             if (nodeItem.getNodeType() == Node.ELEMENT_NODE) {
                 ComponentMap componentMap = hmNodeMap.get(nodeName);
                 if (componentMap != null) {
-                    handleNodeMap(componentMap, nodeItem, nodeName, baseHtml, isFirstCanvas, html);
+                    handleNodeMap(elementParser, componentMap, nodeItem, nodeName, baseHtml, isFirstCanvas, html);
                 }
             }
         }
     }
 
-    private void handleNodeMap(ComponentMap componentMap, Node nodeItem, String nodeName, StringBuilder baseHtml, boolean isFirstCanvas, StringBuilder html) {
-        HtmlElementParser htmlElementParser = new HtmlElementParser(nodeName, componentMap.getHtmlTagStart(), componentMap.getHtmlTagStart2(), componentMap.getHtmlTagEnd(), componentMap.getIsGenerateHtml());
-
-        handleNodeAttributes(nodeItem, htmlElementParser);
-
-        StringBuilder cssElement = createCssElement(htmlElementParser);
-
-        StringBuilder attributeElement = createAttributeElement(htmlElementParser);
-
-        isFirstCanvas = handleFirstElement(nodeName, baseHtml, cssElement, isFirstCanvas, htmlElementParser);
-
-        handleSpecialAttribute(htmlElementParser);
-
-        if (htmlElementParser.isGenerateHtml()) {
-            html.append(createHtmlElementParser(htmlElementParser, attributeElement, cssElement));
-        }
+    private void handleNodeMap(HtmlElementParser elementParser, ComponentMap componentMap, Node nodeItem, String currentNodeName, StringBuilder baseHtml, boolean isFirstCanvas, StringBuilder html) {
+        String parentNodeName = elementParser.getNodeName();
+        HtmlElementParser elementChild = new HtmlElementParser(currentNodeName, componentMap.getHtmlTagStart(), componentMap.getHtmlTagStart2(), componentMap.getHtmlTagEnd(), componentMap.getIsGenerateHtml());
+        elementChild.setParentNodeName(elementParser.getNodeName());
+        handleNodeAttributes(nodeItem, elementChild);
+        handleSpecialAttribute(elementChild);
+        handleFirstElement(elementChild, parentNodeName, currentNodeName);
 
         if (nodeItem.hasChildNodes()) {
             // loop again if has child nodes
-            printNote(isFirstCanvas, nodeItem.getChildNodes(), baseHtml, html);
+            printNote(elementChild, isFirstCanvas, nodeItem.getChildNodes(), baseHtml, html);
         }
+        elementParser.getChildList().add(elementChild);
 
-        if (htmlElementParser.isGenerateHtml()) {
-            html.append(htmlElementParser.getEndTag());
-        }
-
-        handleSpecialElement(htmlElementParser, attributeElement, cssElement);
-
-        Log.log(htmlElementParser.getText());
-        Log.log("Node Name =" + nodeName + " [CLOSE]");
+        Log.log("Node Name =" + currentNodeName + " [CLOSE]");
     }
 
     private void handleSpecialElement(HtmlElementParser htmlElementParser, StringBuilder attributeElement, StringBuilder cssElement) {
@@ -187,23 +172,30 @@ public class ConvertMxmlService {
 
     private HtmlElementParser convertToJs(HtmlElementParser elementParser, PropertyMap propertyMap, String nodeValue) {
         String startTag = propertyMap.getStartTag();
-        if ("script.".equals(nodeValue)) {
-            nodeValue = nodeValue.replaceAll("script\\.(.*?)\\(\\)", "#{" + xmlFileName + Constants.CLASS_CONTROLLER + Constants.SYNTAX_DOT + "$1}");
+        if (nodeValue.contains("script.")) {
+            nodeValue = nodeValue.replaceAll("script\\.(.*?)\\((.*?)\\)", "#{" + xmlFileName + Constants.CLASS_CONTROLLER + Constants.SYNTAX_DOT + "$1}");
         }
         elementParser.getAttributeParsers().add(new AttributeParser(startTag, nodeValue));
         return elementParser;
     }
 
-    private StringBuilder createCssElement(HtmlElementParser elementParser) {
+    public static StringBuilder createCssElement(List<CssParser> cssParsers) {
         StringBuilder cssBuilder = new StringBuilder();
         // css
-        for (CssParser css : elementParser.getCssParsers()) {
+        for (CssParser css : cssParsers) {
             cssBuilder.append(css.getKey()).append(Constants.SYNTAX_COLON).append(css.getValue()).append(Constants.SYNTAX_SEMICOLON);
         }
         return cssBuilder;
     }
 
-    private StringBuilder createAttributeElement(HtmlElementParser elementParser) {
+    public static StringBuilder createCssElementInline(List<CssParser> cssParsers) {
+        StringBuilder cssElement = createCssElement(cssParsers);
+        StringBuilder cssElementInline = new StringBuilder(Constants.ATTRIBUTE_STYLE + Constants.SYNTAX_EQUAL + Constants.SYNTAX_DOUBLE_QUOTATION);
+        cssElementInline.append(cssElement).append(Constants.SYNTAX_DOUBLE_QUOTATION);
+        return cssElementInline;
+    }
+
+    public static StringBuilder createAttributeElement(HtmlElementParser elementParser) {
         StringBuilder attributeBuilder = new StringBuilder();
         // add attribute
         for (AttributeParser attribute : elementParser.getAttributeParsers()) {
@@ -225,16 +217,14 @@ public class ConvertMxmlService {
         return elementBuilder;
     }
 
-    private boolean handleFirstElement(String nodeName, StringBuilder baseHtml, StringBuilder cssElement, boolean isFirstCanvas, HtmlElementParser elementParser) {
-        if (isFirstCanvas && (nodeName.equals(Constants.MXML_CONTAINERS_ACC_CANVAS) || nodeName.equals(Constants.MXML_CONTAINERS_ACC_TITLE_WINDOW))) {
-            Optional<AttributeParser> parserOptional = elementParser.getAttributeParsers().stream().filter(item -> "title".equals(item.getKey())).findFirst();
+    private void handleFirstElement(HtmlElementParser elementChild, String parentNodeName, String currentNodeName) {
+        if ("First Node".equals(parentNodeName) && (currentNodeName.equals(Constants.MXML_CONTAINERS_ACC_CANVAS) || currentNodeName.equals(Constants.MXML_CONTAINERS_ACC_TITLE_WINDOW))) {
+            elementChild.setGenerateHtml(false);
+            Optional<AttributeParser> parserOptional = elementChild.getAttributeParsers().stream().filter(item -> "title".equals(item.getKey())).findFirst();
             if (parserOptional.isPresent()) {
                 this.elementReplace.setTitle(parserOptional.get().getValue());
             }
-            utils.StringUtils.replaceInStringBuilder(baseHtml, "{style_composition_first}", cssElement.toString());
-            isFirstCanvas = false;
-            elementParser.setGenerateHtml(true);
+            this.elementReplace.setCssCompositionFirstList(elementChild.getCssParsers());
         }
-        return isFirstCanvas;
     }
 }

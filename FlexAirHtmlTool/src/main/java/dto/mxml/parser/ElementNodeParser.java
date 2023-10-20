@@ -8,7 +8,7 @@ import java.util.List;
 
 @Setter
 @Getter
-public class HtmlElementParser {
+public class ElementNodeParser {
     private String parentNodeName;
     private String nodeName;
     private String id;
@@ -21,13 +21,5 @@ public class HtmlElementParser {
     private boolean isHadAttribute;
     private boolean isHadCss;
     private boolean isGenerateHtml;
-    List<HtmlElementParser> childList = new ArrayList<>();
-
-    public HtmlElementParser(String nodeName, String startTag, String endStartTag, String endTag, boolean isGenerateHtml) {
-        this.nodeName = nodeName;
-        this.startTag = startTag;
-        this.endStartTag = endStartTag;
-        this.endTag = endTag;
-        this.isGenerateHtml = isGenerateHtml;
-    }
+    private List<ElementNodeParser> nodeParserList = new ArrayList<>();
 }
