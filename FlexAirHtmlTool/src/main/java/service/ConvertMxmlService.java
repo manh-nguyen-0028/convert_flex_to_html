@@ -3,6 +3,8 @@ package service;
 import constants.Constants;
 import dto.mxml.mapping.ComponentMap;
 import dto.mxml.mapping.PropertyMap;
+import dto.mxml.mapping.TransformerSpecialElement;
+import dto.mxml.modify.CheckBoxReplace;
 import dto.mxml.modify.ElementReplace;
 import dto.mxml.modify.RadioGroupReplace;
 import dto.mxml.parser.AttributeParser;
@@ -47,7 +49,7 @@ public class ConvertMxmlService {
         }
     }
 
-    public void printNote(HtmlElementParser elementParser, boolean isFirstCanvas, NodeList nodeList, StringBuilder baseHtml, StringBuilder html) {
+    public void handleNodeXml(HtmlElementParser elementParser, boolean isFirstCanvas, NodeList nodeList, StringBuilder baseHtml, StringBuilder html) {
         for (int count = 0; count < nodeList.getLength(); count++) {
             Node nodeItem = nodeList.item(count);
             String nodeName = nodeItem.getNodeName();
@@ -66,19 +68,22 @@ public class ConvertMxmlService {
         HtmlElementParser elementChild = new HtmlElementParser(currentNodeName, componentMap.getHtmlTagStart(), componentMap.getHtmlTagStart2(), componentMap.getHtmlTagEnd(), componentMap.getIsGenerateHtml());
         elementChild.setParentNodeName(elementParser.getNodeName());
         handleNodeAttributes(nodeItem, elementChild);
-        handleSpecialAttribute(elementChild);
+        transformerElementByAttribute(elementChild);
         handleFirstElement(elementChild, parentNodeName, currentNodeName);
-
+        handleSpecialElement(elementChild);
+        transformTagHaveAjax(elementChild);
         if (nodeItem.hasChildNodes()) {
             // loop again if has child nodes
-            printNote(elementChild, isFirstCanvas, nodeItem.getChildNodes(), baseHtml, html);
+            handleNodeXml(elementChild, isFirstCanvas, nodeItem.getChildNodes(), baseHtml, html);
         }
         elementParser.getChildList().add(elementChild);
 
         Log.log("Node Name =" + currentNodeName + " [CLOSE]");
     }
 
-    private void handleSpecialElement(HtmlElementParser htmlElementParser, StringBuilder attributeElement, StringBuilder cssElement) {
+    private void handleSpecialElement(HtmlElementParser htmlElementParser) {
+        StringBuilder attributeElement = createAttributeElement(htmlElementParser);
+        StringBuilder cssElement = createCssElement(htmlElementParser.getCssParsers());
         StringBuilder elementParser = createHtmlElementParser(htmlElementParser, attributeElement, cssElement);
         elementParser.append(htmlElementParser.getEndTag());
         String nodeName = htmlElementParser.getNodeName();
@@ -103,11 +108,19 @@ public class ConvertMxmlService {
         }
     }
 
-    private void handleSpecialAttribute(HtmlElementParser htmlElementParser) {
-        String id = htmlElementParser.getId();
-        if ("ttPwd".equals(id)) {
-            htmlElementParser.setStartTag("<p:password ");
-            htmlElementParser.setEndTag("</p:password>");
+    private static void transformerElementByAttribute(HtmlElementParser htmlElementParser) {
+        List<TransformerSpecialElement> specialElementList = XmlService.getTransformerSpecialElement();
+        List<AttributeParser> attributeList = htmlElementParser.getAttributeParsers();
+        Optional<TransformerSpecialElement> specialElementOptional = specialElementList.stream().filter(itemFilter -> htmlElementParser.getNodeName().equals(itemFilter.getElementFrom())).findFirst();
+        if (specialElementOptional.isPresent()) {
+            Optional<AttributeParser> parserOptional = attributeList.stream().filter(itemFilter -> specialElementOptional.get().getAttribute().equals(itemFilter.getKey())).findFirst();
+            if (parserOptional.isPresent()) {
+                String value = specialElementOptional.get().getValue();
+                if (StringUtils.isEmpty(value) || (StringUtils.isNotEmpty(value) && parserOptional.get().getValue().equals(value))) {
+                    htmlElementParser.setStartTag(specialElementOptional.get().getHtmlTagStart());
+                    htmlElementParser.setEndTag(specialElementOptional.get().getHtmlTagEnd());
+                }
+            }
         }
     }
 
@@ -195,12 +208,23 @@ public class ConvertMxmlService {
         return cssElementInline;
     }
 
+    public static StringBuilder createCssElementInline(StringBuilder cssElement) {
+        StringBuilder cssElementInline = new StringBuilder(Constants.ATTRIBUTE_STYLE + Constants.SYNTAX_EQUAL + Constants.SYNTAX_DOUBLE_QUOTATION);
+        cssElementInline.append(cssElement).append(Constants.SYNTAX_DOUBLE_QUOTATION);
+        return cssElementInline;
+    }
+
     public static StringBuilder createAttributeElement(HtmlElementParser elementParser) {
         StringBuilder attributeBuilder = new StringBuilder();
         // add attribute
         for (AttributeParser attribute : elementParser.getAttributeParsers()) {
-            attributeBuilder.append(attribute.getKey()).append(Constants.SYNTAX_EQUAL).
-                    append(Constants.SYNTAX_DOUBLE_QUOTATION).append(attribute.getValue()).append(Constants.SYNTAX_DOUBLE_QUOTATION);
+            attributeBuilder
+                    .append(Constants.SYNTAX_SPACE)
+                    .append(attribute.getKey())
+                    .append(Constants.SYNTAX_EQUAL)
+                    .append(Constants.SYNTAX_DOUBLE_QUOTATION)
+                    .append(attribute.getValue())
+                    .append(Constants.SYNTAX_DOUBLE_QUOTATION);
         }
 
         return attributeBuilder;
@@ -225,6 +249,23 @@ public class ConvertMxmlService {
                 this.elementReplace.setTitle(parserOptional.get().getValue());
             }
             this.elementReplace.setCssCompositionFirstList(elementChild.getCssParsers());
+        }
+    }
+
+    /**
+     * @param elementParser Handle tag jsf may be have ajax tag
+     *                      Example: checkbox, radio,...
+     */
+    private void transformTagHaveAjax(HtmlElementParser elementParser) {
+        AttributeParser attributeParser = elementParser.getMapAttributeParser().get("change");
+        if (attributeParser != null) {
+            if ("Controls:ACCCheckBox".equals(elementParser.getNodeName())) {
+                CheckBoxReplace checkBoxReplace = new CheckBoxReplace();
+                checkBoxReplace.setId(elementParser.getId());
+//                checkBoxReplace.setListener(elementParser.get());
+                checkBoxReplace.setEvent(attributeParser.getKey());
+                this.elementReplace.getCheckBoxReplaces().add(checkBoxReplace);
+            }
         }
     }
 }

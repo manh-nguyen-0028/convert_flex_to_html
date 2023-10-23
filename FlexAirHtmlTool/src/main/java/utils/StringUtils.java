@@ -67,7 +67,7 @@ public class StringUtils {
      * Check string is null or empty
      */
     public static boolean isNullOrEmpty(String value) {
-        return value == null || value == "";
+        return value == null || value.trim().length() == 0;
     }
 
     public static String getDefaultValueString(String value, String fallback) {
@@ -84,5 +84,13 @@ public class StringUtils {
             builder.replace(index, index + target.length(), replacement);
             index = builder.indexOf(target, index + replacement.length());
         }
+    }
+
+    /**
+     * Capitalize the first character of each word in a string
+     * Ex:  "corpCd" -> "CorpCd"
+     */
+    public static String capitalize(final String line) {
+        return Character.toUpperCase(line.charAt(0)) + line.substring(1);
     }
 }

@@ -15,4 +15,5 @@ public class ElementReplace {
     private String formName;
     private List<CssParser> cssCompositionFirstList;
     private List<RadioGroupReplace> radioGroupReplaces = new ArrayList<>();
+    private List<CheckBoxReplace> checkBoxReplaces = new ArrayList<>();
 }

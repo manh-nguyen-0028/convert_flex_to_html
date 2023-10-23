@@ -1,9 +1,8 @@
 package service;
 
 import dto.mxml.mapping.ComponentMap;
-import dto.mxml.mapping.MappingElementModify;
 import dto.mxml.mapping.PropertyMap;
-import dto.mxml.mapping.TabConfig;
+import dto.mxml.mapping.TransformerSpecialElement;
 import utils.JsonUtils;
 
 import java.util.HashMap;
@@ -36,24 +35,9 @@ public class XmlService {
         return hmAttributeTag;
     }
 
-    public static Map<String, MappingElementModify> getMappingElementModify() {
-        Map<String, MappingElementModify> hmElementModify = new HashMap<>();
-        String filePath = "json/mapping-element-modify.json";
-        List<MappingElementModify> elementModifies = new JsonUtils<MappingElementModify>().readJsonFile(filePath, MappingElementModify.class);
-
-        for (MappingElementModify elementModify : elementModifies) {
-            hmElementModify.put(elementModify.getParentXmlName(), elementModify);
-        }
-
-        return hmElementModify;
-    }
-
-    public static TabConfig getTabConfigByFileName(String sFileName, String idTab) {
-        String filePath = "json/tab-config.json";
-        List<TabConfig> tabConfigs = new JsonUtils<TabConfig>().readJsonFile(filePath, TabConfig.class);
-
-        TabConfig tabConfig = tabConfigs.stream().filter(itemFilter -> itemFilter.getFileName().equals(sFileName) && itemFilter.getId().equals(idTab)).findFirst().get();
-
-        return tabConfig;
+    public static List<TransformerSpecialElement> getTransformerSpecialElement() {
+        String filePath = "json/transformer-special-element-attribute.json";
+        List<TransformerSpecialElement> specialElementList = new JsonUtils<TransformerSpecialElement>().readJsonFile(filePath, TransformerSpecialElement.class);
+        return specialElementList;
     }
 }

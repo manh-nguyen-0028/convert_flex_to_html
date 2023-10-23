@@ -37,9 +37,9 @@ public class ASParser {
         ASClass classDefinition = new ASClass(parserOptions);
         this.stack = stack;
         parseHelper(classDefinition, getSrc());
-        if (classDefinition.getClassName() == null) {
-            throw new Error("Error, no class provided for package: " + classPath);
-        }
+//        if (classDefinition.getClassName() == null) {
+//            throw new Error("Error, no class provided for package: " + classPath);
+//        }
         return classDefinition;
     }
     private void parseHelper(ASClass cls, String src) {
@@ -89,11 +89,6 @@ public class ASParser {
                     stack.add(ASParseState.IMPORT_PACKAGE);
                     Log.debug("Found import keyword...");
                 }
-//TODO: No require keyword
-//                else if (currToken.getToken().equals(ASKeyword.REQUIRE)) {
-//                    stack.add(ASParseState.REQUIRE_MODULE);
-//                    Log.debug("Found require keyword...");
-//                }
             } else if (getState() == ASParseState.IMPORT_PACKAGE) {
                 //The current token is a class import
                 currToken = ASParser.nextWord(src, index, ASPattern.IMPORT[0], ASPattern.IMPORT[1]);
@@ -176,7 +171,7 @@ public class ASParser {
                     prevTokenImport = currToken;
                     Log.debug("Found import keyword...");
                     //The current token is a class import
-                    currToken = ASParser.nextWord(src, index, ASPattern.IMPORT[0], ASPattern.IMPORT[1]);
+                    currToken = ASParser.nextWord(src, index + 1, ASPattern.IMPORT[0], ASPattern.IMPORT[1]);
                     index = currToken.getIndex() - 1;
                     if (currToken.getToken() == null) {
                         throw new Error("Error parsing import.");
@@ -233,7 +228,7 @@ public class ASParser {
                 index = currToken.getIndex();
                 if (src.charAt(index) == ':') {
                     currToken = ASParser.nextWord(src, index, ASPattern.VARIABLE_TYPE[0], ASPattern.VARIABLE_TYPE[1]);
-                    index = currToken.getIndex();
+                    index = currToken.getIndex() - 1;
                     String type = currToken.getToken();
                     if (type.equals(cls.getClassName())) {
                         // Model type
@@ -243,16 +238,23 @@ public class ASParser {
 
                     Log.debug("---->Variable type for " + currMember.getName() + " declared as: " + currToken.getToken());
                 }
-                currToken = ASParser.nextWord(src, index, ASPattern.ASSIGN_START[0], ASPattern.ASSIGN_START[1]);
-                if (currToken.getToken().equals(Constants.EQUAL_OPERATOR)) {
-                    //Use all characters after self symbol to set value
-                    index = currToken.getIndex();
-                    tmpArr = extractUpTo(src, index, "[;\r\n]");
-                    //Store value
-                    currMember.setValue(tmpArr[0].trim());
-                    index = Integer.parseInt(tmpArr[1]);
-
-                    cls.getMembersWithAssignments().add(currMember);
+                // Check arguments assign
+                if (argumentCheck(src, index)) {
+                    currToken = ASParser.nextWord(src, index, ASPattern.ASSIGN_START[0], ASPattern.ASSIGN_START[1]);
+                    if (currToken.getToken().equals(Constants.EQUAL_OPERATOR)) {
+                        //Use all characters after self symbol to set value
+                        index = currToken.getIndex();
+                        tmpArr = extractUpTo(src, index, "[;\r\n]");
+                        //Store value
+                        currMember.setValue(tmpArr[0].trim());
+                        index = Integer.parseInt(tmpArr[1]) - 1;
+                        // Check initialize model variable
+                        if(StringUtils.isMatched(Constants.MODEL_VARIABLE_PATTERN, currMember.getValue())) {
+                            currMember.setValue(" new " + currMember.getType() + "()");
+                        }
+                        cls.getMembersWithAssignments().add(currMember);
+                        Log.debug("---->Variable with assignment value: " + tmpArr[0]);
+                    }
                 }
 
                 //Store and delete current member and exit
@@ -605,170 +607,150 @@ public class ASParser {
             tmpMember = ASParser.checkStack(stack, currToken.getToken()); //<-Check the stack for a member with this identifier already
             index = currToken.getIndex();
             if (!StringUtils.isNullOrEmpty(currToken.getToken())) {
-                if (currToken.getToken().equals("function")) {
-                    ASToken t1 = nextWord(fnText, index, ASPattern.VARIABLE[0], ASPattern.VARIABLE[1]);
-                    int t2 = fnText.indexOf('(', index);
-                    //If the parenthesis si less than the last index of the next parsed variable name
-                    result += (t2 < t1.getIndex()) ? "function" : "function " + t1.getToken();
-                    tmpParse = extractBlock(fnText, index, "(", ")"); //Parse out argument block
-                    index = Integer.parseInt(tmpParse[1]); //Update index
-                    tmpArgs = parseArguments(tmpParse[0]); //Extract arg types
-                    //Join the args together without types
-                    result += "(" + getListArgument(tmpArgs) + ")";
-                    tmpParse = extractBlock(fnText, index, "{", "}"); //Extract function block
-                    index = Integer.parseInt(tmpParse[1]) - 1; //Update index
-                    stack.addAll(tmpArgs);
-                    tmpParse = parseFunc(cls, tmpParse[0], stack, statFlag); //Recurse into function
-                    result += " " + tmpParse[0];
+
+                if (currToken.getToken().equals("this"))
+                {
+                    //No need to perform any extra checks on the subsequent token
+                    tmpStatic = false;
+                    tmpClass = cls;
+                    objBuffer += currToken.getToken();
+                    result += currToken.getToken();
                 }
                 else {
-                    if (currToken.getToken().equals("this"))
-                    {
-                        //No need to perform any extra checks on the subsequent token
-                        tmpStatic = false;
-                        tmpClass = cls;
-                        objBuffer += currToken.getToken();
-                        result += currToken.getToken();
+                    if (cls.getClassMap().get(currToken.getToken()) != null
+                            && cls.getParentDefinition() != cls.getClassMap().get(currToken.getToken())
+                            && !(justCreatedVar && currToken.getExtra().matches(":\\s*"))) {
+                        // If this is a token that matches a class from a potential import statement, store it in the filtered classMap
+                        cls.getClassMapFiltered().put(currToken.getToken(), cls.getClassMap().get(currToken.getToken()));
                     }
-                    else {
-                        if (cls.getClassMap().get(currToken.getToken()) != null
-                                && cls.getParentDefinition() != cls.getClassMap().get(currToken.getToken())
-                                && !(justCreatedVar && currToken.getExtra().matches(":\\s*"))) {
-                            // If this is a token that matches a class from a potential import statement, store it in the filtered classMap
-                            cls.getClassMapFiltered().put(currToken.getToken(), cls.getClassMap().get(currToken.getToken()));
-                        }
-                        tmpStatic = (cls.getOrgClassName().equals(currToken.getToken())
-                                || cls.retrieveField(currToken.getToken(), true) != null);
+                    tmpStatic = (cls.getOrgClassName().equals(currToken.getToken())
+                            || cls.retrieveField(currToken.getToken(), true) != null);
 
-                        //Find field in class, then make sure we didn't already have a local member defined with this name, and skip next block if static since the definition is the class itself
-                        //Note: tmpMember needs to be checked, if something is in there it means we have a variable with the same name in local scope
-                        if (cls.retrieveField(currToken.getToken(), tmpStatic) != null
-                                && !cls.getClassName().equals(currToken.getToken())
-                                && tmpMember == null && !(prevToken != null
-                                && prevToken.getToken().equals("var"))) {
-                            tmpMember = cls.retrieveField(currToken.getToken(), tmpStatic); //<-Reconciles the type of the current variable
-                            {
-                                if (tmpStatic) {
-                                    objBuffer += (cls.getClassName().equals(currToken.getToken())) ? currToken.getToken() : cls.getClassName() + "." + currToken.getToken();
-                                    result += (cls.getClassName().equals(currToken.getToken())) ? currToken.getToken() : cls.getClassName() + "." + currToken.getToken();
-                                } else {
-                                    objBuffer += currToken.getToken();
-                                    result += currToken.getToken();
-                                }
-                            }
-                        }
-                        else {
-                            //Likely a local variable, argument, or static reference
-                            objBuffer += currToken.getToken();
-                            // Check model variable
-                            if (prevToken != null
-                                    && ReservedWords.AS.equals(prevToken.getToken())
-                                    && currToken.getToken().equals(cls.getClassName())) {
-                                result = result.substring(0, result.indexOf(Constants.EQUAL_OPERATOR) + 1 + 1); //Extra space
-                                result += currToken.getToken() + ReservedWords.MODEL + "()";
-                                index = currToken.getIndex();
-                            } if (prevToken != null
-                                    && ReservedWords.NEW.equals(prevToken.getToken())
-                                    && fnText.charAt(index) == ';') {
-                                result += currToken.getToken() + "()";
-                            }
-                            else {
+                    //Find field in class, then make sure we didn't already have a local member defined with this name, and skip next block if static since the definition is the class itself
+                    //Note: tmpMember needs to be checked, if something is in there it means we have a variable with the same name in local scope
+                    if (cls.retrieveField(currToken.getToken(), tmpStatic) != null
+                            && !cls.getClassName().equals(currToken.getToken())
+                            && tmpMember == null && !(prevToken != null
+                            && prevToken.getToken().equals("var"))) {
+                        tmpMember = cls.retrieveField(currToken.getToken(), tmpStatic); //<-Reconciles the type of the current variable
+                        {
+                            if (tmpStatic) {
+                                objBuffer += (cls.getClassName().equals(currToken.getToken())) ? currToken.getToken() : cls.getClassName() + "." + currToken.getToken();
+                                result += (cls.getClassName().equals(currToken.getToken())) ? currToken.getToken() : cls.getClassName() + "." + currToken.getToken();
+                            } else {
+                                objBuffer += currToken.getToken();
                                 result += currToken.getToken();
                             }
                         }
-                        if (tmpStatic) {
-                            //Just use the class itself, we will reference fields from it. If parser injected the static prefix manually, we'll try to determome the type of var instead
-                            tmpClass = (cls.getClassName().equals(currToken.getToken())) ? cls : (tmpMember != null) ? cls.getClassMap().get(tmpMember.getType()) : null;
-                        } else {
-                            //Use the member's type to determine the class it's mapped to
-                            tmpClass = (tmpMember != null && tmpMember.getType() != null && !tmpMember.getType().equals("*")) ? cls.getClassMap().get(tmpMember.getType()) : null;
-                            //If no mapping was found, this may be a static reference
-                            if (tmpClass == null && cls.getClassMap().get(currToken.getToken()) != null) {
-                                tmpClass = cls.getClassMap().get(currToken.getToken());
-                                tmpStatic = true;
-                            }
+                    }
+                    else {
+                        //Likely a local variable, argument, or static reference
+                        objBuffer += currToken.getToken();
+                        // Check model variable
+                        if (prevToken != null
+                                && ReservedWords.AS.equals(prevToken.getToken())
+                                && currToken.getToken().equals(cls.getClassName())) {
+                            result = result.substring(0, result.indexOf(Constants.EQUAL_OPERATOR) + 1 + 1); //Extra space
+                            result += "new " + currToken.getToken() + ReservedWords.MODEL + "()";
+                            index = currToken.getIndex();
+                        } else if (prevToken != null
+                                && ReservedWords.NEW.equals(prevToken.getToken())
+                                && fnText.charAt(index) == ';') {
+                            result += currToken.getToken() + "()";
                         }
-                        //If tmpClass is null, it's possible we were trying to retrieve a Vector type. Let's fix this:
-                        if (tmpClass == null && tmpMember != null && tmpMember.getType() != null && tmpMember.getType().replace("/Vector\\.<(.*?)>/g", "$1") != tmpMember.getType()) {
-                            //Extract Vector type if necessary by testing regex
-                            tmpClass = cls.getClassMap().get(tmpMember.getType().replace("/Vector\\.<(.*?)>/g", "$1"));
+                        else {
+                            result += currToken.getToken();
                         }
                     }
-                    //We have parsed the current token, and the index sits at the next level down in the object
-                    for (; index < fnText.length(); index++) {
-                        //Loop until we stop parsing a variable declaration
-                        if (fnText.charAt(index) == '.') {
-                            boolean parsingVector = (prevToken != null && prevToken.getToken().equals("new") && currToken.getToken().equals("Vector"));
-                            prevToken = currToken;
-                            if (parsingVector) {
-                                //We need to allow asterix
-                                currToken = ASParser.nextWord(fnText, index, ASPattern.VARIABLE_TYPE[0], ASPattern.VARIABLE_TYPE[1]);
-                            } else {
+                    if (tmpStatic) {
+                        //Just use the class itself, we will reference fields from it. If parser injected the static prefix manually, we'll try to determome the type of var instead
+                        tmpClass = (cls.getClassName().equals(currToken.getToken())) ? cls : (tmpMember != null) ? cls.getClassMap().get(tmpMember.getType()) : null;
+                    } else {
+                        //Use the member's type to determine the class it's mapped to
+                        tmpClass = (tmpMember != null && tmpMember.getType() != null && !tmpMember.getType().equals("*")) ? cls.getClassMap().get(tmpMember.getType()) : null;
+                        //If no mapping was found, this may be a static reference
+                        if (tmpClass == null && cls.getClassMap().get(currToken.getToken()) != null) {
+                            tmpClass = cls.getClassMap().get(currToken.getToken());
+                            tmpStatic = true;
+                        }
+                    }
+                    //If tmpClass is null, it's possible we were trying to retrieve a Vector type. Let's fix this:
+                    if (tmpClass == null && tmpMember != null && tmpMember.getType() != null && tmpMember.getType().replace("/Vector\\.<(.*?)>/g", "$1") != tmpMember.getType()) {
+                        //Extract Vector type if necessary by testing regex
+                        tmpClass = cls.getClassMap().get(tmpMember.getType().replace("/Vector\\.<(.*?)>/g", "$1"));
+                    }
+                }
+                //We have parsed the current token, and the index sits at the next level down in the object
+                for (; index < fnText.length(); index++) {
+                    //Loop until we stop parsing a variable declaration
+                    if (fnText.charAt(index) == '.') {
+                        boolean parsingVector = (prevToken != null && prevToken.getToken().equals("new") && currToken.getToken().equals("Vector"));
+                        prevToken = currToken;
+                        if (parsingVector) {
+                            //We need to allow asterix
+                            currToken = ASParser.nextWord(fnText, index, ASPattern.VARIABLE_TYPE[0], ASPattern.VARIABLE_TYPE[1]);
+                        } else {
+                            currToken = ASParser.nextWord(fnText, index, ASPattern.VARIABLE[0], ASPattern.VARIABLE[1]);
+                        }
+                        //Check Datetime type
+                        if (isDateTimeVariable(cls, objBuffer)) {
+                            // Get '=' token
+                            ASToken tmpToken = ASParser.nextWord(fnText, index, ASPattern.VARIABLE[0], ASPattern.VARIABLE[1]);
+                            if (tmpToken.getToken().equals(ASKeyword.FORMATSTRING_METHOD)) {
+                                index = tmpToken.getIndex();
+                                // Get value token
                                 currToken = ASParser.nextWord(fnText, index, ASPattern.VARIABLE[0], ASPattern.VARIABLE[1]);
-                            }
-                            //Check Datetime type
-                            if (isDateTimeVariable(cls, objBuffer)) {
-                                // Get '=' token
-                                ASToken tmpToken = ASParser.nextWord(fnText, index, ASPattern.VARIABLE[0], ASPattern.VARIABLE[1]);
-                                if (tmpToken.getToken().equals(ASKeyword.FORMATSTRING_METHOD)) {
-                                    index = tmpToken.getIndex();
-                                    // Get value token
-                                    currToken = ASParser.nextWord(fnText, index, ASPattern.VARIABLE[0], ASPattern.VARIABLE[1]);
-                                    index = currToken.getIndex();
-                                    // Convert datetime
-                                    if (fnText.charAt(index) == '"') {
-                                        result += " = new SimpleDateFormat(\"" + currToken.getToken() + "\")";
-                                        index++;
-                                    } else {
-                                        result += " = new SimpleDateFormat(" + currToken.getExtra() + ")";
-                                    }
-                                    index--;
-                                    break;
-                                } else {
-                                    result += currToken.getExtra();
-                                    result += currToken.getToken();
-                                    index = currToken.getIndex();
-                                }
-                            }
-                            else {
-                                result += currToken.getExtra(); //<-Puts all other non-identifier characters into the buffer first
                                 index = currToken.getIndex();
-                                if (tmpClass != null) {
-                                    //This means we are coming from a typed variable
-                                    tmpField = tmpClass.retrieveField(currToken.getToken(), tmpStatic);
-                                    if (tmpField != null) {
-                                        //console.log("parsing: " + tmpField.name + ":" + tmpField.getType())
-                                        //We found a field that matched this value within the class
-                                        if (tmpField instanceof ASFunction) {
-                                            if (tmpField.getSubType() != null && (tmpField.getSubType().equals("get") || tmpField.getSubType().equals("set"))) {
-                                                tmpPeek = ASParser.lookAhead(fnText, index);
-                                                if (tmpPeek != null) {
-                                                    //Handle differently if we are assigning a setter
-                                                    objBuffer += ".get_" + currToken.getToken() + "()";
-                                                    result += "set_" + currToken.getToken() + "(";
-                                                    index = tmpPeek.getEndIndex();
-                                                    if (tmpPeek.getToken().equals("++")) {
-                                                        result += objBuffer + " + 1";
-                                                    } else if (tmpPeek.getToken().equals("--")) {
-                                                        result += objBuffer + " - 1";
-                                                    } else {
-                                                        tmpParse = parseFunc(cls, tmpPeek.getExtracted(), stack, false); //Recurse into the assignment to parse vars
-                                                        if (tmpPeek.getToken().equals("=")) {
-                                                            result += tmpParse[0].trim();
-                                                        } else {
-                                                            result += objBuffer + " " + tmpPeek.getToken().charAt(0) + " (" + tmpParse[0] + ")";
-                                                        }
-                                                    }
-                                                    result += ")";
+                                // Convert datetime
+                                if (fnText.charAt(index) == '"') {
+                                    result += " = new SimpleDateFormat(\"" + currToken.getToken() + "\")";
+                                    index++;
+                                } else {
+                                    result += " = new SimpleDateFormat(" + currToken.getExtra() + ")";
+                                }
+                                index--;
+                                break;
+                            } else {
+                                result += currToken.getExtra();
+                                result += currToken.getToken();
+                                index = currToken.getIndex();
+                            }
+                        }
+                        else {
+                            result += currToken.getExtra(); //<-Puts all other non-identifier characters into the buffer first
+                            index = currToken.getIndex();
+                            if (tmpClass != null) {
+                                //This means we are coming from a typed variable
+                                tmpField = tmpClass.retrieveField(currToken.getToken(), tmpStatic);
+                                if (tmpField != null) {
+                                    //console.log("parsing: " + tmpField.name + ":" + tmpField.getType())
+                                    //We found a field that matched this value within the class
+                                    if (tmpField instanceof ASFunction) {
+                                        if (tmpField.getSubType() != null && (tmpField.getSubType().equals("get") || tmpField.getSubType().equals("set"))) {
+                                            tmpPeek = ASParser.lookAhead(fnText, index);
+                                            if (tmpPeek != null) {
+                                                //Handle differently if we are assigning a setter
+                                                objBuffer += ".get_" + currToken.getToken() + "()";
+                                                result += "set_" + currToken.getToken() + "(";
+                                                index = tmpPeek.getEndIndex();
+                                                if (tmpPeek.getToken().equals("++")) {
+                                                    result += objBuffer + " + 1";
+                                                } else if (tmpPeek.getToken().equals("--")) {
+                                                    result += objBuffer + " - 1";
                                                 } else {
-                                                    objBuffer += ".get_" + currToken.getToken() + "()";
-                                                    result += "get_" + currToken.getToken() + "()";
+                                                    tmpParse = parseFunc(cls, tmpPeek.getExtracted(), stack, false); //Recurse into the assignment to parse vars
+                                                    if (tmpPeek.getToken().equals("=")) {
+                                                        result += tmpParse[0].trim();
+                                                    } else {
+                                                        result += objBuffer + " " + tmpPeek.getToken().charAt(0) + " (" + tmpParse[0] + ")";
+                                                    }
                                                 }
-                                                //console.log("set get flag: " + currToken.getToken());
+                                                result += ")";
                                             } else {
-                                                objBuffer += "." + currToken.getToken();
-                                                result += currToken.getToken();
+                                                objBuffer += ".get_" + currToken.getToken() + "()";
+                                                result += "get_" + currToken.getToken() + "()";
                                             }
+                                            //console.log("set get flag: " + currToken.getToken());
                                         } else {
                                             objBuffer += "." + currToken.getToken();
                                             result += currToken.getToken();
@@ -776,39 +758,42 @@ public class ASParser {
                                     } else {
                                         objBuffer += "." + currToken.getToken();
                                         result += currToken.getToken();
-                                        //console.log("appened typed: " + currToken.getToken());
-                                    }
-                                    //Update the type if this is not a static prop
-                                    if (tmpClass != null && tmpField != null && tmpField.getType() != null && !tmpField.getType().equals("*")) {
-                                        //Extract Vector type if necessary by testing regex
-                                        tmpClass = (tmpField.getType().replaceFirst("Vector\\.<(.*?)>", "$1") != tmpField.getType())
-                                                ? tmpClass.getClassMap().get(tmpField.getType().replaceFirst("Vector\\.<(.*?)>", "$1")) : tmpClass.getClassMap().get(tmpField.getType());
-                                    } else {
-                                        tmpClass = null;
                                     }
                                 } else {
-                                    //console.log("appened untyped: " + currToken.getToken());
                                     objBuffer += "." + currToken.getToken();
                                     result += currToken.getToken();
+                                    //console.log("appened typed: " + currToken.getToken());
                                 }
+                                //Update the type if this is not a static prop
+                                if (tmpClass != null && tmpField != null && tmpField.getType() != null && !tmpField.getType().equals("*")) {
+                                    //Extract Vector type if necessary by testing regex
+                                    tmpClass = (tmpField.getType().replaceFirst("Vector\\.<(.*?)>", "$1") != tmpField.getType())
+                                            ? tmpClass.getClassMap().get(tmpField.getType().replaceFirst("Vector\\.<(.*?)>", "$1")) : tmpClass.getClassMap().get(tmpField.getType());
+                                } else {
+                                    tmpClass = null;
+                                }
+                            } else {
+                                //console.log("appened untyped: " + currToken.getToken());
+                                objBuffer += "." + currToken.getToken();
+                                result += currToken.getToken();
                             }
-                        } else if (fnText.charAt(index) == '[') {
-                            //We now have to recursively parse the inside of this open bracket
-                            tmpParse = extractBlock(fnText, index, "[", "]");
-                            index = Integer.parseInt(tmpParse[1]);
-                            tmpParse = parseFunc(cls, tmpParse[0], stack, false); //Recurse into the portion that was extracted
-                            //console.log("recursed into: " + tmpParse[0]);
-                            objBuffer += tmpParse[0]; //Append this text to the object buffer string so we can remember the variable we have accessed
-                            result += tmpParse[0];
                         }
-                        tmpStatic = false; //Static can no longer be possible after the second field
-                        if (!String.valueOf(fnText.charAt(index)).matches("[.\\[]")) {
-                            objBuffer = ""; //Clear out the current object buffer
-                            index--;
-                            break;
-                        }
-                        index--;
+                    } else if (fnText.charAt(index) == '[') {
+                        //We now have to recursively parse the inside of this open bracket
+                        tmpParse = extractBlock(fnText, index, "[", "]");
+                        index = Integer.parseInt(tmpParse[1]);
+                        tmpParse = parseFunc(cls, tmpParse[0], stack, false); //Recurse into the portion that was extracted
+                        //console.log("recursed into: " + tmpParse[0]);
+                        objBuffer += tmpParse[0]; //Append this text to the object buffer string so we can remember the variable we have accessed
+                        result += tmpParse[0];
                     }
+                    tmpStatic = false; //Static can no longer be possible after the second field
+                    if (!String.valueOf(fnText.charAt(index)).matches("[.\\[]")) {
+                        objBuffer = ""; //Clear out the current object buffer
+                        index--;
+                        break;
+                    }
+                    index--;
                 }
             } else {
                 index = currToken.getIndex() - 1;
@@ -817,13 +802,18 @@ public class ASParser {
         //Now cleanup variable types
         // Convert catch statement
         result = result.replaceAll(Constants.CATCH_PATTERN, "$2Exception $3$6");
-        // Convert log info method
-        result = result.replaceAll(Constants.TRACE_INFO_PATTERN, ReservedWords.WRITEINFOLOG + "$3$4$5");
         // Convert log error method
-        result = result.replaceAll(Constants.TRACE_ERROR_PATTERN, ReservedWords.WRITEERRORLOG + "$3$4$5");
+        result = result.replaceAll(Constants.TRACE_ERROR_PATTERN, ReservedWords.WRITEERRORLOG + "$3$5$6");
+        // Convert log info method
+        result = result.replaceAll(Constants.TRACE_INFO_PATTERN, ReservedWords.WRITEINFOLOG + "$3$4");
         // Convert 「.text」不要
         result = result.replaceAll(Constants.TEXT_PP_PATTERN, "$3$4");
-
+        // Narrow function
+        result = result.replaceAll(Constants.NARROW_FUNCTION_PATTERN, "$3 ->");
+        // Parse int function
+        result = result.replaceAll(Constants.PARSE_INT_PATTERN, "Integer.parseInt$3$4$5");
+        // Initialize for statement
+        result = result.replaceAll(Constants.INIT_FOR_PATTERN, "$2$3 = $3$4");
         // convert variable
         result = result.replaceAll(Constants.FUNC_VARIABLE_PATTERN, "$6$3");
         return new String[]{result, String.valueOf(index)};
@@ -1079,7 +1069,18 @@ public class ASParser {
         }
         return value;
     }
-
+    private boolean argumentCheck(String src, int startIndex) {
+        int endIndex = src.length();
+        if (endIndex - startIndex > 10) {
+            endIndex = 10;
+        }
+        for (int i = startIndex; i < startIndex + endIndex; i++) {
+            if (src.charAt(i) == '=') {
+                return true;
+            }
+        }
+        return false;
+    }
     /**
      * Remove '_AS' class suffix
      * ex: MG1001001_01_000_AS => MG1001001_01_000

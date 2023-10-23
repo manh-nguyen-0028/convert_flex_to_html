@@ -12,6 +12,7 @@ import org.jsoup.parser.Parser;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.*;
 import service.ConvertMxmlService;
+import service.JsoupService;
 import service.XmlService;
 import utils.FileUtils;
 import utils.Log;
@@ -83,7 +84,7 @@ public class MxmlConvert {
 
                 // Get mapping config
                 if (doc.hasChildNodes()) {
-                    new ConvertMxmlService(hmNodeMap, hmAttributeMap, xmlFileName, elementReplace).printNote(elementRootParser, true, doc.getChildNodes(), baseHtml, html);
+                    new ConvertMxmlService(hmNodeMap, hmAttributeMap, xmlFileName, elementReplace).handleNodeXml(elementRootParser, true, doc.getChildNodes(), baseHtml, html);
                 }
 
                 StringBuilder htmlContent = new StringBuilder();
@@ -95,6 +96,8 @@ public class MxmlConvert {
                 handleElementReplace(baseHtml, elementReplace);
 
                 org.jsoup.nodes.Document jsoupDoc = Jsoup.parse(baseHtml.toString(), "UTF-8", Parser.xmlParser());
+                JsoupService.handleTagJsoup(jsoupDoc, elementReplace);
+
                 htmlWriter.write(jsoupDoc.toString());
                 Log.log("Html file created successfully.");
 
@@ -126,15 +129,18 @@ public class MxmlConvert {
         if (isGenerateHtml) {
             html.append(elementParser.getStartTag());
 
-            StringBuilder cssElementInline = ConvertMxmlService.createCssElementInline(elementParser.getCssParsers());
+            StringBuilder cssElement = ConvertMxmlService.createCssElement(elementParser.getCssParsers());
             StringBuilder attributeElement = ConvertMxmlService.createAttributeElement(elementParser);
 
             html.append(attributeElement);
 
-            html.append(cssElementInline);
+            if (org.apache.commons.lang3.StringUtils.isNotEmpty(cssElement)) {
+                StringBuilder cssElementInline = ConvertMxmlService.createCssElementInline(elementParser.getCssParsers());
+                html.append(cssElementInline);
+            }
 
             html.append(elementParser.getEndStartTag());
-            
+
             if (CollectionUtils.isNotEmpty(elementParser.getChildList())) {
                 for (HtmlElementParser item : elementParser.getChildList()) {
                     printElement(html, item);

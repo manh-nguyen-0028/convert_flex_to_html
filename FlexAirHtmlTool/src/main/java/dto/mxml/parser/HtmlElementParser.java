@@ -2,9 +2,13 @@ package dto.mxml.parser;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Setter
 @Getter
@@ -17,6 +21,7 @@ public class HtmlElementParser {
     private String text;
     private String endTag;
     private List<AttributeParser> attributeParsers = new ArrayList<>();
+    private Map<String, AttributeParser> mapAttributeParser = new HashMap();
     private List<CssParser> cssParsers = new ArrayList<>();
     private boolean isHadAttribute;
     private boolean isHadCss;
@@ -29,5 +34,12 @@ public class HtmlElementParser {
         this.endStartTag = endStartTag;
         this.endTag = endTag;
         this.isGenerateHtml = isGenerateHtml;
+    }
+
+    public Map<String, AttributeParser> getMapAttributeParser() {
+        if (CollectionUtils.isNotEmpty(this.attributeParsers)) {
+            this.mapAttributeParser = this.attributeParsers.stream().collect(Collectors.toMap(AttributeParser::getKey, attribute -> attribute));
+        }
+        return mapAttributeParser;
     }
 }

@@ -21,45 +21,51 @@ import java.util.*;
 public class ASConvert {
     private String asFileName;
     private String javaFileName;
-    public void convertScriptInline(String scriptInline, Map<String, List<String>> xmlObjectInline, String saveFile, String srcPath) {
-        Log.log("START: Convert Script inline-------------------------------");
-        // Prepare parameter
-        ParserOptions parserOptions = new ParserOptions();
-        parserOptions.setIgnoreFlash(false);
-        parserOptions.setSafeRequire(false);
-        Path path = Paths.get(srcPath);
-        asFileName = path.getFileName().toString().split(Constants.MXML_EXT)[0];
-        // Read the contents of each file in the input folder and save to list of path package.
-        ASParser parser = new ASParser(scriptInline, asFileName);
+    private String packageName;
+    private String className;
+    public void convertScriptInline(String scriptInline, Map<String, List<String>> xmlObjectInline, String saveFile, String srcPath, Map<String, String> pkgFileMapping) {
+        try {
+            Log.log("START: Convert Script inline-------------------------------");
+            // Prepare parameter
+            ParserOptions parserOptions = new ParserOptions();
+            parserOptions.setIgnoreFlash(false);
+            parserOptions.setSafeRequire(false);
+            Path path = Paths.get(srcPath);
+            asFileName = path.getFileName().toString().split(Constants.MXML_EXT)[0];
+            // Read the contents of each file in the input folder and save to list of path package.
+            ASParser parser = new ASParser(scriptInline, asFileName);
 
-        //First, parse through the file-based classes and get the basic information
-        Log.log("Analyzing class path: " + parser.getClassPath());
-        Stack<String> stack = new Stack<>();
-        stack.push(ASParseState.CLASS);
-        ASClass rawClass = parser.parse(parserOptions, stack);
-        // Create package
-        rawClass.process();
-        // Read class template
-        String classTemplate = readClassTemplate("templates/classmodel");
-        //classTemplate = classTemplate.replace("{{package}}", rawClass.getPackageName());
-        classTemplate = classTemplate.replace("{{imports}}", String.join("", rawClass.getImports()));
+            //First, parse through the file-based classes and get the basic information
+            Log.log("Analyzing class path: " + parser.getClassPath());
+            Stack<String> stack = new Stack<>();
+            stack.push(ASParseState.CLASS);
+            ASClass rawClass = parser.parse(parserOptions, stack);
+            // Create package
+            rawClass.process();
+            // Read class template
+            String classTemplate = readClassTemplate("templates/classmodel");
+            classTemplate = classTemplate.replace("{{package}}", pkgFileMapping.get(asFileName));
+            classTemplate = classTemplate.replace("{{imports}}", String.join("", rawClass.getImports()));
 
-        // Generate Controller Class
-        javaFileName = rawClass.getClassName();
-        classTemplate = classTemplate.replace("{{classname}}", javaFileName);
-        // Generate Created date
-        classTemplate = classTemplate.replace("{{created_dt}}", StringUtils.getDateYYYYMMDD());
+            // Generate Controller Class
+            javaFileName = rawClass.getClassName();
+            classTemplate = classTemplate.replace("{{classname}}", javaFileName);
+            // Generate Created date
+            classTemplate = classTemplate.replace("{{created_dt}}", StringUtils.getDateYYYYMMDD());
 
-        // Generate controller source
-        String compileSource = rawClass.generateModelString();
-        classTemplate = classTemplate.replace("{{classSource}}", compileSource);
+            // Generate controller source
+            String compileSource = rawClass.generateModelString(xmlObjectInline);
+            classTemplate = classTemplate.replace("{{classSource}}", compileSource);
 
-        String outputFile = saveFile + File.separator + javaFileName + Constants.JAVA_EXT;
-        Log.log("Save output file: " + outputFile);
-        if (!StringUtils.isNullOrEmpty(classTemplate)) {
-            writeFileUTF8(outputFile, classTemplate);
+            String outputFile = saveFile + File.separator + javaFileName + Constants.JAVA_EXT;
+            Log.log("Save output file: " + outputFile);
+            if (!StringUtils.isNullOrEmpty(classTemplate)) {
+                writeFileUTF8(outputFile, classTemplate);
+            }
+            Log.log("END: Convert Script inline-------------------------------");
+        }catch (Exception e) {
+            Log.log(e.getMessage());
         }
-        Log.log("END: Convert Script inline-------------------------------");
     }
     public void convert(String inputPath, String outputPath) {
         Log.log("START: Convert Actionscript-------------------------------");
@@ -128,6 +134,9 @@ public class ASConvert {
         // Generate controller source
         String compileSource = rawClass.generateString();
         classTemplate = classTemplate.replace("{{classsource}}", compileSource);
+        //Set package and class name for model class
+        setPackageName(rawClass.getPackageName());
+        setClassName(rawClass.getClassName());
         // Set result
         return classTemplate;
     }
@@ -159,9 +168,11 @@ public class ASConvert {
             //Creating a BufferedWriter object
             BufferedWriter writer = Files.newBufferedWriter(Paths.get(strFilePath), StandardCharsets.UTF_8);
             //Appending the UTF-8 String to the file
-            writer.append(text);
+            writer.write(text);
             //Flushing data to the file
             writer.flush();
+            writer.close();
+            Log.debug("Save output file: Success");
         }catch (Exception ex) {
             Log.warn(ex.getMessage());
         }
@@ -184,5 +195,21 @@ public class ASConvert {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
     }
 }

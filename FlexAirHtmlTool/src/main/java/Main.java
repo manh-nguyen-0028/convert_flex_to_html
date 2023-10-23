@@ -7,6 +7,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -43,14 +44,23 @@ public class Main {
         String inputPath = cmd.getOptionValue("input");
         // Get all files from input folder
         Map<String, List<String>> files = FileUtils.getAllFiles(inputPath);
+        Map<String, String> pkgFileMapping = new HashMap<>();
         // parse all files
         for (String pk: files.keySet()) {
             List<String> filePath = files.get(pk);
             String savePath = outputPath + File.separator + pk;
             // Create if output folder is not exist
-            FileUtils.createIfNotExistFolder(outputPath);
+            FileUtils.createIfNotExistFolder(savePath);
             // mxml files
             List<String> mxmlFiles = filePath.stream().filter(f -> f.endsWith(Constants.MXML_EXT)).collect(Collectors.toList());
+            // as files
+            List<String> asFiles = filePath.stream().filter(f -> f.endsWith(Constants.AS_EXT)).collect(Collectors.toList());
+            for (String file: asFiles) {
+                asConvert = new ASConvert();
+                // Action script convert
+                asConvert.convert(file, savePath);
+                pkgFileMapping.put(asConvert.getClassName(), asConvert.getPackageName());
+            }
             //TODO parse mxml files
             for (String file: mxmlFiles) {
                 // Mxml convert
@@ -58,15 +68,7 @@ public class Main {
                 mxmlConvert.convert(file, savePath);
                 // Script inline convert
                 ASConvert asConvertInline = new ASConvert();
-                asConvertInline.convertScriptInline(mxmlConvert.getScriptInline(), mxmlConvert.getXmlObjectInline(), savePath, file);
-            }
-
-            // as files
-            List<String> asFiles = filePath.stream().filter(f -> f.endsWith(Constants.AS_EXT)).collect(Collectors.toList());
-            for (String file: asFiles) {
-                asConvert = new ASConvert();
-                // Action script convert
-                asConvert.convert(file, savePath);
+                asConvertInline.convertScriptInline(mxmlConvert.getScriptInline(), mxmlConvert.getXmlObjectInline(), savePath, file, pkgFileMapping);
             }
         }
     }
