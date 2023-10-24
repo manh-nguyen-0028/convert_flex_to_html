@@ -2,7 +2,7 @@ package utils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import service.XmlService;
+import mxml.service.XmlService;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;

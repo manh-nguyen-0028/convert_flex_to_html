@@ -1,8 +1,8 @@
-package service;
+package mxml.service;
 
-import dto.mxml.mapping.ComponentMap;
-import dto.mxml.mapping.PropertyMap;
-import dto.mxml.mapping.TransformerSpecialElement;
+import mxml.dto.mapping.ComponentMap;
+import mxml.dto.mapping.PropertyMap;
+import mxml.dto.mapping.TransformerSpecialElement;
 import utils.JsonUtils;
 
 import java.util.HashMap;
@@ -37,7 +37,6 @@ public class XmlService {
 
     public static List<TransformerSpecialElement> getTransformerSpecialElement() {
         String filePath = "json/transformer-special-element-attribute.json";
-        List<TransformerSpecialElement> specialElementList = new JsonUtils<TransformerSpecialElement>().readJsonFile(filePath, TransformerSpecialElement.class);
-        return specialElementList;
+        return new JsonUtils<TransformerSpecialElement>().readJsonFile(filePath, TransformerSpecialElement.class);
     }
 }

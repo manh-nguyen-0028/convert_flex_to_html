@@ -1,4 +1,4 @@
-package dto.mxml.parser;
+package mxml.dto.parser;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +21,8 @@ public class HtmlElementParser {
     private String text;
     private String endTag;
     private List<AttributeParser> attributeParsers = new ArrayList<>();
-    private Map<String, AttributeParser> mapAttributeParser = new HashMap();
+    private List<AttributeParser> attributeForChild = new ArrayList<>();
+    private Map<String, AttributeParser> mapAttributeParser = new HashMap<>();
     private List<CssParser> cssParsers = new ArrayList<>();
     private boolean isHadAttribute;
     private boolean isHadCss;

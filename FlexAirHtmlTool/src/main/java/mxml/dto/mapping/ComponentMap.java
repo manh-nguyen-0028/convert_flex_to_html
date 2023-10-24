@@ -1,4 +1,4 @@
-package dto.mxml.mapping;
+package mxml.dto.mapping;
 
 import lombok.Getter;
 import lombok.Setter;

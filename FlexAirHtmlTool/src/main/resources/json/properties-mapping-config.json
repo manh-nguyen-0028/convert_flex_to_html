@@ -140,6 +140,13 @@
     "type": "property"
   },
   {
+    "name": "allowMultipleSelection",
+    "startTag": "selectionMode=\"multiple\"",
+    "endTag": "",
+    "valueCompareTrue": true,
+    "type": "property"
+  },
+  {
     "name": "dragEnabled",
     "startTag": "draggable",
     "endTag": "",
@@ -149,6 +156,13 @@
   {
     "name": "dragDrop",
     "startTag": "dragListener",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "property"
+  },
+  {
+    "name": "dataField",
+    "startTag": "value",
     "endTag": "",
     "valueCompareTrue": false,
     "type": "property"

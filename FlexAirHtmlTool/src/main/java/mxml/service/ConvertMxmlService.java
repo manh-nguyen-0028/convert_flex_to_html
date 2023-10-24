@@ -1,15 +1,16 @@
-package service;
+package mxml.service;
 
 import constants.Constants;
-import dto.mxml.mapping.ComponentMap;
-import dto.mxml.mapping.PropertyMap;
-import dto.mxml.mapping.TransformerSpecialElement;
-import dto.mxml.modify.CheckBoxReplace;
-import dto.mxml.modify.ElementReplace;
-import dto.mxml.modify.RadioGroupReplace;
-import dto.mxml.parser.AttributeParser;
-import dto.mxml.parser.CssParser;
-import dto.mxml.parser.HtmlElementParser;
+import mxml.dto.mapping.ComponentMap;
+import mxml.dto.mapping.PropertyMap;
+import mxml.dto.mapping.TransformerSpecialElement;
+import mxml.dto.modify.CheckBoxReplace;
+import mxml.dto.modify.ElementReplace;
+import mxml.dto.modify.RadioGroupReplace;
+import mxml.dto.parser.AttributeParser;
+import mxml.dto.parser.CssParser;
+import mxml.dto.parser.HtmlElementParser;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -63,31 +64,49 @@ public class ConvertMxmlService {
         }
     }
 
-    private void handleNodeMap(HtmlElementParser elementParser, ComponentMap componentMap, Node nodeItem, String currentNodeName, StringBuilder baseHtml, boolean isFirstCanvas, StringBuilder html) {
-        String parentNodeName = elementParser.getNodeName();
-        HtmlElementParser elementChild = new HtmlElementParser(currentNodeName, componentMap.getHtmlTagStart(), componentMap.getHtmlTagStart2(), componentMap.getHtmlTagEnd(), componentMap.getIsGenerateHtml());
-        elementChild.setParentNodeName(elementParser.getNodeName());
-        handleNodeAttributes(nodeItem, elementChild);
-        transformerElementByAttribute(elementChild);
-        handleFirstElement(elementChild, parentNodeName, currentNodeName);
-        handleSpecialElement(elementChild);
-        transformTagHaveAjax(elementChild);
+    private void handleNodeMap(HtmlElementParser parentElement, ComponentMap componentMap, Node nodeItem, String currentNodeName, StringBuilder baseHtml, boolean isFirstCanvas, StringBuilder html) {
+        String parentNodeName = parentElement.getNodeName();
+        HtmlElementParser currentElement = new HtmlElementParser(currentNodeName, componentMap.getHtmlTagStart(), componentMap.getHtmlTagStart2(), componentMap.getHtmlTagEnd(), componentMap.getIsGenerateHtml());
+        currentElement.setParentNodeName(parentElement.getNodeName());
+        handleNodeAttributes(nodeItem, currentElement);
+        transformerElementByAttribute(currentElement);
+        handleFirstElement(currentElement, parentNodeName, currentNodeName);
+        handleSpecialElement(currentElement);
+        transformTagHaveAjax(currentElement);
+        handleAttributeFromParent(currentElement, parentElement);
         if (nodeItem.hasChildNodes()) {
             // loop again if has child nodes
-            handleNodeXml(elementChild, isFirstCanvas, nodeItem.getChildNodes(), baseHtml, html);
+            addPropertyForChild(currentElement);
+            handleNodeXml(currentElement, isFirstCanvas, nodeItem.getChildNodes(), baseHtml, html);
         }
-        elementParser.getChildList().add(elementChild);
+        parentElement.getChildList().add(currentElement);
 
         Log.log("Node Name =" + currentNodeName + " [CLOSE]");
     }
 
+    private void handleAttributeFromParent(HtmlElementParser currentElement, HtmlElementParser parentElement) {
+        if (CollectionUtils.isNotEmpty(parentElement.getAttributeForChild())) {
+            currentElement.getAttributeParsers().addAll(parentElement.getAttributeForChild());
+        }
+    }
+
+    private void addPropertyForChild(HtmlElementParser elementParser) {
+        Map<String, AttributeParser> hmAttribute = elementParser.getMapAttributeParser();
+        if (Constants.MXML_MX_DATA_GRID_COLUMN.equals(elementParser.getNodeName())
+                || Constants.MXML_MX_HEADER_RENDERER.equals(elementParser.getNodeName())
+                || Constants.MXML_MX_COMPONENT.equals(elementParser.getNodeName())) {
+            AttributeParser attributeForChild = hmAttribute.get("value");
+            elementParser.getAttributeForChild().add(attributeForChild);
+        }
+    }
+
     private void handleSpecialElement(HtmlElementParser htmlElementParser) {
-        StringBuilder attributeElement = createAttributeElement(htmlElementParser);
+        StringBuilder attributeElement = createSyntaxAttributeHtml(htmlElementParser);
         StringBuilder cssElement = createCssElement(htmlElementParser.getCssParsers());
         StringBuilder elementParser = createHtmlElementParser(htmlElementParser, attributeElement, cssElement);
         elementParser.append(htmlElementParser.getEndTag());
         String nodeName = htmlElementParser.getNodeName();
-        if ("Controls:ACCRadioButton".equals(nodeName)) {
+        if (Constants.MXML_CONTROLS_ACC_RADIO_BUTTON.equals(nodeName)) {
             Optional<AttributeParser> groupNameOptional = htmlElementParser.getAttributeParsers().stream().filter(itemFilter -> "groupName".equals(itemFilter.getKey())).findFirst();
             if (groupNameOptional.isPresent()) {
                 String groupId = groupNameOptional.get().getValue();
@@ -170,15 +189,15 @@ public class ConvertMxmlService {
         // handle when att = img
         String startTag = propertyMap.getStartTag();
         boolean compareTrueWithValue = propertyMap.isValueCompareTrue();
+        AttributeParser attributeParser = new AttributeParser(startTag, nodeValue);
         if ("src".equals(startTag)) {
             nodeValue = nodeValue.replace("@Embed('", "").replace("')", "");
+            CssParser cssParser = new CssParser("background-image", "url(#{resource['" + nodeValue + "']})");
+            elementParser.getCssParsers().add(cssParser);
+            attributeParser.setUse(false);
         }
-        if (compareTrueWithValue) {
-            if ("true".equals(nodeValue)) {
-                elementParser.getAttributeParsers().add(new AttributeParser(startTag, "true"));
-            }
-        } else {
-            elementParser.getAttributeParsers().add(new AttributeParser(startTag, nodeValue));
+        if (!compareTrueWithValue || (compareTrueWithValue && "true".equals(nodeValue))) {
+            elementParser.getAttributeParsers().add(attributeParser);
         }
         return elementParser;
     }
@@ -192,6 +211,10 @@ public class ConvertMxmlService {
         return elementParser;
     }
 
+    /**
+     * @param cssParsers
+     * @return create syntax css
+     */
     public static StringBuilder createCssElement(List<CssParser> cssParsers) {
         StringBuilder cssBuilder = new StringBuilder();
         // css
@@ -201,30 +224,42 @@ public class ConvertMxmlService {
         return cssBuilder;
     }
 
-    public static StringBuilder createCssElementInline(List<CssParser> cssParsers) {
+    /**
+     * @param cssParsers
+     * @return create syntax css inline html
+     */
+    public static StringBuilder createSyntaxCssInline(List<CssParser> cssParsers) {
         StringBuilder cssElement = createCssElement(cssParsers);
-        StringBuilder cssElementInline = new StringBuilder(Constants.ATTRIBUTE_STYLE + Constants.SYNTAX_EQUAL + Constants.SYNTAX_DOUBLE_QUOTATION);
+        return createSyntaxCssInline(cssElement);
+    }
+
+    /**
+     * @param cssElement
+     * @return create syntax css inline html
+     */
+    public static StringBuilder createSyntaxCssInline(StringBuilder cssElement) {
+        StringBuilder cssElementInline = new StringBuilder(Constants.SYNTAX_SPACE + Constants.ATTRIBUTE_STYLE + Constants.SYNTAX_EQUAL + Constants.SYNTAX_DOUBLE_QUOTATION);
         cssElementInline.append(cssElement).append(Constants.SYNTAX_DOUBLE_QUOTATION);
         return cssElementInline;
     }
 
-    public static StringBuilder createCssElementInline(StringBuilder cssElement) {
-        StringBuilder cssElementInline = new StringBuilder(Constants.ATTRIBUTE_STYLE + Constants.SYNTAX_EQUAL + Constants.SYNTAX_DOUBLE_QUOTATION);
-        cssElementInline.append(cssElement).append(Constants.SYNTAX_DOUBLE_QUOTATION);
-        return cssElementInline;
-    }
-
-    public static StringBuilder createAttributeElement(HtmlElementParser elementParser) {
+    /**
+     * @param elementParser
+     * @return syntax attribute in html
+     */
+    public static StringBuilder createSyntaxAttributeHtml(HtmlElementParser elementParser) {
         StringBuilder attributeBuilder = new StringBuilder();
         // add attribute
         for (AttributeParser attribute : elementParser.getAttributeParsers()) {
-            attributeBuilder
-                    .append(Constants.SYNTAX_SPACE)
-                    .append(attribute.getKey())
-                    .append(Constants.SYNTAX_EQUAL)
-                    .append(Constants.SYNTAX_DOUBLE_QUOTATION)
-                    .append(attribute.getValue())
-                    .append(Constants.SYNTAX_DOUBLE_QUOTATION);
+            if (attribute.isUse()) {
+                attributeBuilder
+                        .append(Constants.SYNTAX_SPACE)
+                        .append(attribute.getKey())
+                        .append(Constants.SYNTAX_EQUAL)
+                        .append(Constants.SYNTAX_DOUBLE_QUOTATION)
+                        .append(attribute.getValue())
+                        .append(Constants.SYNTAX_DOUBLE_QUOTATION);
+            }
         }
 
         return attributeBuilder;
@@ -241,6 +276,14 @@ public class ConvertMxmlService {
         return elementBuilder;
     }
 
+    /**
+     * Handle first element of mxml file
+     * Example:<Containers:ACCCanvas
+     *
+     * @param elementChild
+     * @param parentNodeName
+     * @param currentNodeName
+     */
     private void handleFirstElement(HtmlElementParser elementChild, String parentNodeName, String currentNodeName) {
         if ("First Node".equals(parentNodeName) && (currentNodeName.equals(Constants.MXML_CONTAINERS_ACC_CANVAS) || currentNodeName.equals(Constants.MXML_CONTAINERS_ACC_TITLE_WINDOW))) {
             elementChild.setGenerateHtml(false);
@@ -249,6 +292,8 @@ public class ConvertMxmlService {
                 this.elementReplace.setTitle(parserOptional.get().getValue());
             }
             this.elementReplace.setCssCompositionFirstList(elementChild.getCssParsers());
+            elementChild.setStartTag("<ui:composition");
+            elementChild.setEndTag("</ui:composition");
         }
     }
 
@@ -259,10 +304,9 @@ public class ConvertMxmlService {
     private void transformTagHaveAjax(HtmlElementParser elementParser) {
         AttributeParser attributeParser = elementParser.getMapAttributeParser().get("change");
         if (attributeParser != null) {
-            if ("Controls:ACCCheckBox".equals(elementParser.getNodeName())) {
+            if (Constants.MXML_CONTROLS_ACC_CHECK_BOX.equals(elementParser.getNodeName())) {
                 CheckBoxReplace checkBoxReplace = new CheckBoxReplace();
                 checkBoxReplace.setId(elementParser.getId());
-//                checkBoxReplace.setListener(elementParser.get());
                 checkBoxReplace.setEvent(attributeParser.getKey());
                 this.elementReplace.getCheckBoxReplaces().add(checkBoxReplace);
             }

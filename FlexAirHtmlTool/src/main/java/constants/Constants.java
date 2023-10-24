@@ -23,7 +23,7 @@ public class Constants {
     public static final String SET_CLEAR_FORM_PATTERN = "clearFrame|setFrame|clearForm|setForm";
     public static final String NARROW_FUNCTION_PATTERN = "((function)(\\(\\))(:void))";
     public static final String INIT_FOR_PATTERN = "((for\\s*\\()(reTryCnt\\d*?)(;))";
-    public static final String PARSE_INT_PATTERN ="((int)(\\()(.*)(\\);))";
+    public static final String PARSE_INT_PATTERN = "((int)(\\()(.*)(\\);))";
     public static final String TEXT_PP_PATTERN = "((.text)(\\s*)(=))";
     public static final String SCRIPT_TAG = "mx:Script";
     public static final String XML_TAG = "mx:XML";
@@ -45,6 +45,11 @@ public class Constants {
     // mxml tag
     public static final String MXML_CONTAINERS_ACC_CANVAS = "Containers:ACCCanvas";
     public static final String MXML_CONTAINERS_ACC_TITLE_WINDOW = "Containers:ACCTitleWindow";
+    public static final String MXML_CONTROLS_ACC_CHECK_BOX = "Controls:ACCCheckBox";
+    public static final String MXML_MX_DATA_GRID_COLUMN = "mx:DataGridColumn";
+    public static final String MXML_MX_HEADER_RENDERER = "mx:headerRenderer";
+    public static final String MXML_MX_COMPONENT = "mx:Component";
+    public static final String MXML_CONTROLS_ACC_RADIO_BUTTON = "Controls:ACCRadioButton";
 
     // java type
     public static final String CLASS_CONTROLLER = "Controller";

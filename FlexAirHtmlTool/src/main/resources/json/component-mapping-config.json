@@ -8,29 +8,29 @@
     "htmlTagStart2": "/>",
     "htmlTagStart3": "",
     "isGenerateHtml": true,
-    "htmlTagEnd": "<!-- End of img -->"
+    "htmlTagEnd": ""
   },
   {
     "name": "Containers:ACCCanvas",
     "className": "acc-canvas",
     "styleInFile": false,
     "isHadAttribute": true,
-    "htmlTagStart": "<ui:composition",
+    "htmlTagStart": "<ui:outputPanel",
     "htmlTagStart2": ">",
     "htmlTagStart3": "",
     "isGenerateHtml": true,
-    "htmlTagEnd": "</ui:composition>"
+    "htmlTagEnd": "</ui:outputPanel>"
   },
   {
     "name": "Containers:ACCTitleWindow",
     "className": "acc-title-window",
     "styleInFile": false,
     "isHadAttribute": true,
-    "htmlTagStart": "<ui:composition",
+    "htmlTagStart": "<p:outputPanel",
     "htmlTagStart2": ">",
     "htmlTagStart3": "",
     "isGenerateHtml": true,
-    "htmlTagEnd": "</ui:composition>"
+    "htmlTagEnd": "</p:outputPanel>"
   },
   {
     "name": "Controls:ACCLabel",
@@ -293,7 +293,7 @@
     "htmlTagStart": "",
     "htmlTagStart2": "",
     "htmlTagStart3": "",
-    "isGenerateHtml": true,
+    "isGenerateHtml": false,
     "htmlTagEnd": ""
   },
   {
@@ -304,7 +304,7 @@
     "htmlTagStart": "",
     "htmlTagStart2": "",
     "htmlTagStart3": "",
-    "isGenerateHtml": true,
+    "isGenerateHtml": false,
     "htmlTagEnd": ""
   },
   {

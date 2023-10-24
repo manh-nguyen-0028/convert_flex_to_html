@@ -1,19 +1,19 @@
 package main;
 
 import constants.Constants;
-import dto.mxml.mapping.ComponentMap;
-import dto.mxml.mapping.PropertyMap;
-import dto.mxml.modify.ElementReplace;
-import dto.mxml.modify.RadioGroupReplace;
-import dto.mxml.parser.HtmlElementParser;
+import mxml.dto.mapping.ComponentMap;
+import mxml.dto.mapping.PropertyMap;
+import mxml.dto.modify.ElementReplace;
+import mxml.dto.modify.RadioGroupReplace;
+import mxml.dto.parser.HtmlElementParser;
+import mxml.service.ConvertMxmlService;
+import mxml.service.JsoupService;
+import mxml.service.XmlService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.parser.Parser;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.*;
-import service.ConvertMxmlService;
-import service.JsoupService;
-import service.XmlService;
 import utils.FileUtils;
 import utils.Log;
 import utils.StringUtils;
@@ -29,88 +29,88 @@ import java.util.List;
 import java.util.Map;
 
 public class MxmlConvert {
+
     // Script Inline source code
     private String scriptInline;
     // xml properties list
     private Map<String, List<String>> xmlObjectInline;
 
     public void convert(String inputPath, String outputPath) {
-        try {
-            String cssPath = Paths.get(outputPath, "css").toString();
-            //Create if folder not exist
-            FileUtils.createIfNotExistFolder(cssPath);
-            Path inputFilePath = Paths.get(inputPath);
-            String xmlFileName = inputFilePath.getFileName().toString().split(Constants.MXML_EXT)[0];
 
-            ElementReplace elementReplace = new ElementReplace();
-            elementReplace.setFormName(xmlFileName.replaceAll("_", ""));
+        String cssPath = Paths.get(outputPath, "css").toString();
+        //Create if folder not exist
+        FileUtils.createIfNotExistFolder(cssPath);
+        Path inputFilePath = Paths.get(inputPath);
+        String xmlFileName = inputFilePath.getFileName().toString().split(Constants.MXML_EXT)[0];
 
-            // 1. Read file html base
-            StringBuilder baseHtml = createHtmlBase();
+        ElementReplace elementReplace = new ElementReplace();
+        elementReplace.setFormName(xmlFileName.replace("_", ""));
 
-            // 2. Read file xml then append to htmlNeedAddText
-            try (InputStream is = Files.newInputStream(inputFilePath);
-                 BufferedWriter htmlWriter = Files.newBufferedWriter(Paths.get(outputPath, xmlFileName + Constants.XHTML_EXT));
-                 BufferedWriter cssWriter = Files.newBufferedWriter(Paths.get(cssPath, xmlFileName + Constants.CSS_EXT))) {
+        // 1. Read file html base
+        StringBuilder baseHtml = createHtmlBase();
 
-                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-                Document doc = factory.newDocumentBuilder().parse(is);
+        // 2. Read file xml then append to htmlNeedAddText
+        try (InputStream is = Files.newInputStream(inputFilePath);
+             BufferedWriter htmlWriter = Files.newBufferedWriter(Paths.get(outputPath, xmlFileName + Constants.XHTML_EXT));
+             BufferedWriter cssWriter = Files.newBufferedWriter(Paths.get(cssPath, xmlFileName + Constants.CSS_EXT))) {
 
-                Log.log("Root Element :" + doc.getDocumentElement().getNodeName());
-                Log.log("------");
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            Document doc = factory.newDocumentBuilder().parse(is);
 
-                StringBuilder html = new StringBuilder();
+            Log.log("Root Element :" + doc.getDocumentElement().getNodeName());
+            Log.log("------");
 
-                // style
-                StringBuilder cssInFile = new StringBuilder();
+            StringBuilder html = new StringBuilder();
 
-                // Find script tag and get (CDATA) data
-                NodeList scriptNodes = doc.getElementsByTagName(Constants.SCRIPT_TAG);
-                if (scriptNodes != null && scriptNodes.getLength() > 0) {
-                    setScriptInline(getCharacterDataFromElement((Element) scriptNodes.item(0)));
-                }
-                // Find xml Object properties
-                NodeList xmlNodes = doc.getElementsByTagName(Constants.XML_TAG);
-                if (xmlNodes != null && xmlNodes.getLength() > 0) {
-                    setXmlObjectInline(getXmlObjectProperties(xmlNodes));
-                }
+            // style
+            StringBuilder cssInFile = new StringBuilder();
 
-                Map<String, ComponentMap> hmNodeMap = XmlService.getNodeMap();
-
-                Map<String, PropertyMap> hmAttributeMap = XmlService.getAttributeMap();
-
-                HtmlElementParser elementRootParser = new HtmlElementParser("First Node", null, null, null, true);
-
-                // Get mapping config
-                if (doc.hasChildNodes()) {
-                    new ConvertMxmlService(hmNodeMap, hmAttributeMap, xmlFileName, elementReplace).handleNodeXml(elementRootParser, true, doc.getChildNodes(), baseHtml, html);
-                }
-
-                StringBuilder htmlContent = new StringBuilder();
-                List<HtmlElementParser> elementList = elementRootParser.getChildList();
-                handleElementNode(htmlContent, elementList);
-                StringUtils.replaceInStringBuilder(baseHtml, "{form_content}", htmlContent.toString());
-                StringUtils.replaceInStringBuilder(baseHtml, "{css_file_name}", xmlFileName);
-
-                handleElementReplace(baseHtml, elementReplace);
-
-                org.jsoup.nodes.Document jsoupDoc = Jsoup.parse(baseHtml.toString(), "UTF-8", Parser.xmlParser());
-                JsoupService.handleTagJsoup(jsoupDoc, elementReplace);
-
-                htmlWriter.write(jsoupDoc.toString());
-                Log.log("Html file created successfully.");
-
-                cssWriter.write(cssInFile.toString());
-                Log.log("CSS file created successfully.");
-            } catch (FileNotFoundException e) {
-                Log.log("File not found: " + inputFilePath);
-            } catch (Exception e) {
-                e.printStackTrace();
+            // Find script tag and get (CDATA) data
+            NodeList scriptNodes = doc.getElementsByTagName(Constants.SCRIPT_TAG);
+            if (scriptNodes != null && scriptNodes.getLength() > 0) {
+                setScriptInline(getCharacterDataFromElement((Element) scriptNodes.item(0)));
             }
+            // Find xml Object properties
+            NodeList xmlNodes = doc.getElementsByTagName(Constants.XML_TAG);
+            if (xmlNodes != null && xmlNodes.getLength() > 0) {
+                setXmlObjectInline(getXmlObjectProperties(xmlNodes));
+            }
+
+            Map<String, ComponentMap> hmNodeMap = XmlService.getNodeMap();
+
+            Map<String, PropertyMap> hmAttributeMap = XmlService.getAttributeMap();
+
+            HtmlElementParser elementRootParser = new HtmlElementParser("First Node", null, null, null, true);
+
+            // Get mapping config
+            if (doc.hasChildNodes()) {
+                new ConvertMxmlService(hmNodeMap, hmAttributeMap, xmlFileName, elementReplace)
+                        .handleNodeXml(elementRootParser, true, doc.getChildNodes(), baseHtml, html);
+            }
+
+            StringBuilder htmlContent = new StringBuilder();
+            List<HtmlElementParser> elementList = elementRootParser.getChildList();
+            handleElementNode(htmlContent, elementList);
+            StringUtils.replaceInStringBuilder(baseHtml, "{form_content}", htmlContent.toString());
+            StringUtils.replaceInStringBuilder(baseHtml, "{css_file_name}", xmlFileName);
+
+            handleElementReplace(baseHtml, elementReplace);
+
+            org.jsoup.nodes.Document jsoupDoc = Jsoup.parse(baseHtml.toString(), "UTF-8", Parser.xmlParser());
+            JsoupService.handleTagJsoup(jsoupDoc, elementReplace);
+
+            htmlWriter.write(jsoupDoc.toString());
+            Log.log("Html file created successfully.");
+
+            cssWriter.write(cssInFile.toString());
+            Log.log("CSS file created successfully.");
+        } catch (FileNotFoundException e) {
+            Log.log("File not found: " + inputFilePath);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     private void handleElementNode(StringBuilder html, List<HtmlElementParser> elementParserList) {
@@ -130,12 +130,12 @@ public class MxmlConvert {
             html.append(elementParser.getStartTag());
 
             StringBuilder cssElement = ConvertMxmlService.createCssElement(elementParser.getCssParsers());
-            StringBuilder attributeElement = ConvertMxmlService.createAttributeElement(elementParser);
+            StringBuilder attributeElement = ConvertMxmlService.createSyntaxAttributeHtml(elementParser);
 
             html.append(attributeElement);
 
             if (org.apache.commons.lang3.StringUtils.isNotEmpty(cssElement)) {
-                StringBuilder cssElementInline = ConvertMxmlService.createCssElementInline(elementParser.getCssParsers());
+                StringBuilder cssElementInline = ConvertMxmlService.createSyntaxCssInline(cssElement);
                 html.append(cssElementInline);
             }
 
@@ -156,14 +156,14 @@ public class MxmlConvert {
         }
 
         Log.debug("cssElement: " + ConvertMxmlService.createCssElement(elementParser.getCssParsers()));
-        Log.debug("attributeElement: " + ConvertMxmlService.createAttributeElement(elementParser));
+        Log.debug("attributeElement: " + ConvertMxmlService.createSyntaxAttributeHtml(elementParser));
     }
 
     private static StringBuilder createHtmlBase() {
         StringBuilder baseHtml = new StringBuilder();
         try {
             ClassLoader classLoader = MxmlConvert.class.getClassLoader();
-            String baseHtmlFileName = "templates/base_html.txt";
+            String baseHtmlFileName = "templates/base_html.html";
             InputStream inputStream = classLoader.getResourceAsStream(baseHtmlFileName);
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
@@ -184,7 +184,7 @@ public class MxmlConvert {
         StringUtils.replaceInStringBuilder(baseHtml, "{js_include_content}", "<h:outputScript library=\"acc_js\" name=\"" + elementReplace.getFormName() + ".js\" />");
         StringUtils.replaceInStringBuilder(baseHtml, "{form_id_content}", elementReplace.getFormName() + "Form");
         if (CollectionUtils.isNotEmpty(elementReplace.getCssCompositionFirstList())) {
-            StringBuilder styleFirstComposition = ConvertMxmlService.createCssElementInline(elementReplace.getCssCompositionFirstList());
+            StringBuilder styleFirstComposition = ConvertMxmlService.createSyntaxCssInline(elementReplace.getCssCompositionFirstList());
             StringUtils.replaceInStringBuilder(baseHtml, "{style_composition_first}", styleFirstComposition.toString());
         }
         // Handle radio group

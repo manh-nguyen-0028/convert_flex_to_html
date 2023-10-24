@@ -1,7 +1,7 @@
-package service;
+package mxml.service;
 
-import dto.mxml.modify.CheckBoxReplace;
-import dto.mxml.modify.ElementReplace;
+import mxml.dto.modify.CheckBoxReplace;
+import mxml.dto.modify.ElementReplace;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Document;
@@ -12,10 +12,10 @@ import java.util.List;
 public class JsoupService {
     public static void handleTagJsoup(Document jsoupDoc, ElementReplace elementReplace) {
         // Handle tag p:selectBooleanCheckbox
-        handleTagJsoup(jsoupDoc, elementReplace);
+        handleCheckBoxHaveAjax(jsoupDoc, elementReplace);
     }
 
-    private void handleCheckBoxHaveAjax(Document jsoupDoc, ElementReplace elementReplace) {
+    private static void handleCheckBoxHaveAjax(Document jsoupDoc, ElementReplace elementReplace) {
         List<CheckBoxReplace> checkBoxReplaceList = elementReplace.getCheckBoxReplaces();
         if (CollectionUtils.isNotEmpty(checkBoxReplaceList)) {
             for (CheckBoxReplace item : checkBoxReplaceList) {
