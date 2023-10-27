@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html 
+    xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+>
+	<!-- コンポーネントの属性で外から指定できるようにするものを定義する -->
+    <composite:interface>
+    </composite:interface>
+
+    <!-- 複合コンポーネントに含むコンポーネントを定義する -->
+    <composite:implementation>
+    	<p:dialog header="メッセージ#{accMessageUtility.messageId}" widgetVar="messageException" modal="true" closable="false" resizable="false" dynamic="false">
+			<h:panelGrid  columns="3" cellpadding="5" >
+			 	<h:outputLabel value="画面名" style="font-size:12px;display:block;width:70px;" />
+			 	<p:inputText id="displayId" value="エラー" readonly="true"  size='10' style="margin-right:3px;"/>
+			 	<p:inputText id="displayName" value="システムエラー" readonly="true"  size='10'/>
+			 </h:panelGrid>
+			 <h:panelGrid  columns="2" cellpadding="5" style="margin-top:5px;"  >	
+			 	<h:outputLabel value="メッセージ" style="font-size:12px;display:block;width:70px;"/>
+			 	<p:inputTextarea id="messageContent" style="width:272px" rows="2" readonly="true" 
+			 		value="#{pfExceptionHandler.type == 'javax.faces.application.ViewExpiredException'?'セッションの有効期間が切れました。再度ログインしてください。':'システムエラー発生しました。管理者に連絡してください。'}"	/>
+			 </h:panelGrid>
+			<h:panelGrid  columns="2" cellpadding="5" >		
+				<h:graphicImage library="acc_img" name="stop.png"  style="display:block;width:48px;text-align:center;margin-right:22px;"/>
+				<p:inputTextarea id="messageDetail" style="width:272px" rows="2" readonly="true" autoResize="false"  
+				value="#{pfExceptionHandler.type == 'javax.faces.application.ViewExpiredException'?'接続が切断されています。':pfExceptionHandler.formattedStackTrace}"	 />
+			</h:panelGrid>
+			<h:panelGrid  columns="1" cellpadding="5" style="margin: auto;margin-top:5px;">
+				<p:commandButton value="ログイン画面へ" onclick="if(window!=window.parent){
+					parent.location.href = '#{request.contextPath}/jp/co/nissho_ele/acc/mg/mg1001/MG1001001_00_000.xhtml';
+				}else {document.location.href = '#{request.contextPath}/jp/co/nissho_ele/acc/mg/mg1001/MG1001001_00_000.xhtml';}	" />
+			</h:panelGrid>
+		</p:dialog>
+    </composite:implementation>
+</html>

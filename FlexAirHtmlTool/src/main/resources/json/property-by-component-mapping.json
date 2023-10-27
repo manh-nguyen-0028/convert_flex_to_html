@@ -1,0 +1,7 @@
+[
+  {
+    "componentName": "inputTextNumber",
+    "propertyFrom": "maxByte",
+    "propertyTo": "maxlength"
+  }
+]

@@ -1,0 +1,73 @@
+/*===MG3004001===*/
+body {
+	width: 100% !important;
+}
+
+#content .ui-messages {
+	width: 700px;
+	margin: auto;
+	overflow: hidden !important; /*disable scroll*/
+}
+
+#MG3004001, #MG3004001 .ui-panel:first-child table.ui-grid {
+	max-width: 700px;
+	width: 700px;
+	margin: 0 auto;
+}
+
+#MG3004001 table.ui-grid:first-child, #MG3004001 .ui-grid:first-child tr
+	{
+	width: 696px;
+}
+
+#MG3004001 .ui-panel .ui-panel-content {
+	padding: 0;
+}
+
+#MG3004001 .ui-datatable-data .ui-column-left {
+	text-align: left;
+	border: solid 1px #D5D5D5;
+	padding-left: 5px;
+}
+
+#MG3004001 .ui-datatable-data .ui-column-center {
+	text-align: center;
+	border: solid 1px #D5D5D5;
+}
+
+#MG3004001 .ui-grid-row {
+	border-bottom: none;
+	background: none;
+}
+
+#MG3004001 .button-panel {
+	margin-top: 0;
+}
+
+#MG3004001 label[for$='selBuHorizontal_focus'] span{
+	display: none;
+}
+
+#MG3004001 .horizontal1 div[id*='content'] div.ui-grid-row div.ui-grid-col-6:nth-of-type(odd){
+	width: 6% !important;
+}
+
+#MG3004001 .horizontal1 div[id*='content'] div.ui-grid-row div.ui-grid-col-6:nth-of-type(even){
+	width: 60% !important;
+} 
+
+#MG3004001 tbody[id='MG3004001:datKokaiSakuseiJokenIchiran_data'] {
+	height: 125px;
+}
+
+div[id='MG3004001:section-info:selBuHorizontal'] {
+	margin-left: -65px;
+}
+
+div[id='MG3004001:section-info:selKaHorizontal'] {
+	margin-left: -65px;
+}
+
+div[id='MG3004001:section-info:selKakariHorizontal'] {
+	margin-left: -65px;
+}

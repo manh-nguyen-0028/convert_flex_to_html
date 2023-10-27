@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite">
+	<!-- コンポーネントの属性で外から指定できるようにするものを定義する -->
+<composite:interface>
+	<composite:attribute name="id" />
+	<composite:attribute name="rendered" />
+	<composite:attribute name="binding" />
+	<composite:attribute name="value" />
+	<composite:attribute name="converter" />
+	<composite:attribute name="immediate" />
+	<composite:attribute name="required" />
+	<composite:attribute name="validator" />
+	<composite:attribute name="requiredMessage" />
+	<composite:attribute name="converterMessage" />
+	<composite:attribute name="validatorMessage" />
+	<composite:attribute name="widgetVar" />
+	<composite:attribute name="var" />
+	<composite:attribute name="itemLabel" />
+	<composite:attribute name="itemValue" />
+	<composite:attribute name="style" />
+	<composite:attribute name="styleClass" />
+	<composite:attribute name="disabled" />
+	<composite:attribute name="effect" />
+	<composite:attribute name="effectSpeed" />
+	<composite:attribute name="addLabel" />
+	<composite:attribute name="addAllLabel" />
+	<composite:attribute name="removeLabel" />
+	<composite:attribute name="removeAllLabel" />
+	<composite:attribute name="moveUpLabel" />
+	<composite:attribute name="moveTopLabel" />
+	<composite:attribute name="moveDownLabel" />
+	<composite:attribute name="moveBottomLabel" />
+	<composite:attribute name="showSourceControls" />
+	<composite:attribute name="showTargetControls" />
+	<composite:attribute name="onTransfer" />
+	<composite:attribute name="label" />
+	<composite:attribute name="itemDisabled" />
+	<composite:attribute name="showSourceFilter" />
+	<composite:attribute name="showTargetFilter" />
+	<composite:attribute name="filterMatchMode" />
+	<composite:attribute name="filterFunction" />
+	<composite:attribute name="showCheckbox" />
+</composite:interface>
+
+    <!-- 複合コンポーネントに含むコンポーネントを定義する -->
+<composite:implementation>
+	<p:pickList
+    		id="#{cc.attrs.id}"
+    		var="#{cc.attrs.var}"
+    		value="#{cc.attrs.value}"
+    		converter="#{ACCPickListConverter}"
+        	itemLabel="#{cc.attrs.itemLabel}" 
+        	itemValue="#{cc.attrs.itemValue}"
+			rendered="#{cc.attrs.rendered}"
+			binding="#{cc.attrs.binding}"
+			immediate="#{cc.attrs.immediate}"
+			required="#{cc.attrs.required}"
+					requiredMessage="#{cc.attrs.requiredMessage}"
+			converterMessage="#{cc.attrs.converterMessage}"
+			validatorMessage="#{cc.attrs.validatorMessage}"
+			widgetVar="#{cc.attrs.widgetVar}"
+			style="#{cc.attrs.style}"
+			styleClass="#{cc.attrs.styleClass}"
+			disabled="#{cc.attrs.disabled}"
+			effect="#{cc.attrs.effect}"
+			effectSpeed="#{cc.attrs.effectSpeed}"
+			addLabel="#{cc.attrs.addLabel}"
+			addAllLabel="#{cc.attrs.addAllLabel}"
+			removeLabel="#{cc.attrs.removeLabel}"
+			removeAllLabel="#{cc.attrs.removeAllLabel}"
+			moveUpLabel="#{cc.attrs.moveUpLabel}"
+			moveTopLabel="#{cc.attrs.moveTopLabel}"
+			moveDownLabel="#{cc.attrs.moveDownLabel}"
+			moveBottomLabel="#{cc.attrs.moveBottomLabel}"
+			showSourceControls="#{cc.attrs.showSourceControls}"
+			showTargetControls="#{cc.attrs.showTargetControls}"
+			onTransfer="#{cc.attrs.onTransfer}"
+			label="#{cc.attrs.label}"
+			itemDisabled="#{cc.attrs.itemDisabled}"
+			showSourceFilter="#{cc.attrs.showSourceFilter}"
+			showTargetFilter="#{cc.attrs.showTargetFilter}"
+			filterMatchMode="#{cc.attrs.filterMatchMode}"
+			filterFunction="#{cc.attrs.filterFunction}"
+			showCheckbox="#{cc.attrs.showCheckbox}" />
+</composite:implementation>
+</html>
+

@@ -1,0 +1,23 @@
+div[id*='conten']{
+	width: 1000px;
+	margin: auto;
+} 
+
+div[id*='datSearchResult'] table, div[id*='datSearchResult'] table tr{
+	width: 920px !important;
+}
+
+div[id*='mainPanel'] table,div[id*='mainPanel'] table tr{
+	width: 960px;
+} 
+
+.text-center label, .text-center input{
+	text-align: center;
+}
+
+/* 2020/04/28 KienNT Fix [v2.22] Kadai 653 START */
+#MG5003001Form\:MG5003002\:datSearchResult_data tr td:last-child {
+	width: auto;
+	padding: 4px 10px;
+}
+/* 2020/04/28 KienNT Fix [v2.22] Kadai 653 END */

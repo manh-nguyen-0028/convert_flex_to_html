@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:acc="http://xmlns.jcp.org/jsf/composite/acc_component">
+	
+	<f:subview id="MG5003002">
+		<p:panel styleClass="ui-grid-responsive" id="mainPanel">
+			<p:panelGrid styleClass="ui-grid">
+				<p:row styleClass="ui-grid-row">
+					<p:column>
+						<!-- 項目1: 作成指示日FROM -->
+						<acc:inputTextGyomuDate id="txtSakuseiShijiBiFrom"
+							labelStyleClass="ui-grid-col-1 " styleClass="ui-grid-col-1-25 text-center calendar-remove-highlight"
+							maxlength='10' label="#{label['MG5003001.sakuseiShijiBiFrom']}"
+							value="#{MG5003001_00_000Controller.model.sakuseiShijiBiFrom}" tabindex="1"
+							pagedate="#{MG5003001_00_000Controller.gyomuDate}"
+							beforeShowDay="markGyomuDateAsCurrentDate"/>
+
+						<!-- 項目2: 作成指示日TO -->
+						<acc:inputTextGyomuDate id="txtSakuseiShijiBiTo"
+							styleClass="ui-grid-col-1-25 text-center calendar-remove-highlight"
+							labelStyleClass="ui-grid-col-push-0-15 ui-grid-col-0-5 no-padding-left text-center"
+							labelText="#{label['Base.FromTo']}" maxlength='10'
+							label="#{label['MG5003001.sakuseiShijiBiTo']}"
+							value="#{MG5003001_00_000Controller.model.sakuseiShijiBiTo}" tabindex="2"
+							pagedate="#{MG5003001_00_000Controller.gyomuDate}"
+							beforeShowDay="markGyomuDateAsCurrentDate" />
+
+						<!-- 項目3: ダウンロード状況 -->
+						<p:outputLabel value="#{label['MG5003001.daunrodoJokyo']}"
+							for="selDaunrodoJokyo"
+							styleClass="ui-grid-col-push-1-30 ui-grid-col-2-05" />
+						<p:selectOneMenu id="selDaunrodoJokyo" styleClass="ui-grid-col-1"
+							label="#{label['MG5003001.daunrodoJokyo']}"
+							value="#{MG5003001_00_000Controller.model.daunrodoJokyo}" tabindex="3">
+							<f:selectItem itemValue="" itemLabel=""></f:selectItem>
+							<f:selectItem itemValue="0" itemLabel="未"></f:selectItem>
+							<f:selectItem itemValue="1" itemLabel="済"></f:selectItem>
+							</p:selectOneMenu>
+
+						<!-- 項目4: 検索 -->
+						<p:commandButton id="btnKensaku" value="#{label['Base.kensaku']}"
+							disabled="#{MG5003001_00_000Controller.authMap['btnKensaku']}"
+							actionListener="#{MG5003001_00_000Controller.kensakuClick}"
+							validateClient="true" styleClass="ui-grid-col-1-25 pull-right" tabindex="4" />
+						<p:inputText id="mg5003002_gyomuDate" type="hidden" value="#{MG5003001_00_000Controller.gyomuDate}"></p:inputText>
+					</p:column>
+					<p:column />
+				</p:row>
+				<p:row styleClass="ui-grid-row">
+					<p:column>
+						<p:dataTable id="datSearchResult" selectionMode="single" selection="#{MG5003001_00_000Controller.model.currentSelectedRecord}"
+							value="#{MG5003001_00_000Controller.model.listRecords}" rowKey="#{dataRow.rowKey}"
+							var="dataRow" resizableColumns="true" scrollable="true" tabindex="-1"
+							scrollHeight="97%" emptyMessage="#{label['Base.noRecordsFound']}"
+							paginator="true"
+					        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					        rows="15" paginatorPosition="bottom" rowsPerPageTemplate="10,15,20,25,30" style="height:365px">
+							<p:ajax event="rowSelect"
+								listener="#{MG5003001_00_000Controller.datSearchResultSelected}"/>
+							<!-- 項目5: 出力データ名 -->
+							<p:column styleClass="tap6-dataTable-cl1" width="41%" sortable="true" sortBy="#{dataRow.shutsuryokuDetaMei}">
+								<f:facet name="header">#{label['MG5003001.shutsuryokuDetaMei']} </f:facet>
+								<h:outputText value="#{dataRow.shutsuryokuDetaMei}" />
+							</p:column>
+
+							<!-- 項目6: 条件名 -->
+							<p:column styleClass="tap6-dataTable-cl2" width="22%" sortable="true" sortBy="#{dataRow.jokenMei}">
+								<f:facet name="header">#{label['MG5003001.jokenMei']} </f:facet>
+								<h:outputText value="#{dataRow.jokenMei}" />
+							</p:column>
+
+
+							<!-- 項目7: レコード数 -->
+							<p:column styleClass="tap6-dataTable-cl3 text-right" width="11%"
+								sortable="true" sortBy="#{dataRow.rekodoSu}"
+								sortFunction="#{accSortUtility.sortIntByString}" >
+								<f:facet name="header">#{label['MG5003001.rekodoSu']}</f:facet>
+								<acc:outputLabelNumber value="#{dataRow.rekodoSu}"
+									id="lblrekodoSu" styleClass="text-right">
+								</acc:outputLabelNumber>
+							</p:column>
+							<!-- 項目8: 作成指示日 -->
+							<p:column styleClass="tap6-dataTable-cl3 text-center" width="11%" sortable="true" sortBy="#{dataRow.sakuseiShijiBi}">
+								<f:facet name="header">#{label['MG5003001.sakuseiShijiBi']}</f:facet>
+								<p:outputLabel value="#{dataRow.sakuseiShijiBi}"
+									id="lblsakuseiShijiBi" styleClass="text-center">
+									<p:tooltip id="toolTiplblsakuseiShijiBi"
+										for="lblsakuseiShijiBi" value="#{dataRow.sakuseiShijiBi}"
+										trackMouse="true" />
+								</p:outputLabel>
+							</p:column>
+							<!-- 項目9: 作成状況 -->
+							<p:column styleClass="tap6-dataTable-cl3" width="8%" sortable="true" sortBy="#{dataRow.sakuseiJokyo}">
+								<f:facet name="header">#{label['MG5003001.sakuseiJokyo']}</f:facet>
+								<p:outputLabel value="#{dataRow.sakuseiJokyo}"
+									id="lblsakuseiJokyo" styleClass="text-center">
+									<p:tooltip id="toolTiplblsakuseiJokyo" for="lblsakuseiJokyo"
+										value="#{dataRow.sakuseiJokyo}" trackMouse="true" />
+								</p:outputLabel>
+							</p:column>
+							<!-- 項目10: ＤＬ済 -->
+							<p:column styleClass="tap6-dataTable-cl3" width="7%" sortable="true" sortBy="#{dataRow.dlZumi}">
+								<f:facet name="header">#{label['MG5003001.dlZumi']}</f:facet>
+								<p:outputLabel value="#{dataRow.dlZumi}" id="lbldlZumi"
+									styleClass="text-center">
+									<p:tooltip id="toolTiplbldlZumi" for="lbldlZumi"
+										value="#{dataRow.dlZumi}" trackMouse="true" />
+								</p:outputLabel>
+							</p:column>
+
+						</p:dataTable>
+					</p:column>
+					<p:column />
+				</p:row>
+			</p:panelGrid>
+		</p:panel>
+	</f:subview>
+</ui:composition>

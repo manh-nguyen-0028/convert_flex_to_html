@@ -1,0 +1,272 @@
+
+
+div.KokaiSettei-Style table td:nth-child(odd) {
+    width: 10% !important;
+}
+div.KokaiSettei-Style table td:nth-child(even) {
+    width: 30% !important;
+   
+}
+div[id*='tab-'] table,div[id*='tab-'] table tr{
+	width: 570px !important;
+} 
+
+div[id*='datNyukinYakusokuRireki'] table,div[id*='datNyukinYakusokuRireki'] table tr{
+	width: 530px !important;
+}
+
+div[id*='datChushutsuKomoku'] table,div[id*='datChushutsuKomoku'] table tr{
+	width: 500px !important;
+}
+
+div[id*='datChushutsuKomoku'] table tr td{
+	line-height: 20px;
+} 
+
+div[id*='datChushutsuKomoku'] table tr.ui-datatable-empty-message td {
+	padding: 0px!important;
+} 
+
+
+div[id*='datKomokumei'] table tr td{
+	padding: 7px 10px !important;
+}
+
+div[id*='datKomokumei'] table tr.ui-datatable-empty-message td {
+	padding: 0px!important;
+}
+
+.ui-grid-row .ui-grid-col-push-9-83 {
+	margin-left: 81.8867%;
+}
+
+
+div[id*='datKomokumei'] table,div[id*='datKomokumei'] table tr{
+	width: 500px !important;
+}
+
+/* custome PickList style  */
+
+.ui-div-picklist-source-col-1-header{
+	width: 400px !important; 
+	border-right: solid 1px #D5D5D5;
+}
+
+.ui-div-picklist-source-col-2-header{
+	width: 385px !important; 
+	border-right: solid 1px #D5D5D5;
+}
+
+.ui-div-picklist-source-col-2{
+	width: 75px !important;
+	padding-left: 3px !important;
+}
+
+.ui-div-picklist-source-col-2-target{
+	width: 99px !important;
+}
+
+
+.ui-picklist .ui-picklist-list{
+	width: 505px !important;
+	overflow-y: scroll !important;
+	overflow-x: auto !important; 
+	/* height: 150px !important; */
+}
+
+.ui-picklist .ui-picklist-caption{
+	width:  505px;
+}
+.ui-picklist .ui-picklist-list li{
+	
+	border-bottom: solid 1px #D5D5D5;
+	padding: 2px;
+	margin: 1px;
+}
+
+.ui-picklist-source .ui-div-picklist-source-col-2{
+	display: none;
+}
+
+.ui-picklist-source .ui-div-picklist-source-col-2-header{
+	border-right: none!important;
+}
+.ui-picklist-button-move-top{
+	display: none !important;
+}
+.ui-picklist-button-move-bottom{
+	display: none !important;
+} 
+
+.ui-picklist-button-move-up{
+	display: none !important;
+}
+.ui-picklist-button-move-down{
+	display: none !important;
+} 
+
+/* .ui-picklist-target-controls.ui-picklist-buttons button.ui-picklist-button-move-up{
+	display: list-item!important;
+} */
+/* .ui-picklist-button-move-up{
+	margin-left: 460px;
+	margin-top: -30px !important;
+} */
+
+
+.ui-picklist-list-wrapper tr{
+	height: 16px;
+}
+
+.ui-picklist-target tr{
+	height: 12px;
+}
+
+.ui-picklist-button-remove span.ui-icon-arrow-1-w{
+	background-position-x:0px !important;
+	background-position-y:-32px !important; 
+	
+}
+
+.ui-picklist-button-add span.ui-icon-arrow-1-e{
+	background-position-x:-64px !important;
+	background-position-y:-32px !important; 
+	
+}
+
+.ui-picklist-button-add-all span.ui-icon-arrowstop-1-e{
+	background-position-x:-224px !important;
+	background-position-y:-32px !important; 
+	
+}
+
+.ui-picklist-button-remove-all span.ui-icon-arrowstop-1-w{
+	background-position-x:-192px !important;
+	background-position-y:-32px !important; 
+	
+}
+
+.ui-picklist-button-move-up span.ui-icon-arrow-1-n{
+	background-position-x:0px !important;
+	background-position-y:-16px !important; 
+}
+
+
+.ui-picklist-button-move-down span.ui-icon-arrow-1-s{
+	background-position-x:-64px !important;
+	background-position-y:-16px !important; 
+}
+
+.vertical-align-bottom{
+	vertical-align: bottom; 
+}
+
+.buttom-up{
+	margin-top:135px;
+	margin-left: 5px !important;
+}
+
+.buttom-down{
+	margin-top: 170px;
+	margin-left: -31px !important;
+}
+
+button[id*='btnMoveUp'] span.ui-button-text{
+	padding-left: 0px !important;
+	padding-right: 0px !important;
+}
+
+button[id*='btnMoveDown'] span.ui-button-text{
+	padding-left: 0px !important;
+	padding-right: 0px !important;
+}
+
+#MG5002001Form div.pickList-Style-1 .ui-picklist-caption{
+	padding: 1px 0px;
+	border: 1px solid #459e00;
+	background: #459e00;
+	color: #ffffff;
+}
+
+#MG5002001Form div.pickList-Style-2 .ui-picklist-caption{
+	padding: 1px 0px;
+	border: 1px solid #0078ae;
+}
+
+#MG5002001Form div.pickList-Style-3 .ui-picklist-caption{
+	padding: 1px 0px;
+	border: 1px solid #fece2f;
+	background: #fece2f;
+	color: #4c3000;
+}
+
+#MG5002001Form div.pickList-Style-4 .ui-picklist-caption{
+	padding: 1px 0px;
+	border: 1px solid #d7ebf9;
+	background: #d7ebf9;
+	color: #2779aa;
+}
+
+#MG5002001Form div.pickList-Style-0 .ui-picklist-caption{
+	padding: 1px 0px;
+	border: 1px solid #f5f5f5;
+	background: #f5f5f5;
+	color: #333333;
+	background-image: -ms-linear-gradient(top, #ffffff, #e6e6e6);
+}
+
+#MG5002001Form .ui-picklist-button-add{
+	margin-right: 5px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	
+}
+
+#MG5002001Form .ui-picklist-button-add-all{
+	margin-right: 39px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	margin-left: -67px;
+}
+
+#MG5002001Form .ui-picklist-button-remove{
+	margin-right: 5px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+#MG5002001Form .ui-picklist-button-remove-all{
+	margin-right: 5px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+ul.ui-picklist-target{
+	overflow-y: scroll; 
+}
+
+.column-2-width{
+	width: 60px;
+}
+
+#MG5002001Form .ui-div-picklist-source-col-2 input{
+	line-height: 7px !important;
+	padding: 0px;
+	box-shadow: inset 0px 0px 0px #8f8f8f !important;
+	
+}
+
+#MG5002001Form label[for$='selHikaku_focus'] span {
+	display: none;
+}
+
+#MG5002001Form label[for$='selHikaku2_focus'] span {
+	display: none;
+}
+
+#MG5002001Form .table-cell-edit{
+	width: 89%;
+}
+#MG5002001Form .text-content-right{
+	float: right;
+	margin-right: 5px;
+}

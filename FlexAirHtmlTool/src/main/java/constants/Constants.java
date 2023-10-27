@@ -11,7 +11,9 @@ public class Constants {
     public static final String DOCUMENT_VIEW = "document";
     public static final String EQUAL_OPERATOR = "=";
     public static final char COLON_CHAR = ':';
+    public static final char DOT_CHAR = '.';
     public static final char CURLY_BRACE = '{';
+    public static final char SEMICOLON_CHAR = ';';
     //Match with string: 'var variable_name:types
     public static final String VARIABLE_PATTERN = "(var|,)(.*?)([a-zA-Z_$][0-9a-zA-Z_$]*):([a-zA-Z_$][0-9a-zA-Z_$]*)";
     public static final String MODEL_VARIABLE_PATTERN = ".*\\s*as\\s*.*";
@@ -19,12 +21,19 @@ public class Constants {
     public static final String CATCH_PATTERN = "((catch\\()(\\w*)(:)(\\w*)(\\).*))";
     public static final String TRACE_INFO_PATTERN = "((trace)(\\(.*)(\\)))";
     public static final String TRACE_ERROR_PATTERN = "((trace|ACCLog.errorLog)(\\((\\\"Error|\\\"\\[Exception|error))(.*)(\\)))";
+    public static final String ACC_LOG_ERROR_PATTERN = "((ACCLog.errorLog)(\\())";
     public static final String SERVICE_URI_PATTERN = ".?\\/acc_web\\/services\\/.*";
     public static final String SET_CLEAR_FORM_PATTERN = "clearFrame|setFrame|clearForm|setForm";
     public static final String NARROW_FUNCTION_PATTERN = "((function)(\\(\\))(:void))";
     public static final String INIT_FOR_PATTERN = "((for\\s*\\()(reTryCnt\\d*?)(;))";
     public static final String PARSE_INT_PATTERN = "((int)(\\()(.*)(\\);))";
-    public static final String TEXT_PP_PATTERN = "((.text)(\\s*)(=))";
+    public static final String PARSE_FNC_PATTERN = "((parseInt)(\\())";
+    public static final String TEXT_PROP_PATTERN = "((.text)(\\s*)(=))";
+    public static final String TEXT_PROP_END_PATTERN = "((.text))";
+    public static final String STATEMENT_END_PATTERN = "[;\\r\\n]";
+    public static final String NEW_DATETIME_PATTERN = "((new\\s+)(DateFormatter)(\\(\\)))";
+    public static final String CLASS_NAME_PATTERN = "(MG\\d{7}_\\d{2}_\\d{3})";
+
     public static final String SCRIPT_TAG = "mx:Script";
     public static final String XML_TAG = "mx:XML";
     public static final String MXML_EXT = ".mxml";

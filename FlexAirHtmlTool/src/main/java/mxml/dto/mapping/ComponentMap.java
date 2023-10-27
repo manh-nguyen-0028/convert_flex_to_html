@@ -7,12 +7,19 @@ import lombok.Setter;
 @Setter
 public class ComponentMap {
     private String name;
-    private Boolean isHadAttribute;
-    private String className;
     private String htmlTagStart;
-    private String htmlTagStart2;
-    private String htmlTagStart3;
+    private String htmlEndStartTag;
     private String htmlTagEnd;
-    private Boolean styleInFile;
     private Boolean isGenerateHtml;
+
+    public ComponentMap() {
+    }
+
+    public ComponentMap(String name, String htmlTagStart, String htmlEndStartTag, String htmlTagEnd) {
+        this.name = name;
+        this.htmlTagStart = htmlTagStart;
+        this.htmlEndStartTag = htmlEndStartTag;
+        this.htmlTagEnd = htmlTagEnd;
+        this.isGenerateHtml = true;
+    }
 }

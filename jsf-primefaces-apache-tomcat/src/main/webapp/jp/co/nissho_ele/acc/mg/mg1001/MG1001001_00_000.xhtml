@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:acc="http://xmlns.jcp.org/jsf/composite/acc_component"
+	xmlns:pacc="http://xmlns.jcp.org/jsf/acctag"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>ログイン画面</title>
+	<link rel="icon" href="#{resource['acc_img:AutoCall.ico']}" />
+    <pacc:outputStylesheet library="acc_css" name="common/acc_common_style.css" />
+	<pacc:outputStylesheet library="acc_css" name="mg/MG1001001_00_000.css" />
+	<pacc:outputScript library="primefaces" name="jquery/jquery.js" />
+	<pacc:outputScript library="acc_js" name="common/jquery.cookie.js" />
+	<pacc:outputScript library="acc_js" name="common/acc_common.js" />
+	<pacc:outputScript library="acc_js" name="common/acc_ime.js" />
+	<pacc:outputScript library="acc_js" name="common/acc_popup.js" />
+	<pacc:outputScript library="acc_js" name="common/acc_util.js" />
+	<pacc:outputScript library="acc_js" name="common/acc_check_utility.js" />
+	<pacc:outputScript library="acc_js" name="common/acc_input_mode.js" />
+	<pacc:outputScript library="acc_js" name="mg/MG1001001_00_000.js" />
+	<script>
+		/* <![CDATA[ */
+
+		function buttonControl() {
+			var corpCd = document.getElementById('login:txtCorpCd').value;
+			var userId = document.getElementById('login:txtTtCd').value;
+			var password = document.getElementById('login:txtTtPwd').value;
+			if (corpCd == '' || userId == '' || password == '') {
+				PF('startButton').disable();
+			} else {
+				PF('startButton').enable();
+			}
+			return true;
+		}
+
+		function focusCheck() {
+			var e = window.event;
+			var charCode = e.charCode || e.keyCode;
+			if (charCode == 13) {
+				e.preventDefault();
+				$('button:first').focus();
+			}
+		}
+
+		function saveInfo() {
+			var naisen = document.getElementById('login:txtNaisen').value;
+			var corpCd = document.getElementById('login:txtCorpCd').value;
+			$.cookie("ACCBEAR_NAISEN", naisen, {
+				expires : 30
+			});
+			$.cookie("ACCBEAR_CORPCD", corpCd, {
+				expires : 30
+			});
+		}
+		
+		function checkPasteEvent(e) {
+			if (e.ctrlKey && e.keyCode == 86) {
+				e.preventDefault();
+			}
+		}
+
+		$(document).ready(function() {
+			var naisen = $.cookie("ACCBEAR_NAISEN") || '';
+			var corpCd = $.cookie("ACCBEAR_CORPCD") || '';
+			PrimeFaces.changeTheme('bootstrap');
+			document.getElementById('login:txtCorpCd').value = corpCd;
+			document.getElementById('login:txtTtCd').value = "";
+			document.getElementById('login:txtTtPwd').value = "";
+			document.getElementById('login:txtNaisen').value = naisen;
+			document.getElementById('login:txtCorpCd').focus();
+			if (corpCd) {
+				document.getElementById('login:txtTtCd').focus();
+			}
+
+			$("#login\\:txtTtCd").on("input", function() {
+				buttonControl();
+			});
+
+			buttonControl();
+			var btnArray = [ 'btnLogin', 'btnEnd' ];
+			disableRightMouseClick();
+		});
+		/* ]]> */
+	</script>
+
+</h:head>
+
+<h:body style="overflow: hidden !important;">
+	<h:form id="message">
+		<acc:dialogFrame />
+	</h:form>
+	<div id="login-wrapper">
+		<h:form id="login">
+			<table id="login-table">
+				<tr>
+					<td><h:outputLabel for="txtCorpCd"
+							value="#{label['MG1001001.CorpCd']}" /></td>
+					<td style="text-align: left;"><p:inputText id="txtCorpCd"
+							value="#{MG1001001_00_000Controller.model.corpCd}"
+							style="width: 60px;ime-mode:disabled;-ms-image-mode:disabled;"
+							maxlength="3" onkeyup="buttonControl()" tabindex="100">
+							<p:keyFilter preventPaste="false" regEx="/[0-9A-Za-z_]/i" />
+							<p:ajax event="blur" update="login:txtNaisen" />
+						</p:inputText></td>
+				</tr>
+				<tr>
+					<td><h:outputLabel for="txtTtCd"
+							value="#{label['MG1001001.UserID']}" /></td>
+					<td style="text-align: left;"><p:inputText id="txtTtCd"
+							style="ime-mode:disabled;-ms-image-mode:disabled;"
+							value="#{MG1001001_00_000Controller.model.ttCd}" maxlength="30"
+							onkeyup="buttonControl()" tabindex="101">
+							<p:keyFilter preventPaste="true" regEx="/[0-9A-Za-z_]/i" />
+						</p:inputText></td>
+				</tr>
+				<tr>
+					<td><h:outputLabel for="txtTtPwd"
+							value="#{label['MG1001001.PassWord']}" /></td>
+					<td style="text-align: left;"><p:password id="txtTtPwd"
+							style="ime-mode:disabled;-ms-image-mode:disabled;"
+							value="#{MG1001001_00_000Controller.model.ttPwd}" maxlength="30"
+							redisplay="true" onkeyup="buttonControl()" tabindex="102"
+							onkeydown="checkPasteEvent(event)">
+						</p:password></td>
+				</tr>
+				<tr>
+					<td><h:outputLabel for="txtNaisen"
+							value="#{label['MG1001001.Naisen']}" /></td>
+					<td style="text-align: left;"><p:inputText id="txtNaisen"
+							maxlength="4" value="#{MG1001001_00_000Controller.model.naisen}"
+							disabled="#{MG1001001_00_000Controller.naisenDisable}"
+							style="width: 60px;ime-mode: disabled;" tabindex="103">
+							<p:keyFilter preventPaste="false" regEx="/[0-9]/i" />
+							<script type="text/javascript">
+								$(document)
+										.ready(
+												function() {
+													document
+															.getElementById('login:txtNaisen').value = $
+															.cookie("ACCBEAR_NAISEN")
+															|| '';
+												});
+							</script>
+						</p:inputText></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><p:commandButton value="#{label['MG1001001.Login']}"
+							actionListener="#{MG1001001_00_000Controller.btnLoginClick}"
+							widgetVar="startButton" id="btnLogin" onclick="saveInfo();"
+							disabled="#{MG1001001_00_000Controller.authMap['btnLogin']}"
+							tabindex="104" /> <p:spacer width="10" height="10" /> 
+						<p:commandButton
+							value="#{label['Base.btnEnd']}" id="btnEnd"
+							disabled="#{MG1001001_00_000Controller.authMap['btnEnd']}"
+							actionListener="#{MG1001001_00_000Controller.btnEndClick}"
+							oncomplete="ACCUtil.closeCurrentWindow();" tabindex="105" />
+					</td>
+				</tr>
+			</table>
+		</h:form>
+		<div id="banner">
+			<div id="banner-text"></div>
+			<span class="banner-copyright version"> Ver 2.02 </span>
+			<span class="banner-copyright">Copyright (c) Nissho
+				Electronics Corporation All rights reserved</span>
+		</div>
+	</div>
+</h:body>
+</html>

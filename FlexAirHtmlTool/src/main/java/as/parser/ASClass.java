@@ -1,7 +1,6 @@
 package as.parser;
 
 import as.enums.ASKeyword;
-import as.enums.ASPattern;
 import as.types.ASArgument;
 import as.types.ASFunction;
 import as.types.ASMember;
@@ -11,7 +10,10 @@ import constants.ReservedWords;
 import constants.Templates;
 import utils.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ASClass {
     private String packageName;
@@ -107,7 +109,7 @@ public class ASClass {
                     buffer.append(stringifyFunc(m, true));
                 } else {
                     ASVariable currentVar = (ASVariable) m;
-                    String type = ASKeyword.STRING;
+                    String type;
                     String value = m.getValue();
                     //Ignore service uri string
                     if (StringUtils.isMatched(Constants.SERVICE_URI_PATTERN, value)) {
@@ -135,19 +137,26 @@ public class ASClass {
                     }
                     // Remove call service variable
 
-                    buffer.append(currentVar.getComment());
+                    buffer.append(currentVar.getComment().replaceAll("^;", ""));
                     String tmpVar = "";
                     if (currentVar.isStatic()) {
                         tmpVar = Templates.VARIABLE_STATIC;
-                    } else if (m.getValue() == null){
-                        tmpVar = Templates.VARIABLE;
-                        tmpVar = tmpVar.replace("{type}", type)
-                                .replace("{name}", m.getName());
-                    } else {
-                        tmpVar = Templates.VARIABLE_ASSIGN;
                         tmpVar = tmpVar.replace("{type}", type)
                                 .replace("{name}", m.getName())
                                 .replace("{value}", value);
+                    } else {
+                        if (m.getValue() == null){
+                            tmpVar = Templates.VARIABLE;
+                            tmpVar = tmpVar.replace("{type}", type)
+                                    .replace("{name}", m.getName());
+                        } else {
+                            tmpVar = Templates.VARIABLE_ASSIGN;
+                            tmpVar = tmpVar.replace("{type}", type)
+                                    .replace("{name}", m.getName())
+                                    .replace("{value}", value);
+                        }
+                        tmpVar = tmpVar.replace("{const}", m.isConst() ? " final" : "");
+                        tmpVar = tmpVar.replace("{encap}", m.getEncapsulation());
                     }
                     buffer.append(tmpVar);
                     buffer.append(";");
@@ -175,7 +184,6 @@ public class ASClass {
                     buffer.append(propGetSetBuilder);
                 }
             }
-            buffer.append("\n");
         }
         String result = buffer.toString();
         result = result.replaceAll("^;", "");
@@ -191,7 +199,6 @@ public class ASClass {
         StringBuilder buffer = new StringBuilder();
         //Process require package
         // Import
-
         String[] tmpArr = null;
         // Add Class source
         String strClass = Templates.CLASS_TEMPLATE.replace("{className}", getClassName() + ReservedWords.CONTROLLER)
@@ -207,7 +214,7 @@ public class ASClass {
                     buffer.append(stringifyFunc(m, false));
                 } else {
                     ASVariable currentVar = (ASVariable)m;
-                    String type = ASKeyword.STRING;
+                    String type;
                     String value = currentVar.getValue();
                     if (ASKeyword.NUMBER.equals(currentVar.getType())
                             || ASKeyword.INT.equals(currentVar.getType())
@@ -223,6 +230,9 @@ public class ASClass {
                     }
                     else if (ASKeyword.DATEFORMATTER.equals(currentVar.getType())) {
                         type = ReservedWords.SIMPLEDATEFORMAT;
+                        if (!StringUtils.isNullOrEmpty(value)) {
+                            value = value.replaceAll(Constants.NEW_DATETIME_PATTERN, "$2" + ReservedWords.SIMPLEDATEFORMAT + "$4");
+                        }
                     }
 //                    else if (getClassName().equals(currentVar.getType())) {
 //                        type = getClassName() + ReservedWords.MODEL;
@@ -247,10 +257,11 @@ public class ASClass {
                                .replace("{name}", m.getName())
                                .replace("{value}", value);
                    }
+                    tmpVar = tmpVar.replace("{const}", m.isConst() ? " final" : "");
+                    tmpVar = tmpVar.replace("{encap}", m.getEncapsulation());
                     buffer.append(tmpVar);
                 }
             }
-            buffer.append("\n");
         }
         buffer.append("\n}");
         String result = buffer.toString();
@@ -305,54 +316,7 @@ public class ASClass {
         }
         return buffer.toString();
     }
-    public String cleanup(String text) {
-        String type;
-        String[] params;
-        String val;
-        String[] matches = StringUtils.matches(ASPattern.VECTOR[0],text);
-        //For each Vector.<>() found in the text
-        for (int i = 0; i < matches.length; i++) {
-            //Strip the type and provided params
-            type = matches[i].replace(ASPattern.VECTOR[0], "$1").trim();
-            params = matches[i].replace(ASPattern.VECTOR[0], "$2").split(",");
-            //Set the default based on var type
-            if (type.equals("int") || type.equals("uint") || type.equals("Number")) {
-                val = "0";
-            } else if (type.equals("Boolean")) {
-                val = "false";
-            } else {
-                val = "null";
-            }
-            //Replace accordingly
-            if (params.length > 0 && params[0].trim() != "") {
-                text = text.replace(ASPattern.VECTOR[1], "Utils.createArray(" + params[0] + ", " + val + ")");
-            } else {
-                text = text.replace(ASPattern.VECTOR[1], "[]");
-            }
-        }
-        matches = StringUtils.matches(ASPattern.ARRAY[0], text);
-        //For each Array() found in the text
-        for (int i = 0; i < matches.length; i++) {
-            //Strip the provided params
-            params = null;
-            params = new String[]{matches[i].replace(ASPattern.ARRAY[0], "$1").trim()};
-            //Replace accordingly
-            if (params.length > 0 && params[0].trim() != "") {
-                text = text.replace(ASPattern.ARRAY[1], "Utils.createArray(" + params[0] + ", null)");
-            } else {
-                text = text.replace(ASPattern.ARRAY[1], "[]");
-            }
-        }
 
-        matches = StringUtils.matches(ASPattern.DICTIONARY[0], text);
-        //For each instantiated Dictionary found in the text
-        for (int i = 0; i < matches.length; i++) {
-            // Replace with empty object
-            text = text.replace(ASPattern.DICTIONARY[0], "{}");
-        }
-
-        return text;
-    }
     public ASMember retrieveField(String name, boolean isStatic) {
         if (isStatic) {
             if (staticFieldMap.containsKey(name)) {
@@ -375,17 +339,19 @@ public class ASClass {
 
     public void process() {
         ASClass self = this;
+        ASParser parser = new ASParser();
         int i;
 
         for (i = 0; i < members.size(); i++) {
             if (members.get(i) instanceof ASFunction) {
-                //Pars function
+                //Parse function
                 ASFunction func = (ASFunction)members.get(i);
-                func.setValue(ASParser.parseFunc(self, func.getValue(), func.buildLocalVariableStack(), func.isStatic())[0]);
+                func.setValue(parser.parseFunc(self, func.getValue(), func.buildLocalVariableStack())[0]);
             }
             if (members.get(i) instanceof ASVariable) {
                 ASVariable tmpVar = (ASVariable) members.get(i);
-                if (tmpVar.getValue() != null && retrieveField(tmpVar.getValue().replaceFirst("^([a-zA-Z_$][0-9a-zA-Z_$]*)(.*?)$", "$1"), true) != null) {
+                if (tmpVar.getValue() != null
+                        && retrieveField(tmpVar.getValue().replaceFirst("^([a-zA-Z_$][0-9a-zA-Z_$]*)(.*?)$", "$1"), true) != null) {
                     tmpVar.setValue(className + '.' + members.get(i).getValue());
                 }
             }

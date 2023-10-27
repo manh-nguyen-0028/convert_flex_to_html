@@ -1,36 +1,59 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:p="http://primefaces.org/ui">
+<ui:composition
+        template="/jp/co/nissho_ele/acc/common/commonLayout.xhtml"
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+        xmlns:acc="http://xmlns.jcp.org/jsf/composite/acc_component"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
 
-<h:head>
-  <title>PrimeFaces Hello World Example 1</title>
-</h:head>
+>
 
-<h:body>
-  <h:form>
+    <ui:define name="title">ログイン</ui:define>
 
-    <p:panel header="PrimeFaces Hello World Example">
-      <h:panelGrid columns="2" cellpadding="4">
-        <h:outputText value="First Name: " />
-        <p:inputText value="#{helloWorld.firstName}" />
+    <ui:define name="stylesheet">
+        <!-- <h:outputStylesheet library="acc_css" name="*.css" /> -->
+    </ui:define>
 
-        <h:outputText value="Last Name: " />
-        <p:inputText value="#{helloWorld.lastName}" />
+    <ui:define name="script">
+        <!-- <h:outputScript library="acc_js" name="*.js" /> -->
+    </ui:define>
 
-        <p:commandButton value="Submit" update="greeting"
-          oncomplete="PF('greetingDialog').show()" />
-      </h:panelGrid>
-    </p:panel>
+    <ui:define name="content">
+        <div class="p-grid p-nogutter p-align-center p-justify-center" style="height:374px;width:517px;">
+            <h:form id="MG1001001Form">
 
-    <p:dialog header="Greeting" widgetVar="greetingDialog"
-      modal="true" resizable="false">
-      <h:panelGrid id="greeting" columns="1" cellpadding="4">
-        <h:outputText value="#{helloWorld.showGreeting()}" />
-      </h:panelGrid>
-    </p:dialog>
+                <p:panel style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; background-image: url(#{resource['acc_img:login.jpg']});" />
+                <p:outputPanel style="position: absolute; top: 101px; left: 133px; width: 378px; height: 155px;">
+                    <!-- 法人CD -->
+                    <p:outputLabel value="法人CD" style="position: absolute; top: 34px; left: 116px; font-size: 16px; color: #FFFFFF; font-weight: bold; text-align: right; font-family: 'MS Gothic'; width: 78px;"/>
+                    <acc:inputTextMaxByte id="corpCd" style="position: absolute; top: 34px; left: 194px;" readonly="true" maxbytelength="3" tabIndex="1"
+                                          onchange="#{MG1001001_00_000Controller.textOnChangeHandler}" required="true" value="#{MG1001001_00_000Controller.view.corpCd}"/>
+                    <!-- ユーザID -->
+                    <p:outputLabel value="ユーザID" style="position: absolute; top: 66px; left: 109px; font-size: 16px; text-align: right; font-weight: bold; color: #FFFFFF; font-family: 'MS Gothic'; width: 84px;"/>
+                    <p:inputText id="ttCd" style="position: absolute; top: 64px; left: 194px;" maxlength="30" tabIndex="2"
+                                 onchange="#{MG1001001_00_000Controller.textOnChangeHandler}" required="true" value="#{MG1001001_00_000Controller.view.ttCd}"/>
+                    <!-- パスワード -->
+                    <p:outputLabel value="パスワード" style="position: absolute; top: 96px; left: 86px; font-size: 16px; text-align: right; font-weight: bold; color: #FFFFFF; font-family: 'MS Gothic'; width: 108px;"/>
+                    <p:password id="ttPwd" style="position: absolute; top: 94px; left: 194px;" maxlength="30" tabIndex="3"
+                                onchange="#{MG1001001_00_000Controller.textOnChangeHandler}" required="true" value="#{MG1001001_00_000Controller.view.ttPwd}"/>
+                    <!-- ログイン -->
+                    <p:commandButton id="btnUPD001" value="ログイン" style="position: absolute; top: 124px; left: 194px; width: 85px;" disabled="true" tabIndex="4"
+                                     onclick="#{MG1001001_00_000Controller.btnLoginOnClickHandler}"/>
+                    <!-- 終了 -->
+                    <p:commandButton id="btnCLO001" value="終了" style="position: absolute; top: 124px; left: 287px; width: 85px;"  tabIndex="5" onclick="applicationCloseDispatch(event);"/>
+                </p:outputPanel>
+                <p:outputPanel style="position: absolute; top: 255px; left: 0; width: 100%; background-color: rgba(252,5,5,0.7); height: 73px;">
+                    <!-- Copyright -->
+                    <p:outputLabel id="lblCopyright" value="Copyright Info" style="position: absolute; top: 55px; right: 0; width: 100%; color: white; text-align: right;"/>
+                    <!-- 2013.10.23 TR1059対応　JiaoMingQi start-->
+                    <p:outputLabel id="lblVersion" style="position: absolute; top: 36px; left: 475px; width: 65px; height: 15px; color: white; text-align: left;"/>
+                    <!-- 2013.10.23 TR1059対応　JiaoMingQi end-->
+                    <p:panel style="position: absolute; top: 0; left: 122px; width: 354px; height: 57px; background-image: url(#{resource['acc_img:logo.gif']});"/>
+                </p:outputPanel>
 
-  </h:form>
-</h:body>
-</html>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,160 @@
+#iconChat {
+	position: absolute;
+	top: 5px;
+	right: 4px;
+	width: 15px;
+	height: 15px;
+	color: #fff;
+	font-size: 15px;
+	-webkit-transition: height 1.25s ease;
+	-moz-transition: height 1.25s ease;
+	-o-transition: height 1.25s ease;
+	transition: height 1.25s ease;
+	cursor: pointer;
+	text-align: left;
+	letter-spacing: 1px;
+	z-index: 9999;
+	padding: 5px;
+	border-radius: 5px;
+}
+
+.chatIcon {
+	background-color: #42b6f4;
+}
+
+.closeIcon {
+	background-color: transparent;
+}
+
+.closeIcon:HOVER {
+	background-color: #eee;
+	cursor: pointer;
+}
+
+.messageNotifyDetail:HOVER {
+	background-color: rgba(119, 213, 247, 0.7);
+}
+
+#messageNotifyContent:HOVER {
+	cursor: pointer;
+}
+
+.closeIcon span i {
+	color: grey;
+	margin-right: 0px;
+}
+
+.newMessageIcon {
+/* 2019-06-17 PG2.2-No9 TRAN START */
+	/*background-color: orange;*/
+	background-color: #FF0000;
+/* 2019-06-17 PG2.2-No9 TRAN START */
+}
+
+.flashit{
+	-webkit-animation: flash linear 1s infinite;
+	animation: flash linear 0.75s infinite;
+}
+
+@-webkit-keyframes flash {
+	0% { opacity: 1; } 
+	50% { opacity: .1; } 
+	100% { opacity: 1; }
+}
+@keyframes flash {
+	0% { opacity: 1; } 
+	50% { opacity: .1; } 
+	100% { opacity: 1; }
+} 
+
+
+#messageNotifyPanel {
+	position: absolute;
+	overflow: scroll;
+	max-width: 100%;
+    overflow-x: hidden;
+	top: 3px;
+	right: 3px;
+	padding: 1px 16px 1px 1px;
+	display: block;
+	border-radius: 4px;
+	transform: translateY(10px);
+	transition: all 0.5s;
+	z-index: 9999;
+	width: 200px;
+	max-height : 287px;
+	visibility: hidden;
+	background: white;
+}
+
+#messageNotifyPanel.active {
+	display: block;
+	visibility: visible;
+	box-shadow: 2px 3px 16px silver;
+	transition: all 600ms;
+	transform: translateY(0px);
+	transition: all 0.5s;
+}
+
+.messageNotifyDetail {
+	width: 190px;
+	height: 50px;
+	border-radius: 5px;
+	margin: 5px;
+	background: rgba(119, 213, 247, 0.2);
+	border: 1px solid #cccccc;
+}
+.messageNotifyDetailSystem {
+	width: 190px;
+	height: 50px;
+	border-radius: 5px;
+	margin: 5px;
+	background: rgba(253, 245, 230, 0.55);
+	border: 1px solid #cccccc;
+}
+
+.messageNotifyDetailTranfer {
+	width: 190px;
+	height: 50px;
+	border-radius: 5px;
+	margin: 5px;
+	background: rgba(255,0,0,0.3);
+	border: 1px solid #cccccc;
+}
+
+.messageNotifyDetailResponse{
+	width: 190px;
+	height: 50px;
+	border-radius: 5px;
+	margin: 5px;
+	background: rgba(255,0,0,0.3);
+	border: 1px solid #cccccc;
+}
+
+#messageNotifyContent {
+	float: right;
+	padding: 5px;
+	overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 180px;
+    margin-top: -5px;
+}
+
+#iconClose {
+	float: right;
+	margin-top: 5px;
+	margin-right: 5px;
+}
+
+#timeMessage{
+    display: inline-block;
+    padding: 7px;
+    font-size: 10px;
+}
+
+.flashitNewMsg{
+	background-color:orange;
+	-webkit-animation: flash linear 1s infinite;
+	animation: flash linear 0.75s infinite;
+}

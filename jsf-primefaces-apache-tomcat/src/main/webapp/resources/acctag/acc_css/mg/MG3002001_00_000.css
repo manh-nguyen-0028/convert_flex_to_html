@@ -1,0 +1,256 @@
+/*===MG3002001===*/
+body {
+	width: 100% !important;
+}
+
+#content .ui-messages {
+	width: 857px;
+	margin: auto;
+	height: 55px;
+	overflow: hidden !important; /*disable scroll*/
+}
+
+#MG3002001 .ui-panel .ui-panel-content {
+	padding: 0 0;
+}
+
+#MG3002001 .ui-panel {
+	margin-bottom: 0;
+	border: none;
+}
+
+#MG3002001, #MG3002001 .ui-panel:first-child table.ui-grid {
+	max-width: 857px;
+	width: 857px;
+	margin: 0 auto;
+}
+
+#MG3002001 table.ui-grid:first-child, #MG3002001 .ui-grid:first-child tr
+	{
+	width: 838px;
+}
+
+#MG3002001 .ui-grid-row {
+	border-bottom: none;
+	background: none;
+}
+
+#MG3002001 .ui-grid-row>td:first-child {
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+
+#MG3002001 .ui-custom-button {
+	float: right;
+	margin-right: 35px;
+}
+
+#MG3002001 .ui-datatable-data .ui-column-left {
+	text-align: left;
+	border: solid 1px #D5D5D5;
+	padding-left: 5px;
+	white-space: nowrap;
+}
+
+#MG3002001 .ui-datatable-data .ui-column-right {
+	text-align: right;
+	border: solid 1px #D5D5D5;
+	padding-right: 5px;
+	white-space: nowrap;
+}
+
+#MG3002001 .ui-column-1 {
+	width: 33%;
+	padding-right: 2px;
+}
+
+#MG3002001 .ui-column-2 {
+	width: 8%;
+	padding-left: 8px;
+}
+
+#MG3002001 .ui-column-3 {
+	width: 53%;
+	padding: 4px 1px;
+}
+
+#MG3002001 .ui-column-4 {
+	width: 8%;
+	padding: 4px 10px;
+}
+
+#MG3002001 .div-table {
+	display: table;
+	width: auto;
+	border: none;
+}
+
+#MG3002001 .div-table-row {
+	display: table-row;
+	width: auto;
+	clear: both;
+}
+
+#MG3002001 .arrow-button {
+	margin: 3px 2px;
+}
+
+#MG3002001 .push-down-1 {
+	margin-top: 30px;
+}
+
+#MG3002001 .push-down-2 {
+	margin-top: 65px;
+}
+
+#MG3002001 .button-panel {
+	margin-top: 0;
+}
+
+#MG3002001 .ui-picklist-source {
+	width: 270px;
+	height: 207px;
+}
+
+#MG3002001 .ui-picklist-target {
+	width: 467px;
+	height: 207px;
+}
+
+#MG3002001 .ui-picklist-list-wrapper span, td {
+	white-space: normal;
+	word-wrap: break-word;
+}
+
+.MessageFrame1.popup table.ui-grid textarea {
+	white-space: normal !important;
+}
+
+#MG3002001 .ui-picklist-list-wrapper tr {
+	height: 25px;
+}
+
+#MG3002001 .ui-picklist-list-wrapper li {
+	border-bottom: solid 1px #D5D5D5;
+	margin: 0;
+	padding: 0;
+	border-radius: 0;
+}
+
+#MG3002001 .ui-kensu-1, .ui-kensu-2 {
+	text-align: right;
+}
+
+#MG3002001 .ui-picklist-source .ui-busho, #MG3002001 .ui-picklist-source .ui-tokusokuTantosha,
+	#MG3002001 .ui-picklist-source .ui-kensu-2 {
+	display: none;
+}
+
+#MG3002001 .ui-picklist-target .ui-tantosha, #MG3002001 .ui-picklist-target .ui-kensu-1
+	{
+	display: none;
+}
+
+
+
+
+#MG3002001 .ui-kensu-2 {
+	padding: 0 5px 0 12px;
+}
+
+#MG3002001 .ui-tantosha, #MG3002001 .ui-busho, #MG3002001 .ui-tokusokuTantosha
+	{
+	border-right: solid 1px #D5D5D5;
+	padding-left: 5px;
+}
+
+
+#MG3002001 .ui-kensu-1, .ui-kensu-2 {
+	padding-right: 5px;
+}
+
+#MG3002001 .ui-picklist-button-move-top, #MG3002001 .ui-picklist-button-move-bottom
+	{
+	display: none;
+}
+
+#MG3002001 .ui-corner-tl, #MG3002001 .ui-corner-tr {
+	border-top-right-radius: 0;
+	border-top-left-radius: 0;
+}
+
+#MG3002001 .ui-corner-bottom {
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+
+
+
+
+
+#MG3002001 .ui-picklist-button-add-all {
+	position: relative;
+	top: -31px;
+}
+
+#MG3002001 .ui-picklist-button-add {
+	position: relative;
+	top: 31px;
+}
+
+#MG3002001 .ui-grid-col-1>div>div:nth-child(2) {
+	padding: 0 14px;
+}
+
+#MG3002001 .ui-picklist-caption {
+	padding-top:0px;
+}
+
+.kensaku-btn {
+	margin-bottom: 10px;
+}
+
+/** Å´Å@css for size of picklist table Å´Å@*/
+#MG3002001 .ui-picklist  table {
+	table-layout:fixed;
+}
+
+#MG3002001 .ui-div-picklist-source-col-1 {
+	width: 192px;
+}
+
+#MG3002001 .ui-div-picklist-source-col-2 {
+	width: 30%;
+}
+
+#MG3002001 .ui-tantosha {
+	width: 187px;
+}
+#MG3002001 .ui-kensu-1 {
+	width: auto;
+}
+
+
+#MG3002001 .ui-div-picklist-target-col-1 {
+	width: 192px;
+}
+
+#MG3002001 .ui-div-picklist-target-col-2 {
+	width: auto;
+}
+
+#MG3002001 .ui-busho {
+	width: 187px;
+}
+
+#MG3002001 .ui-tokusokuTantosha{
+	width:187px;
+}
+
+#MG3002001 .ui-kensu-2{
+	width:auto;
+}
+/** Å™Å@css for size of picklist table Å™*/
+
+

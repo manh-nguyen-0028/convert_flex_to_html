@@ -1,0 +1,671 @@
+.ui-grid .ui-grid-row .ui-chkbox {
+	float: left;
+	padding-top: 5px;
+}
+
+/* ====== Table ======== */
+div .ui-datatable-scrollable-header-box table th {
+	text-align: left;
+}
+
+/* ====== input control  ======== */
+.hightlight {
+	background-color: #C0FFFF !important;
+	text-align: left !important;
+}
+
+body .ui-datatable thead th, body .ui-datatable tbody td, body .ui-datatable tfoot td,
+	body .ui-datatable tfoot th {
+	padding: 5px 10px 0px;
+	height: 18px;
+	vertical-align: middle;
+}
+
+/* +=================================================== */
+/* RESET CSS DEFAULT PRIMEFACE */
+/* +=================================================== */
+
+/* Tab */
+.ui-tabs .ui-tabs-nav.ui-widget-header li.ui-state-active a {
+	font-weight: bold;
+}
+
+.ui-tabs .ui-tabs-nav.ui-widget-header li a {
+	color: #333333
+}
+
+/* Input field */
+.ui-inputfield, .ui-widget-content .ui-inputfield, .ui-widget-header .ui-inputfield
+	{
+	/* -webkit-border-radius: 0px;
+   -moz-border-radius: 0px;
+    -ms-border-radius: 0px;
+     -o-border-radius: 0px;
+        border-radius: 0px; */
+	line-height: 18px;
+}
+
+/* radio btn */
+html .ui-selectoneradio label {
+	display: block;
+	margin-top: 1px;
+	margin-right: 5px;
+}
+
+html .ui-radiobutton {
+	margin: 3px 5px;
+}
+
+/* checkbox field */
+.ui-grid .ui-grid-row div.ui-chkbox {
+	padding-top: 0
+}
+
+/* tab view */
+.ui-tabs.ui-tabs-top {
+	border-bottom: 0px;
+}
+
+/*  data table */
+.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
+	.ui-datatable tfoot th {
+	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+}
+
+.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
+	.ui-datatable tfoot th {
+	border: none !important
+}
+
+.ui-datatable tbody td {
+	border-color: #cecece;
+}
+
+/* +=================================================== */
+/* COMMON CSS */
+/* +=================================================== */
+.wrapper {
+	position: relative;
+}
+
+.clear {
+	clear: both;
+}
+
+.font-bold {
+	font-weight: bold !important;
+}
+
+.txt_algn_right {
+	text-align: right !important;
+}
+
+.txt_algn_center {
+	text-align: center !important;
+}
+
+.txt_algn_left {
+	text-align: left !important;
+}
+
+/*CSS for input background change when focus and change data*/
+/* 2019/06/04 TuyenNT Fix [v2.11]Kadai297 START */
+/* .ui-inputfield.ui_input_focus {
+	background-color: #C0FFFF;
+}
+
+.ui-inputfield.ui_input_dataChange {
+	background-color: #C0FFC0;
+} */
+/* 2019/06/04 TuyenNT Fix [v2.11]Kadai297 START */
+
+.ui-inputfield.ui_input_dataNotChange {
+	background-color: #FFFFFF;
+}
+
+.ui-inputfield.ui_selectbox_focus {
+	background-color: #14c9d8;
+}
+
+.panel_input_form .ui-grid-col-3, .panel_input_form .ui-grid-col-4,
+	.panel_input_form .ui-grid-col-6 {
+	width: auto;
+}
+
+.panel_input_form .ui-widget-content {
+	border: none;
+}
+
+.panel_input_form.ui-panelgrid .ui-panelgrid-cell {
+	padding: 0;
+	margin-right: 5px;
+}
+
+/*  input control */
+.ui-grid label {
+	padding-left: 0px;
+}
+
+.ui-grid-row label.text-right {
+	padding-right: 3px;
+}
+
+.ui-inputfield.input-ctl-inline, .ui-outputlabel.input-ctl-inline,
+	.input-ctl-inline {
+	float: left;
+}
+
+.panel_input_form div.ui-chkbox {
+	margin-top: 2px
+}
+
+/*  select many checkbox */
+.ui-selectmanycheckbox label {
+	margin-top: 8px;
+	display: inline-block;
+}
+
+.ui-grid .ui-grid-row .ui-widget.ui-selectmanycheckbox .ui-chkbox {
+	padding-top: 7px;
+}
+
+.panel_input_form .ui-grid-row {
+	padding-bottom: 10px
+}
+
+.tab-view-cl .ui-tabs-panels {
+	border: 1px solid #cecece;
+	padding-top: 10px
+}
+
+/* table custom */
+div.ui-datatable.ui-widget.ui-datatable-scrollable .ui-datatable-scrollable-header-box th
+	{
+	border-top: 1px solid #cbcbcb !important;
+}
+
+div.ui-datatable.ui-widget.ui-datatable-scrollable th {
+	border-radius: 0;
+	border-right: 1px solid #cbcbcb !important;
+	border-left: 1px solid #cbcbcb !important;
+}
+
+div.ui-datatable.ui-widget.ui-datatable-scrollable table td {
+	border-radius: 0;
+	border-right: 1px solid #cbcbcb !important;
+	border-bottom: 1px solid #cbcbcb !important;
+	border-left: 1px solid #cbcbcb !important;
+	text-overflow: clip;
+	white-space: nowrap
+}
+
+.ui-datatable  tr.edited:not(.ui-state-highlight ) td {
+	background-color: #ffff00;
+}
+
+td.ui-state-highlight.focus .ui-cell-editor-input input.transparent {
+	color: #333333 !important;
+	text-align: left !important;
+}
+
+td.ui-state-highlight.focus {
+	background-color: #ffffff !important;
+	background-image: none !important;
+}
+
+td.ui-state-highlight.focus .ui-cell-editor-input input::selection {
+	background: #0088cc !important;
+	color: #ffffff !important;
+}
+
+.ui-panelgrid .ui-panelgrid-cell.column_group {
+	padding: 4px 0 4px 0;
+}
+/*css for label hotkey*/
+.ui-label-height {
+	height: 13px;
+	display: block;
+}
+
+.ui-panelgrid .ui-panelgrid-cell.column_group_first_item {
+	padding: 4px 0 4px 10px;
+}
+
+.column_padding_right {
+	padding: 4px 5px 4px 0px !important;
+	vertical-align: middle;
+}
+
+/*dialog*/
+.ui_dialog_margin {
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.ui-dialog.ui-widget-content .ui-dialog-titlebar-close {
+	margin: 0;
+}
+
+/* dialog alert  */
+.dialog {
+	min-width: 380px;
+}
+
+.dialog button {
+	width: auto !important;
+	min-width: 60px !important;
+	margin: 0 5px;
+}
+
+/* Block north function key : using in screen 15, 10 ... */
+.function_key_blk .ui-label-height {
+	height: 13px;
+	display: block;
+	padding-left: 10px;
+}
+
+.function_key_blk .ui-panelgrid .ui-panelgrid-cell {
+	padding: 0;
+}
+
+.function_key_blk .ui-panelgrid-cell:FIRST-CHILD {
+	margin-left: 15px;
+}
+
+.function_key_blk>.ui-layout-unit-content {
+	height: auto !important;
+}
+
+.menulist tr td {
+	padding: 0 !important;
+}
+
+.menulist tr td a {
+	display: inline-block;
+	width: 100%;
+	height: 50%;
+	padding: 5px 10px 4px;
+}
+
+/* no padding */
+.nopadding.ui-panelgrid .ui-panelgrid-cell {
+	padding: 0;
+	border: none;
+}
+
+.nopadding {
+	padding: 0 !important;
+}
+/* no border legend ex: screen 22 */
+.ui-fieldset {
+	border-radius: 0;
+}
+
+.ui-fieldset .ui-fieldset-legend {
+	padding: 2px !important;
+	border: none;
+	display :block !important;
+}
+
+/* css for tab oritation left */
+html .ui-tabs-left>.ui-tabs-nav, html .ui-tabs-right>.ui-tabs-nav {
+	width: 30px;
+	height: auto;
+}
+
+.ui-tabs-left.ui-tabs {
+	border: none;
+}
+
+html .ui-tabs-left>.ui-tabs-panels {
+	width: auto;
+	margin-left: 29px;
+	float: none;
+	padding-top: 5px;
+	padding-right: 3px;
+}
+
+/* css for tab oritation right */
+html .ui-tabs-right>.ui-tabs-panels {
+	width: auto;
+	float: none;
+	padding-top: 5px;
+	padding-right: 3px;
+	float: right !important;
+}
+
+html .ui-tabs.ui-tabs-right>.ui-tabs-nav {
+	width: 30px;
+	height: auto;
+}
+
+.ui-tabs-left>.ui-tabs-nav li a, .ui-tabs-right>.ui-tabs-nav li a {
+	/* 	-webkit-transform: rotate(-90deg);
+	-moz-transform: rotate(-90deg);
+	-ms-transform: rotate(-90deg);
+	-o-transform: rotate(-90deg);
+	filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3); */
+	writing-mode: lr-tb;
+	text-align: center;
+	width: auto !important;
+	height: auto !important;
+	padding: 0.5em 0.5em !important;
+}
+
+/* panel of content with border */
+.pnl_body_content .ui-panel-titlebar {
+	display: none;
+}
+
+.ui-panel.pnl_body_content .ui-panel-content {
+	padding: 2px 2px;
+}
+
+/*  for arrow layout   ex: screen 11,18  ...
+ item block label  */
+.item_block {
+	width: auto;
+	position: absolute;
+	padding: 5px;
+	z-index: 9999;
+}
+
+.item_block label {
+	line-height: 18px !important;
+}
+
+.item_block .inp_date {
+	width: 75px
+}
+
+.arrow_all_h {
+	position: absolute;
+}
+
+.h_line {
+	height: 3px;
+	background: url("#{resource['acc_img:line_h.png']}") repeat-x;
+	width: 100%
+}
+
+.h_arrow {
+	background: url("#{resource['acc_img:arrow.jpg']}") no-repeat;
+	z-index: 1;
+	width: 10px;
+	height: 14px;
+	float: right;
+	top: -5.5px;
+	right: 0;
+	position: absolute;
+}
+
+.v_line {
+	background: url("#{resource['acc_img:line.png']}") repeat-y;
+	width: 2px;
+}
+
+/* group input of input text ex: frame 3 scr 10 */
+.group_input.pnl_body_content, .group_input.pnl_body_content .ui-widget-content
+	{
+	padding: 0 !important;
+	margin: 0 !important;
+}
+
+.group_input.pnl_body_content .ui-widget-content input {
+	padding: 2px 4px;
+	height: 24px !important;
+	border: none !important;
+	box-shadow: none !important;
+	-webkit-shadow: none !important;
+	-moz-box-shadow: none !important;
+	-moz-box-transition: none !important;
+	-webkit-transition: none !important;
+	transition: none !important;
+	box-sizing: border-box;
+}
+
+/* transparent input in datatable */
+.ui-widget-content input.transparent {
+	padding: 0px;
+	height: 24px !important;
+	border: none !important;
+	box-shadow: none !important;
+	-webkit-shadow: none !important;
+	-moz-box-shadow: none !important;
+	-moz-box-transition: none !important;
+	-webkit-transition: none !important;
+	transition: none !important;
+	width: 100%;
+	height: 100%;
+	display: inline-block;
+	background-color: transparent !important;
+}
+
+.ui-widget-content .ui-cell-editor-output input.transparent {
+	color: #333333 !important;
+}
+
+.ui-widget-content .ui-cell-editor-input input.transparent {
+	color: white !important;
+}
+
+.ui-editable-column.ui-cell-editing {
+	padding: 5px 10px 0px !important;
+}
+
+/* +=================================================== */
+/* CSS SCREEN FRAME */
+/* +=================================================== */
+/* <!-- nguyendk --> */
+/* -				------------HM1005002------------- */
+.ui-sort-key-parent {
+	width: 100%;
+}
+
+.ui-sort-key-child-left {
+	width: 70%;
+	height: 100px;
+	background-color: white;
+	float: left;
+}
+
+.ui-sort-key-child-right {
+	width: 30%;
+	height: 100px;
+	background-color: white;
+	float: right;
+}
+
+.ui-sort-key-table-right {
+	float: right;
+	padding-right: 20px;
+}
+
+.ui-sort-key-parent table tbody tr {
+	border-style: hidden;
+}
+/*  				-------------HM1005003------------- */
+.ui-table-input {
+	width: 1300px;
+	border-style: hidden;
+}
+
+.ui-table-left {
+	width: 230px;
+	height: 100px;
+}
+
+.ui-table-middle {
+	width: 630px;
+	height: 50px;
+}
+
+.ui-table-middle tbody tr {
+	border-style: hidden;
+}
+
+.ui-table-right {
+	width: 340px;
+	height: 50px;
+}
+
+.ui-table-right tbody tr {
+	border-style: hidden;
+}
+
+.ui-panel-label {
+	border: solid 1px;
+	border-radius: 2px;
+	border-color: #eeeeee;
+	padding: 2px;
+	height: 20px;
+	display: inherit;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.label-left {
+	width: 90px !important;
+}
+
+.ui-inputfield-middle {
+	width: 400px;
+	height: 15px;
+}
+
+.ui-inputfield-right {
+	width: 200px;
+	height: 15px;
+}
+
+/* -						------------HM1005004------------*/
+.label-parent {
+	padding-bottom: 100px !important;
+	width: 1255px;
+	margin-left: -15px;
+}
+
+.dataTable {
+	margin-right: -15px !important;
+	margin-left: -10px;
+}
+
+.ui-table-header {
+	width: 1250px;
+}
+
+.ui-cell-header-left {
+	text-align: center;
+	width: 100%;
+	vertical-align: middle;
+}
+
+.ui-label-right {
+	border: solid 1px;
+	border-radius: 2px;
+	border-color: #cccccc;
+	padding: 2px;
+	height: 20px;
+	width: 75px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.label-header {
+	color: blue;
+	font-weight: bold;
+}
+
+.ui-cell-header-right {
+	float: right;
+	display: flex;
+	vertical-align: middle;
+}
+
+.ui-input-field-data {
+	width: 266px;
+	color: red !important;
+	font-weight: bold !important;
+}
+
+.ui-state-table {
+	text-align: left !important;
+}
+/* 2018/11/10  No.23, DungTT START */
+.ui-right-state-table {
+	text-align: right !important;
+}
+/* 2018/11/10  No.23 DungTT END */
+.div-parent {
+	width: 100%;
+}
+
+.div-left {
+	width: 70%;
+	height: 100px;
+	background-color: white;
+	float: left;
+}
+
+.div-right {
+	width: 30%;
+	height: 100px;
+	background-color: white;
+	float: right;
+}
+
+.table-left {
+	float: right;
+	margin-top: 20px;
+	margin-right: 40px;
+}
+
+.table-right {
+	float: right !important;
+	margin-top: 20px;
+	margin-right: 130px;
+}
+
+.wiget-output-label {
+	border: solid 1px !important;
+	border-radius: 2px;
+	border-color: #eeeeee;
+}
+
+.ui-input-table {
+	margin: -10px !important;
+	width: 125px !important;
+}
+/* -------------HM1005002-HM1005009------------- */
+/* table tbody tr td {
+	vertical-align: top;
+} */
+#content .master_card tbody tr td {
+	padding: 1px 7px;
+	margin-top: 5px !important;
+}
+
+#content .master_card table tbody tr {
+	margin-top: 5px !important;
+}
+
+#content ul {
+	border-style: hidden;
+}
+
+button {
+	width: 100px;
+	height: 28px;
+}
+
+.dialogPrintPreview {
+	width: 1200px !important;
+	height: 500px !important;
+}
+
+/* 2018-12-07 Fix issue 180 CuongHT START */
+.btnCourt {
+	width: 65px;
+	height: 56px;
+}
+/* 2018-12-07 Fix issue 180 CuongHT END */

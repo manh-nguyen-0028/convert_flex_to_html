@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite">
+<!-- コンポーネントの属性で外から指定できるようにするものを定義する -->
+<composite:interface>
+	<composite:attribute name="id" />
+	<composite:attribute name="value" />
+	<composite:attribute name="converter" />
+	<composite:attribute name="size" />
+	<composite:attribute name="style" />
+	<composite:attribute name="styleClass" />
+</composite:interface>
+
+<!-- 複合コンポーネントに含むコンポーネントを定義する -->
+<composite:implementation>
+	<h:outputText
+		id="#{cc.attrs.id}"
+		style="#{cc.attrs.style}"
+		converter="#{ACCKeiyakuBangoConverter}"
+		value="#{cc.attrs.value}"
+		size="#{cc.attrs.size}"
+		styleClass="#{cc.attrs.styleClass}"
+		/>
+</composite:implementation>
+</html>
+

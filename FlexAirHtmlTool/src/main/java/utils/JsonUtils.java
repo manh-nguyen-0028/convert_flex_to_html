@@ -2,7 +2,7 @@ package utils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import mxml.service.XmlService;
+import mxml.service.MappingService;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -13,7 +13,7 @@ public class JsonUtils<T> {
 
     public List<T> readJsonFile(String filePath, Class<T> zClass) {
         List<T> results = null;
-        InputStream inputStream = XmlService.class.getClassLoader().getResourceAsStream(filePath);
+        InputStream inputStream = MappingService.class.getClassLoader().getResourceAsStream(filePath);
         if (inputStream != null) {
             Gson gson = new Gson();
             InputStreamReader reader = new InputStreamReader(inputStream);

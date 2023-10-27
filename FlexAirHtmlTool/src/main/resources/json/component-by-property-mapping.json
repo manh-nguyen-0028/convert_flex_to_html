@@ -1,0 +1,24 @@
+[
+  {
+    "elementFrom": "Controls:ACCTextInput",
+    "attribute": "maxbytelength",
+    "value": "",
+    "elementTo": "acc:inputTextMaxByte",
+    "htmlTagStart": "<acc:inputTextMaxByte",
+    "htmlTagStart2": ">",
+    "htmlTagStart3": "",
+    "isGenerateHtml": true,
+    "htmlTagEnd": "</acc:inputTextMaxByte>"
+  },
+  {
+    "elementFrom": "Controls:ACCTextInput",
+    "attribute": "displayAsPassword",
+    "value": "",
+    "elementTo": "p:password",
+    "htmlTagStart": "<p:password",
+    "htmlTagStart2": ">",
+    "htmlTagStart3": "",
+    "isGenerateHtml": true,
+    "htmlTagEnd": "</p:password>"
+  }
+]

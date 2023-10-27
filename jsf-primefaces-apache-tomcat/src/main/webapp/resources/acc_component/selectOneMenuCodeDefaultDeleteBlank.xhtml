@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+<!-- コンポーネントの属性で外から指定できるようにするものを定義する -->
+<composite:interface>
+	<composite:attribute name="id" />
+	<composite:attribute name="value" />
+	<composite:attribute name="listener" />
+	<composite:attribute name="codeListName" />
+	<composite:attribute name="selectKeyCode1" />
+	<composite:attribute name="selectKeyCode2" />
+	<composite:attribute name="converter" />
+	<composite:attribute name="required" />
+	<composite:attribute name="label" />
+	<composite:attribute name="disabled" />
+	<composite:attribute name="style" />
+	<composite:attribute name="styleClass" />
+	<composite:attribute name="labelText" />
+	<composite:attribute name="labelStyleClass" />
+	<composite:attribute name="tabindex" />
+	<composite:attribute name="defaultValue" default="" />
+	<composite:attribute name="defaultLabel" default="" />
+	<composite:clientBehavior name="change" event="change"
+		targets="#{cc.attrs.id}" />
+</composite:interface>
+
+<!-- 複合コンポーネントに含むコンポーネントを定義する -->
+<composite:implementation>
+	<p:outputLabel
+		value="#{cc.attrs.labelText != null ? cc.attrs.labelText: cc.attrs.label}"
+		styleClass="#{cc.attrs.labelStyleClass}"
+		rendered="#{cc.attrs.labelText != null or cc.attrs.label != null}"
+		for="#{cc.attrs.id}:#{cc.attrs.id}" />
+
+	<p:selectOneMenu id="#{cc.attrs.id}" value="#{cc.attrs.value}"
+		required="#{cc.attrs.required}" label="#{cc.attrs.label}"
+		disabled="#{cc.attrs.disabled}" style="#{cc.attrs.style}"
+		styleClass="#{cc.attrs.styleClass}" tabindex="#{cc.attrs.tabindex}"
+		onchange="selectOneMenuCodeDefaultDeleteBlank(this)">
+		<c:if test="#{cc.attrs.value == null  or cc.attrs.value == '' }">
+			<f:selectItem itemValue="#{cc.attrs.defaultValue}"
+				itemLabel="#{cc.attrs.defaultLabel}" />
+		</c:if>
+		<f:selectItems
+			value="#{accCodeInfoUtility.getCodeByCorpCd(accBaseInfoModel.corpCd, cc.attrs.codeListName, cc.attrs.selectKeyCode1, cc.attrs.selectKeyCode2)}"
+			var="codeList" itemLabel="#{codeList.name1}"
+			itemValue="#{codeList.keyInfo3}" />
+	</p:selectOneMenu>
+</composite:implementation>
+</html>

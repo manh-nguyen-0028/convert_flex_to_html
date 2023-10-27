@@ -1,0 +1,51 @@
+<ui:composition style="height:100%;width:100%;"
+                template="/jp/co/nissho_ele/acc/common/commonLayout.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:acc="http://xmlns.jcp.org/jsf/composite/acc_component">
+ <ui:define name="title">
+  ログイン
+ </ui:define>
+ <ui:define name="stylesheet">
+<!--  <h:outputStylesheet library="acc_css" name="MG100100101000.css" />-->
+  <!-- <h:outputStylesheet library="acc_css" name="*.css" /> -->
+ </ui:define>
+ <ui:define name="script">
+<!--  <h:outputScript library="acc_js" name="MG100100101000.js" />-->
+  <!-- <h:outputScript library="acc_js" name="*.js" /> -->
+ </ui:define>
+ <ui:define name="content">
+  <div class="p-grid p-nogutter p-align-center p-justify-center" style="height:374px;width:517px;">
+   <h:form id="MG100100101000Form">
+    <p:panel style="height:100%;background-image:url(#{resource['icon:login.jpg']});width:100%;position: absolute; left:0px;top:0px;" />
+    <p:outputPanel style="height:155px;width:378px;position: absolute; left:133px;top:101px;">
+     <!--  法人CD -->
+     <p:outputLabel value="法人CD" style="color:#FFFFFF;font-family:MS Gothic;font-size:16px;font-weight:bold;text-align:right;width:78px;position: absolute; left:116px;top:34px;"></p:outputLabel>
+     <acc:inputTextMaxByte onchange="#{MG1001001_01_000Controller.textOnChangeHandler};" id="corpCd" maxbytelength="3" readonly="true" required="true" tabindex="1" style="width:60px;position: absolute; left:194px;top:34px;"></acc:inputTextMaxByte>
+     <!--  ユーザID -->
+     <p:outputLabel value="ユーザID" style="color:#FFFFFF;font-family:MS Gothic;font-size:16px;font-weight:bold;text-align:right;width:84px;position: absolute; left:109px;top:66px;"></p:outputLabel>
+     <acc:inputTextMaxByte onchange="#{MG1001001_01_000Controller.textOnChangeHandler};" id="ttCd" maxbytelength="30" required="true" tabindex="2" style="width:178px;position: absolute; left:194px;top:64px;"></acc:inputTextMaxByte>
+     <!--  パスワード -->
+     <p:outputLabel value="パスワード" style="color:#FFFFFF;font-family:MS Gothic;font-size:16px;font-weight:bold;text-align:right;width:108px;position: absolute; left:86px;top:96px;"></p:outputLabel>
+     <p:password onchange="#{MG1001001_01_000Controller.textOnChangeHandler};" displayAsPassword="true" id="ttPwd" maxbytelength="30" required="true" tabindex="3" style="width:178px;position: absolute; left:194px;top:94px;"></p:password>
+     <!--  ログイン -->
+     <p:commandButton onclick="#{MG1001001_01_000Controller.btnLoginOnClickHandler};" id="btnUPD001" value="ログイン" tabindex="4" style="width:85px;position: absolute; left:194px;top:124px;"></p:commandButton>
+     <!--  終了 -->
+     <p:commandButton onclick="applicationCloseDispatch(event);" id="btnCLO001" value="終了" tabindex="5" style="width:85px;position: absolute; left:287px;top:124px;"></p:commandButton>
+    </p:outputPanel>
+    <p:outputPanel style="opacity:0.7;background-color:#FC0505;height:73px;width:100%;position: absolute; left:0px;top:255px;">
+     <!--  Copyright -->
+     <p:outputLabel id="lblCopyright" style="color:white;text-align:right;width:100%;position: absolute; left:0px;top:55px;"></p:outputLabel>
+     <!--  2013.10.23 TR1059対応　JiaoMingQi start-->
+     <p:outputLabel id="lblVersion" style="color:white;height:15px;text-align:left;width:65px;position: absolute; left:475px;top:36px;"></p:outputLabel>
+     <!--  2013.10.23 TR1059対応　JiaoMingQi end-->
+     <p:panel style="height:57px;background-image:url(#{resource['icon:logo.gif']});width:354px;position: absolute; left:122px;top:0px;" />
+    </p:outputPanel>
+   </h:form>
+  </div>
+ </ui:define>
+</ui:composition>

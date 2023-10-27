@@ -1,0 +1,178 @@
+<!-- 文書一括タブフレーム(MG3001005_00_000) -->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:acc="http://xmlns.jcp.org/jsf/composite/acc_component">
+	<p:panel header="#{label['MG3001005.header1']}">
+		<p:panelGrid styleClass="ui-grid">
+			<p:row styleClass="ui-grid-row">
+				<p:column>
+					<!-- 1. 出力文書 -->
+					<p:outputLabel styleClass="ui-grid-col-2 padding-left-15px"
+						id="lblShutsuryokuBunsho"
+						for="selShutsuryokuBunsho"
+						value="#{label['MG3001005.shutsuryokuBunsho']}">
+					</p:outputLabel>
+					<p:selectOneMenu styleClass="ui-grid-col-8"
+						id="selShutsuryokuBunsho"
+						value="#{MG3001005_00_000Controller.model.shutsuryokuBunsho}"
+						label="#{label['MG3001005.shutsuryokuBunsho']}"
+						tabindex="154" required = "true">
+						<f:selectItem itemLabel="" itemValue="" />
+						<f:selectItems
+							value="#{MG3001005_00_000Controller.model.shutsuryokuBunshoList}" />
+						<f:validator validatorId="ACCRequiredValidator" />
+					</p:selectOneMenu>
+
+				</p:column>
+				<p:column />
+			</p:row>
+			<p:row styleClass="ui-grid-row">
+				<p:column>
+					<!-- 2. 相手 -->
+					<p:outputLabel styleClass="ui-grid-col-2 padding-left-15px"
+						for="selAite" value="#{label['MG3001005.aite']}" />
+					<acc:selectOneMenuCodeDefaultDeleteBlank id="selAite" styleClass="ui-grid-col-2-25"
+						codeListName="ACC_CODE" labelText="" selectKeyCode1="TBL_COMM_TBL"
+						selectKeyCode2="A00031"
+						value="#{MG3001005_00_000Controller.model.aite}"
+						label="#{label['MG3001005.aite']}" tabindex="155">
+
+					</acc:selectOneMenuCodeDefaultDeleteBlank>
+
+					<h:panelGroup layout="block"
+						styleClass="ui-grid-col-push-1-5 ui-grid-col-5-75 radSofuMotoJusho_tap5">
+						<!-- 3. 送付元住所 -->
+						<!-- 
+						<p:outputLabel styleClass="ui-grid-col-3" for="radSofuMotoJusho"
+							value="#{label['MG3001005.sofuMotoJusho']}" />
+						<p:selectOneRadio id="radSofuMotoJusho" columns="2"
+							value="#{MG3001005_00_000Controller.model.sofuMotoJusho}"
+							tabindex="156">
+							<f:selectItem itemLabel="本社" itemValue="1" />
+							<f:selectItem itemLabel="関東" itemValue="2" />
+						</p:selectOneRadio> -->
+					</h:panelGroup>
+				</p:column>
+				<p:column />
+			</p:row>
+
+		</p:panelGrid>
+	</p:panel>
+	<p:panel styleClass="ui-grid-responsive"
+		header="#{label['MG3001005.header2']}">
+		<p:panelGrid styleClass="ui-grid">
+
+			<p:row styleClass="ui-grid-row">
+				<p:column>
+					<!-- 4. 前回出力文書 -->
+					<p:outputLabel styleClass="ui-grid-col-2 padding-left-15px"
+						for="selZenkaiShutsuryokuBunsho"
+						value="#{label['MG3001005.zenkaiShutsuryokuBunsho']}" />
+					<p:selectOneMenu styleClass="ui-grid-col-8 "
+						id="selZenkaiShutsuryokuBunsho"
+						value="#{MG3001005_00_000Controller.model.zenkaiShutsuryokuBunsho}"
+						label="#{label['MG3001005.zenkaiShutsuryokuBunsho']}"
+						tabindex="157">
+						<f:selectItem itemLabel="" itemValue="" />
+						<f:selectItems
+							value="#{MG3001005_00_000Controller.model.zenkaiShutsuryokuBunshoList}" />
+					</p:selectOneMenu>
+				</p:column>
+				<p:column />
+			</p:row>
+			<p:row styleClass="ui-grid-row">
+				<p:column>
+					<!-- 5. 経過日数From -->
+					<acc:inputTextNumber styleClass="ui-grid-col-1 text-right"
+						id="txtKeikaNissuFrom" maxlength="3"
+						labelStyleClass="ui-grid-col-2 padding-left-15px"
+						value="#{MG3001005_00_000Controller.model.keikaNissuFrom}"
+						labelText="#{label['MG3001005.keikaNissuFrom']}"
+						label="#{label['MG3001005.keikaNissuFrom']}From" tabindex="158">
+					</acc:inputTextNumber>
+					<!-- 6. 経過日数To -->
+					<acc:inputTextNumber styleClass="ui-grid-col-1 text-right"
+						id="txtKeikaNissuTo" maxlength="3"
+						labelStyleClass="ui-grid-col-0-5 no-padding-left text-center "
+						labelText="#{label['MG3001005.to']}"
+						value="#{MG3001005_00_000Controller.model.keikaNissuTo}"
+						label="#{label['MG3001005.keikaNissuTo']}" tabindex="159">
+					</acc:inputTextNumber>
+				</p:column>
+				<p:column />
+			</p:row>
+
+		</p:panelGrid>
+	</p:panel>
+	<p:panel styleClass="ui-grid-responsive" widgetVar="form5-panel3"
+		header="#{label['MG3001005.header3']}">
+		<p:panelGrid styleClass="ui-grid">
+			<p:row styleClass="ui-grid-row">
+				<p:column>
+					<!-- 7. 支払期限 -->
+					<acc:inputTextDate id="txtShiharaiKigen"
+						styleClass="ui-grid-col-1-75 text-right"
+						labelStyleClass="ui-grid-col-2 padding-left-15px"
+						value="#{MG3001005_00_000Controller.model.shiharaiKigen}"
+						label="#{label['MG3001005.shiharaiKigen']}" tabindex="160">
+					</acc:inputTextDate>
+
+					<!-- 8. 書面の応答日 -->
+
+					<acc:inputTextDate id="txtShomenNoOtoBi"
+						styleClass="ui-grid-col-1-75 text-right"
+						labelStyleClass="ui-grid-col-push-1 ui-grid-col-2"
+						value="#{MG3001005_00_000Controller.model.shomenNoOtoBi}"
+						label="#{label['MG3001005.shomenNoOtoBi']}" tabindex="161">
+					</acc:inputTextDate>
+					<p:outputLabel styleClass=" ui-grid-col-2" for="txtShomenNoOtoBi"
+						value="#{label['MG3001005.ShomenNoOtoBi2']}" />
+
+				</p:column>
+				<p:column />
+			</p:row>
+
+		</p:panelGrid>
+	</p:panel>
+	<p:panelGrid styleClass="ui-grid">
+		<p:row styleClass="ui-grid-row">
+			<p:column>
+				<!-- 9. 件数取得 -->
+				<p:commandButton styleClass="ui-grid-col-1-75"
+					id="btnKensuShutoku1005" value="#{label['MG3001005.kensuShutoku']}"
+					disabled="#{MG3001005_00_000Controller.authMap['btnKensuShutoku1005']}"
+					actionListener="#{MG3001005_00_000Controller.btnKensuShutokuClick}"
+					update="@form validateMsgs"
+					tabindex="162" />
+				<!-- 10. 取得件数 -->
+				<acc:inputTextNumber
+					styleClass="ui-grid-col-push-0-25 ui-grid-col-1-5 text-right"
+					readonly="true" id="txtShutokuKensu1005" maxlength="7"
+					labelStyleClass="no-padding-left" labelText=""
+					value="#{MG3001005_00_000Controller.model.shutokuKensu}"
+					label="#{label['MG3001005.shutokuKensu']}" tabindex="-1">
+				</acc:inputTextNumber>
+
+				<!-- 11. 申請 -->
+				<p:commandButton styleClass="ui-grid-col-push-6-10  ui-grid-col-2"
+					id="btnShinsei" value="#{label['MG3001005.shinsei']}"
+					disabled="#{MG3001005_00_000Controller.authMap['btnShinsei']}"
+					actionListener="#{MG3001005_00_000Controller.btnShinseiClick}"
+					update="@form validateMsgs"
+					tabindex="163" />
+			</p:column>
+			<p:column />
+		</p:row>
+		<p:row styleClass="ui-grid-row">
+			<p:column>
+
+			</p:column>
+			<p:column />
+		</p:row>
+	</p:panelGrid>
+</ui:composition>

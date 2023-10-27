@@ -2,9 +2,9 @@ package constants;
 
 public class Templates {
     public static final String CLASS_TEMPLATE = "public class {className} {parentType} {parentName}";
-    public static final String VARIABLE_STATIC = "private static final {type} {name} = {value}";
-    public static final String VARIABLE_ASSIGN = "private {type} {name} = {value}";
-    public static final String VARIABLE = "private {type} {name}";
+    public static final String VARIABLE_STATIC = "{encap} static final {type} {name} = {value}";
+    public static final String VARIABLE_ASSIGN = "{encap}{const} {type} {name} = {value}";
+    public static final String VARIABLE = "{encap}{const} {type} {name}";
     public static final String VARIABLE_GET_SET = "\tprotected String {name};";
     public static final String VARIABLE_PARAM = "{type} {name}";
     public static final String FUNCTION = "{encap} {type} {name}({params})";

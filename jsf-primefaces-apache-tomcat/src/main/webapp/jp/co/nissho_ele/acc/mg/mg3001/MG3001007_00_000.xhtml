@@ -1,0 +1,112 @@
+<!-- 分類一括タブフレーム(MG3001007_00_000) -->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pacc="http://xmlns.jcp.org/jsf/acctag"
+	xmlns:acc="http://xmlns.jcp.org/jsf/composite/acc_component">
+	<p:panelGrid styleClass="ui-grid" id="form7">
+	<pacc:outputScript library="acc_js" name="mg/MG3001007_00_01.js" />
+		<p:row styleClass="ui-grid-row">
+			<p:column>
+				<!-- 1. 抽出件数 -->
+				<acc:inputTextNumber styleClass="ui-grid-col-1-35 text-right "
+					id="txtChushutsuKensu007" maxlength="7" readonly="true"
+					labelStyleClass="ui-grid-col-2 padding-left-15px"
+					value="#{MG3001007_00_000Controller.model.chushutsuKensu}"
+					label="#{label['MG3001007.chushutsuKensu']}" tabindex="-1" />
+
+				<!-- 2. 件数取得 -->
+				<p:commandButton styleClass="ui-grid-col-push-0-25 ui-grid-col-2  "
+					id="btnKensuShutoku1007" value="#{label['MG3001007.kensuShutoku']}"
+					actionListener="#{MG3001007_00_000Controller.btnKensuShutoku1007Click}"
+					disabled="#{MG3001007_00_000Controller.authMap['btnKensuShutoku1007']}"
+					update="@form validateMsgs"
+					tabindex="166" />
+			</p:column>
+			<p:column />
+		</p:row>
+		<p:row styleClass="ui-grid-row">
+			<p:column>
+				<p:outputLabel styleClass="ui-grid-col-2 title-panel-a"
+					value="#{label['MG3001007.tableHeader1']}"></p:outputLabel>
+				<p:outputLabel
+					styleClass="ui-grid-col-push-4 ui-grid-col-2 title-panel-a"
+					value="#{label['MG3001007.tableHeader2']}"></p:outputLabel>
+			</p:column>
+			<p:column />
+		</p:row>
+		<p:row styleClass="ui-grid-row">
+			<p:column styleClass="ui-grid-col-12">
+				<p:pickList id="pickList5" class="pickList_#{accUserInfo.theme}"
+					label="#{label['MG3001007.tableHeader2']}"
+					value="#{MG3001007_00_000Controller.model.bunruiDualList}"
+					var="recordItem" itemValue="#{recordItem}"
+					showTargetControls="true" converter="#{ACCPickListConverter}"
+					disabled="#{MG3001007_00_000Controller.authMap['pickList5']}">
+					<f:validator validatorId="ACCRequiredValidator" />
+					<p:ajax event="transfer" global="false" delay="1"
+						listener="#{MG3001007_00_000Controller.pickListTransfer}" />
+					<f:facet name="sourceCaption">
+						<table>
+							<tr>
+								<td
+									class="ui-div-picklist-bunrui-col-1 ui-header-col-1-bunrui piclist-border_#{accUserInfo.theme}">#{label['MG3001002.bunruiKodoHidariBuZenBunruiIchiran']}</td>
+								<td
+									class="ui-div-picklist-bunrui-col-2 piclist-border_#{accUserInfo.theme}">#{label['MG3001002.bunruiHidariBuZenBunruiIchiran']}</td>
+								<td
+									class="ui-div-picklist-bunrui-col-3 piclist-border_#{accUserInfo.theme}">#{label['MG3001002.kensuHidariBuZenBunruiIchiran']}</td>
+							</tr>
+						</table>
+					</f:facet>
+					<f:facet name="targetCaption">
+						<table>
+							<tr>
+								<td
+									class="ui-div-picklist-bunrui-col-1 ui-header-col-1-bunrui piclist-border_#{accUserInfo.theme}">#{label['MG3001002.bunruiKodoHidariBuZenBunruiIchiran']}</td>
+								<td
+									class="ui-div-picklist-bunrui-col-2 piclist-border_#{accUserInfo.theme}">#{label['MG3001002.bunruiHidariBuZenBunruiIchiran']}</td>
+								<td
+									class="ui-div-picklist-bunrui-col-3 piclist-border_#{accUserInfo.theme}">#{label['MG3001002.kensuHidariBuZenBunruiIchiran']}</td>
+							</tr>
+						</table>
+					</f:facet>
+					<!-- 分類コード(左部：全分類一覧)  /分類コード(右部：選択分類一覧) -->
+					<p:column
+						styleClass="ui-div-picklist-bunrui-col-1 ui-kodo-column text-center"
+						resizable="true">
+						<h:outputText value="#{recordItem.bunno}" />
+					</p:column>
+					<!-- 分類(左部：全分類一覧)/分類(右部：選択分類一覧) -->
+					<p:column styleClass="ui-div-picklist-bunrui-col-2 text-cut-off"
+						resizable="true">
+						<h:outputText id="lblbunrui" value="#{recordItem.bnname}"
+							title="#{recordItem.bnname}" />
+
+					</p:column>
+					<!-- 件数(左部：全分類一覧)/件数(右部：選択分類一覧) -->
+					<p:column styleClass="ui-div-picklist-bunrui-col-3 text-right"
+						resizable="true">
+						<acc:outputLabelNumber value="#{recordItem.bunCount}" />
+					</p:column>
+				</p:pickList>
+			</p:column>
+			<p:column />
+		</p:row>
+		<p:row styleClass="ui-grid-row">
+			<p:column>
+				<!-- 11. 実行 -->
+				<p:commandButton styleClass="ui-grid-col-push-10-5 ui-grid-col-1-5 "
+					id="btnJikko" value="#{label['MG3001007.jikko']}"
+					actionListener="#{MG3001007_00_000Controller.btnJikkoClick}"
+					disabled="#{MG3001007_00_000Controller.authMap['btnJikko']}"
+					update="@form validateMsgs"
+					tabindex="169" />
+			</p:column>
+			<p:column />
+		</p:row>
+	</p:panelGrid>
+</ui:composition>

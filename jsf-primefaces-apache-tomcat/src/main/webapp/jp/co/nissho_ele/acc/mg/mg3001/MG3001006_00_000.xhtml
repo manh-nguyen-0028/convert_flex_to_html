@@ -1,0 +1,119 @@
+<!-- 担当割当タブフレーム(MG3001006_00_000) -->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:acc="http://xmlns.jcp.org/jsf/composite/acc_component">
+	<p:panel header="#{label['MG3001006.header1']}">
+		<p:panelGrid styleClass="ui-grid" id="tap6-panelGrid-1">
+			<p:row styleClass="ui-grid-row">
+				<p:column>
+					<span class="ui-grid-col-12"> <p:dataTable
+							id="datNyukinYakusokuRireki" var="dataRow"
+							resizableColumns="true" scrollable="true" scrollHeight="84"
+							value="#{MG3001006_00_000Controller.model.tantoshaSentakuList}"
+							emptyMessage="#{label['Base.noRecordsFound']}" tabindex="-1">
+							<!-- 1. 部署 -->
+							<p:column styleClass="tap6-dataTable-cl1">
+								<f:facet name="header">
+										#{label['MG3001006.busho']}
+									</f:facet>
+								<h:outputText value="#{dataRow.sectionNameRyakusho}" />
+							</p:column>
+
+							<!-- 2. 督促担当者 -->
+							<p:column styleClass="tap6-dataTable-cl2">
+								<f:facet name="header">
+										#{label['MG3001006.tokusokuTantosha']}
+									</f:facet>
+								<h:outputText value="#{dataRow.ttName}" />
+							</p:column>
+
+							<!-- 3. 件数 -->
+							<p:column styleClass="tap6-dataTable-cl3">
+								<f:facet name="header">
+										#{label['MG3001006.kenSu']}
+									</f:facet>
+								<acc:outputLabelNumber value="#{dataRow.tokusokuCount}"
+									styleClass="text-right" />
+
+							</p:column>
+							<f:event
+								listener="#{MG3001006_00_000Controller.model.validateDataTable}"
+								type="postValidate" />
+						</p:dataTable>
+					</span>
+				</p:column>
+				<p:column />
+			</p:row>
+			<p:row styleClass="ui-grid-row">
+				<p:column>
+					<!-- 4. 督促担当者選択 -->
+					<p:commandButton styleClass="ui-grid-col-12 "
+						disabled="#{MG3001006_00_000Controller.authMap['btnTokusokuTantoshaSentaku']}"
+						id="btnTokusokuTantoshaSentaku"
+						value="#{label['MG3001006.tokusokuTantoshaSentaku']}"
+						actionListener="#{MG3001006_00_000Controller.btnTokusokuTantoshaSentakuClick}"
+						validateClient="false" immediate="true" tabindex="164">
+						<p:ajax event="dialogReturn"
+							listener="#{MG3001006_00_000Controller.afterCloseMG3002001}" />
+					</p:commandButton>
+				</p:column>
+				<p:column />
+			</p:row>
+
+		</p:panelGrid>
+	</p:panel>
+	<h:panelGroup layout="block">
+		<p:row styleClass="ui-grid-row">
+
+			<p:panel styleClass="ui-grid-responsive"
+				style="width:48%;float:left;"
+				header="#{label['MG3001006.furiwakeHoho']}">
+				<p:panelGrid styleClass="ui-grid">
+					<p:row styleClass="ui-grid-row">
+						<p:column>
+							<h:panelGroup layout="block" styleClass="radio-tab-6">
+
+								<!-- 5. 振分方法 -->
+								<p:selectOneRadio id="radFuriwakeHoho" columns="2"
+									value="#{MG3001006_00_000Controller.model.furiwakeHoho}"
+									tabindex="165">
+									<f:selectItem itemLabel="一連" itemValue="1" />
+									<f:selectItem itemLabel="トランプ" itemValue="2" />
+								</p:selectOneRadio>
+							</h:panelGroup>
+						</p:column>
+						<p:column />
+					</p:row>
+				</p:panelGrid>
+			</p:panel>
+
+			<p:panel styleClass="ui-grid-responsive"
+				style="width:48%;float:right;"
+				header="#{label['MG3001006.sotoJunKojun']}">
+				<p:panelGrid styleClass="ui-grid">
+					<p:row styleClass="ui-grid-row">
+						<p:column>
+							<h:panelGroup layout="block" styleClass="radio-tab-6">
+
+								<!-- 6. ソート順（降順） -->
+								<p:selectOneRadio id="radSotoJunKojun" columns="2" style="text-wrap: nowrap; width: 290px"
+									value="#{MG3001006_00_000Controller.model.sotoJunKojun}"
+									tabindex="166">
+									<f:selectItem itemLabel="未納額" itemValue="1" />
+									<f:selectItem itemLabel="総残高" itemValue="2" />
+								</p:selectOneRadio>
+							</h:panelGroup>
+						</p:column>
+						<p:column />
+					</p:row>
+				</p:panelGrid>
+			</p:panel>
+
+		</p:row>
+	</h:panelGroup>
+</ui:composition>

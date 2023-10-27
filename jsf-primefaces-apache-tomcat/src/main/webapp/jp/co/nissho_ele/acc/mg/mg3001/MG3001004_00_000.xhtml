@@ -1,0 +1,192 @@
+<!-- コールリストタブフレーム(MG3001004_00_000) -->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:acc="http://xmlns.jcp.org/jsf/composite/acc_component">
+	<p:panel header="#{label['MG3001003.header1']}">
+		<p:panelGrid styleClass="ui-grid">
+			<p:row styleClass="ui-grid-row">
+				<p:column>
+					<!-- 1. ソート順 -->
+					<h:panelGroup cellpadding="5" layout="block"
+						styleClass="radSotoJunLayout2 ui-grid-col-7">
+						<p:selectOneRadio id="radSotoJun004" style="text-wrap: nowrap; width: 330px"
+							value="#{MG3001004_00_000Controller.model.sotoJun}" layout="grid"
+							columns="3" tabindex="144">
+							<f:selectItem itemLabel="未納額" itemValue="1" />
+							<f:selectItem itemLabel="総残高" itemValue="2" />
+							<f:selectItem itemLabel="会員番号" itemValue="3" />
+							<f:selectItem itemLabel="約定日" itemValue="4" />
+							<f:selectItem itemLabel="滞留月数" itemValue="5" />
+						</p:selectOneRadio>
+					</h:panelGroup>
+					<h:panelGroup cellpadding="5" layout="block"
+						styleClass="ui-grid-col-push-0-95 ui-grid-col-4 radShokoJunShiteiLayout">
+						<!-- 2. 昇降順指定 -->
+						<p:selectOneRadio id="radShokoJunShitei004" layout="grid"
+							columns="1"
+							value="#{MG3001004_00_000Controller.model.shokoJunShitei}"
+							tabindex="145">
+							<f:selectItem itemLabel="順番" itemValue="1" />
+							<f:selectItem itemLabel="降順" itemValue="2" />
+						</p:selectOneRadio>
+					</h:panelGroup>
+				</p:column>
+				<p:column />
+			</p:row>
+
+		</p:panelGrid>
+	</p:panel>
+	<p:panelGrid styleClass="ui-grid">
+		<p:row styleClass="ui-grid-row">
+			<p:column>
+				<!-- 3. 抽出済件数 -->
+				<acc:inputTextNumber styleClass="ui-grid-col-1-5 text-right"
+					readonly="true" id="txtChushutsuSumiKensu004" maxlength="7"
+					labelStyleClass="ui-grid-col-2"
+					value="#{MG3001004_00_000Controller.model.chushutsuSumiKensu}"
+					label="#{label['MG3001004.chushutsuSumiKensu']}" tabindex="-1">
+				</acc:inputTextNumber>
+
+				<!-- 4. 抽出 -->
+				<p:commandButton styleClass="ui-grid-col-push-0-5 ui-grid-col-1-5 "
+					id="btnChushutsu004" value="#{label['MG3001004.chushutsu']}"
+					disabled="#{MG3001004_00_000Controller.authMap['btnChushutsu004']}"
+					actionListener="#{MG3001004_00_000Controller.btnChushutsu004Click}"
+					update="@form validateMsgs" tabindex="146" />
+			</p:column>
+			<p:column />
+		</p:row>
+		<p:row styleClass="ui-grid-row">
+			<p:column>
+				<!-- 5. 架電先選択 -->
+				<p:outputLabel styleClass="ui-grid-col-2"
+					id="lblSelKadenSakiSentaku" for="selKadenSakiSentaku"
+					value="#{label['MG3001004.kadenSakiSentaku']}">
+				</p:outputLabel>
+				<p:selectOneMenu id="selKadenSakiSentaku"
+					styleClass="ui-grid-col-2-5" labelStyleClass="ui-grid-col-2 "
+					value="#{MG3001004_00_000Controller.model.kadenSakiSentaku}"
+					label="#{label['MG3001004.kadenSakiSentaku']}" tabindex="147" required = "true">
+					<p:ajax event="change"
+						listener="#{MG3001004_00_000Controller.changeKadenSakiSentaku}">
+					</p:ajax>
+					<f:selectItem itemLabel="" itemValue="" />
+					<f:selectItems
+						value="#{MG3001004_00_000Controller.dataKadenSakiSentaku}"
+						var="codeList" itemLabel="#{codeList.name1}"
+						itemValue="#{codeList.keyInfo3}" />
+					<f:validator validatorId="ACCRequiredValidator" />
+				</p:selectOneMenu>
+
+				<!-- 6. 186通知 -->
+				<p:selectBooleanCheckbox
+					styleClass="ui-grid-col-push-0-5 ui-grid-col-0-25"
+					id="chkTsuchi186" label="#{label['MG3001004.tsuchi186']}"
+					value="#{MG3001004_00_000Controller.model.tsuchi186Flg}"
+					tabindex="148">
+					<p:ajax global="false" delay="1"
+						listener="#{MG3001004_00_000Controller.changeTsuchi186}" />
+				</p:selectBooleanCheckbox>
+				<p:outputLabel styleClass="ui-grid-col-1-5" for="chkTsuchi186"
+					value="#{label['MG3001004.tsuchi186']}" />
+
+			</p:column>
+			<p:column />
+		</p:row>
+		<p:row styleClass="ui-grid-row">
+			<p:column>
+				<!-- 7. 分類移動先 -->
+				<p:outputLabel styleClass="ui-grid-col-2" for="selBunruiIdoSaki"
+					id="lblSelBunruiIdoSaki"
+					value="#{label['MG3001004.bunruiIdoSaki']}">
+				</p:outputLabel>
+				<p:selectOneMenu styleClass="ui-grid-col-2-5" id="selBunruiIdoSaki"
+					value="#{MG3001004_00_000Controller.model.bunruiIdoSaki}"
+					label="#{label['MG3001004.bunruiIdoSaki']}" tabindex="149" required = "true">
+					<f:selectItem itemLabel="" itemValue="" />
+					<f:selectItems
+						value="#{MG3001004_00_000Controller.model.bunruiSakiList}"
+						var="listBunruiSaki" itemLabel="#{listBunruiSaki.bnname}"
+						itemValue="#{listBunruiSaki.bunno}" />
+					<f:validator validatorId="ACCRequiredValidator" />
+				</p:selectOneMenu>
+
+				<!-- 8. 分類移動実行 -->
+				<p:commandButton styleClass="ui-grid-col-push-0-5 ui-grid-col-2-5"
+					id="btnBunruiIdoJikko"
+					disabled="#{MG3001004_00_000Controller.authMap['btnBunruiIdoJikko']}"
+					value="#{label['MG3001004.bunruiIdoJikko']}"
+					actionListener="#{MG3001004_00_000Controller.btnBunruiIdoJikkoClick}"
+					update="@form validateMsgs" tabindex="150" />
+
+				<!-- 9. 分類移動削除 -->
+				<p:commandButton styleClass="ui-grid-col-push-0-25 ui-grid-col-2-5 "
+					id="btnBunruiIdoSakujo"
+					disabled="#{MG3001004_00_000Controller.authMap['btnBunruiIdoSakujo']}"
+					value="#{label['MG3001004.bunruiIdoSakujo']}"
+					actionListener="#{MG3001004_00_000Controller.btnBunruiIdoSakujoClick}"
+					update="@form validateMsgs" tabindex="151" />
+			</p:column>
+			<p:column />
+		</p:row>
+	</p:panelGrid>
+	<p:panel header="#{label['MG3001004.korurisutoNoShitei']}">
+		<p:panelGrid styleClass="ui-grid">
+			<p:row styleClass="ui-grid-row">
+				<p:column>
+					<!-- 10. コールリストの指定 -->
+					<p:outputLabel styleClass="ui-grid-col-push-0-25 ui-grid-col-2-5 "
+						id="lblSelKorurisutoNoShitei" for="selKorurisutoNoShitei"
+						value="#{label['MG3001004.korurisutoNoShitei']}">
+					</p:outputLabel>
+					<p:selectOneMenu styleClass="ui-grid-col-3 "
+						id="selKorurisutoNoShitei"
+						value="#{MG3001004_00_000Controller.model.korurisutoNoShitei}"
+						label="#{label['MG3001004.korurisutoNoShitei']}" tabindex="152" required = "true">
+						<f:selectItem itemLabel="" itemValue="" />
+						<f:selectItems
+							value="#{MG3001004_00_000Controller.model.callList}"
+							var="listCall" itemLabel="#{listCall.pdName}"
+							itemValue="#{listCall.pdId}" />
+						<f:ajax event="change" process="@this"
+							listener="#{MG3001004_00_000Controller.changeCallList}">
+						</f:ajax>
+						<f:validator validatorId="ACCRequiredValidator" />
+					</p:selectOneMenu>
+				</p:column>
+				<p:column />
+			</p:row>
+			<p:row styleClass="ui-grid-row">
+				<p:column>
+					<!-- 11. コールリスト作成日時 -->
+					<p:outputLabel styleClass="ui-grid-col-push-0-25 ui-grid-col-2-5"
+						for="txtKorurisutoSakuseiNichiji"
+						value="#{label['MG3001004.korurisutoSakuseiNichiji']}" />
+					<p:inputText styleClass="ui-grid-col-3 text-center" readonly="true"
+						id="txtKorurisutoSakuseiNichiji" maxlength="19"
+						value="#{MG3001004_00_000Controller.model.korurisutoSakuseiNichiji}"
+						label="#{label['MG3001004.korurisutoSakuseiNichiji']}">
+					</p:inputText>
+
+					<!-- 12. コールリスト登録 -->
+					<p:commandButton styleClass="ui-grid-col-push-0-5 ui-grid-col-2-5"
+						id="btnKorurisutoToroku"
+						disabled="#{MG3001004_00_000Controller.authMap['btnKorurisutoToroku']}"
+						value="#{label['MG3001004.korurisutoToroku']}"
+						actionListener="#{MG3001004_00_000Controller.btnCallListTorokuClick}"
+						update="@form validateMsgs" tabindex="153" />
+					<p:commandButton id="btnDownload" value="Download"
+						styleClass="button-download-file" ajax="false"
+						style="display:none" immediate="true"
+						actionListener="#{MG3001004_00_000Controller.download}" />
+				</p:column>
+				<p:column />
+			</p:row>
+		</p:panelGrid>
+	</p:panel>
+</ui:composition>

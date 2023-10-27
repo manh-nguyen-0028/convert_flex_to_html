@@ -1,0 +1,117 @@
+/*===MG4005001===*/
+#CL1001001_MainTab\:MG4005001 .main-dashboard-parent-col-1 {
+	width: 60%;
+}
+
+#CL1001001_MainTab\:MG4005001 .main-dashboard-parent-col-2 {
+	width: 20%;
+	padding-bottom: 25px;
+}
+
+#CL1001001_MainTab\:MG4005001 .main-dashboard-parent-col-3 {
+	width: 20%;
+	padding-bottom: 15px;
+}
+
+#CL1001001_MainTab\:MG4005001 .main-dashboard-parent-col-1 span {
+	font-size: 16px;
+	margin-right: 5px;
+}
+
+/*  2019/07/23 Tran [v2.2]IT Bug No7 START */
+#CL1001001_MainTab\:MG4005001 .right-arrow-child-talbe-expended span {
+	font-size: 16px;
+	margin-right: 5px;
+	padding-left: 20px;
+	float: left;
+	padding-top: 5px;
+}
+/*  2019/07/23 Tran [v2.2]IT Bug No7 END */
+
+#CL1001001_MainTab\:MG4005001 .right-table-col1 {
+	padding-bottom: 5px;
+	width: 25%;
+}
+
+#CL1001001_MainTab\:MG4005001 .right-table-col-midle {
+	padding-bottom: 5px;
+	width: 7%;
+}
+
+#CL1001001_MainTab\:MG4005001 .right-table-col2 {
+	padding-bottom: 5px;
+}
+
+#CL1001001_MainTab\:MG4005001 .font-bold {
+	font-weight: bold;
+}
+
+#CL1001001_MainTab\:MG4005001 .acc-icon-folder h3 a {
+	margin-left: 20px;
+}
+
+#CL1001001_MainTab\:MG4005001 .ui-expanded-row-content table thead {
+	display: none;
+}
+
+#CL1001001_MainTab\:MG4005001 table tbody tr.ui-datatable-odd {
+	background-color: transparent;
+}
+
+#CL1001001_MainTab\:MG4005001 .ui-expanded-row-content table tbody tr .fa-long-arrow-right {
+	visibility: hidden;
+}
+
+#CL1001001_MainTab\:MG4005001 .ui-expanded-row-content table tbody tr:first-child .fa-long-arrow-right
+	{
+	visibility: visible;
+}
+/*  2019/07/23 Tran [v2.2]IT Bug No7 START */
+#CL1001001_MainTab\:MG4005001 .style-info {
+	width: 90%;
+	padding-left: 5px;
+	/*  v2.2 2019/07/02	miyazawa	[No.3] add start */
+	word-break: break-all;
+	/*  v2.2 2019/07/02	miyazawa	[No.3] add end */
+	border: none;
+	overflow: hidden;
+	background: none;
+	box-shadow: none;
+	line-height: 20px;
+}
+
+#CL1001001_MainTab\:panel_message div.ui-layout-unit-content {
+	overflow-x: hidden;
+}
+/*  2019/07/23 Tran [v2.2]IT Bug No7 END */
+
+#CL1001001_MainTab\:MG4005001 .columnHeader {
+	padding-bottom: 15px !important;
+}
+
+#CL1001001_MainTab\:MG4005001 div[id*='tbInfo'] table, div[id*='tbInfo'] table td{
+	border-style: none !important;
+}
+
+#CL1001001_MainTab\:mg4005001tab .ui-layout-pane-center {
+	max-width: 1233px !important;
+} 
+
+.mg4005001Main {
+	min-width: 1240px;
+	min-height: 845px;
+} 
+
+.mg4005001Table {
+	overflow: auto;
+	height: 820px;
+} 
+
+.wrapText {
+	word-break: break-all;
+}
+
+#CL1001001_MainTab\:mg4005001tab .button-panel {
+	margin-right: 18px !important;
+	margin-bottom: 5px !important;
+}

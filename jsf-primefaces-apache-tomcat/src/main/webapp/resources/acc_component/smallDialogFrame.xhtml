@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite">
+<!-- コンポーネントの属性で外から指定できるようにするものを定義する -->
+<composite:interface>
+</composite:interface>
+
+<!-- 複合コンポーネントに含むコンポーネントを定義する -->
+<composite:implementation>
+	<p:dialog header="#{accMessageUtility.messageId}" widgetVar="message"
+		modal="true" closable="false" resizable="false" dynamic="false"
+		styleClass="MessageFrame1 popup">
+		<p:panelGrid styleClass="ui-grid">
+			<!-- Row 1 -->
+			<p:row styleClass="ui-grid-row">
+				<p:column>
+					<h:outputLabel value="画面名" styleClass="ui-grid-col-2-5" />
+					<p:inputText id="displayId" value="#{accMessageUtility.displayId}"
+						readonly="true" styleClass="ui-grid-col-4-75" tabindex="-1"/>
+					<p:inputText id="displayName"
+						value="#{accMessageUtility.displayName}" readonly="true"
+						styleClass="ui-grid-col-4-60 ui-grid-col-push-0-15" tabindex="-1" />
+				</p:column>
+				<p:column />
+			</p:row>
+
+			<!-- Row 2 -->
+			<p:row styleClass="ui-grid-row">
+				<p:column>
+					<h:outputLabel value="メッセージ"
+						styleClass="ui-grid-col-2-5 message-label" />
+					<p:inputTextarea id="messageContent" styleClass="ui-grid-col-9-5"
+						rows="2" value="#{accMessageUtility.messageContent}"
+						readonly="true"  tabindex="-1" />
+				</p:column>
+				<p:column />
+			</p:row>
+
+			<!-- Row 3 -->
+			<p:row styleClass="ui-grid-row">
+				<p:column styleClass="text-center">
+					<h:graphicImage library="acc_img"
+						name="#{accMessageUtility.dialogIcon}"
+						styleClass="ui-grid-col-2-5 message-img" />
+					<p:inputTextarea id="messageDetail" styleClass="ui-grid-col-9-5"
+						rows="2" value="#{accMessageUtility.messageDetail}"
+						readonly="true"  tabindex="-1"/>
+				</p:column>
+				<p:column />
+			</p:row>
+
+			<!-- Row 4 -->
+			<p:row styleClass="ui-grid-row message-button">
+				<p:column styleClass="text-center">
+				  <ui:param name="onclickScript" value="#{!accMessageUtility.messageInfo.ajaxEnable ? 'PF(\'message\').hide()' : ''}" />
+					<!-- OK buttonType = 1 -->
+					<p:commandButton value="#{label['Base.ok']}"
+						actionListener="#{accMessageUtility.clickButton1}"
+						styleClass="ui-grid-col-2-75 dialogFrameBtn1" tabindex="1000"
+						ajax="#{accMessageUtility.messageInfo.ajaxEnable}"
+						rendered="#{accMessageUtility.buttonType eq 1}"
+						onclick="#{onclickScript}" />
+					<!-- OK/Cancel buttonType = 2-->
+					<p:commandButton value="#{label['Base.ok']}"
+						actionListener="#{accMessageUtility.clickButton1}"
+						styleClass="ui-grid-col-3 dialogFrameBtn1" tabindex="1000"
+						ajax="#{accMessageUtility.messageInfo.ajaxEnable}"
+						rendered="#{accMessageUtility.buttonType eq 2}"
+						onclick="#{onclickScript}" />
+					<p:commandButton value="#{label['Base.kyanseru']}"
+						actionListener="#{accMessageUtility.clickButton2}"
+						styleClass="ui-grid-col-3-5 dialogFrameBtn2" tabindex="1001"
+						ajax="#{accMessageUtility.messageInfo.ajaxEnable}"
+						rendered="#{accMessageUtility.buttonType eq 2}"
+						onclick="#{onclickScript}" global="false" onstart="PF('message').hide();"/>
+					<!-- Yes/No buttonType = 3-->
+					<p:commandButton value="#{label['Base.hai']}"
+						actionListener="#{accMessageUtility.clickButton1}"
+						styleClass="ui-grid-col-2-75 dialogFrameBtn1" tabindex="1000"
+						ajax="#{accMessageUtility.messageInfo.ajaxEnable}"
+						rendered="#{accMessageUtility.buttonType eq 3}"
+						onclick="#{onclickScript}" />
+					<p:commandButton value="#{label['Base.iie']}"
+						actionListener="#{accMessageUtility.clickButton2}"
+						styleClass="ui-grid-col-2-75 dialogFrameBtn2" tabindex="1001"
+						ajax="#{accMessageUtility.messageInfo.ajaxEnable}"
+						rendered="#{accMessageUtility.buttonType eq 3}"
+						onclick="#{onclickScript}" global="false" onstart="PF('message').hide();"/>
+				</p:column>
+				<p:column />
+			</p:row>
+		</p:panelGrid>
+	</p:dialog>
+	<p:confirmDialog global="true">
+		<p:commandButton value="#{label['Base.hai']}" type="button"
+			styleClass="ui-confirmdialog-yes" tabindex="6" />
+		<p:commandButton value="#{label['Base.iie']}" type="button"
+			styleClass="ui-confirmdialog-no" tabindex="7" />
+	</p:confirmDialog>
+</composite:implementation>
+</html>

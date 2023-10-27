@@ -1,0 +1,490 @@
+
+<!DOCTYPE html>
+<ui:composition
+	template="/jp/co/nissho_ele/acc/common/commonLayout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:pacc="http://xmlns.jcp.org/jsf/acctag"
+	xmlns:acc="http://xmlns.jcp.org/jsf/composite/acc_component">
+
+	<ui:define name="title">#{label['MG5002001.Title']}</ui:define>
+	<ui:define name="stylesheet">
+		<pacc:outputStylesheet library="acc_css" name="mg/MG5002001_00_000.css" />
+	</ui:define>
+	<ui:define name="script">
+		<pacc:outputScript library="acc_js" name="mg/MG5002001_00_000.js" />
+	</ui:define>
+	<ui:define name="content">
+		<div class="title-panel">#{label['MG5002001.Title']}</div>
+
+		<p:focus context="MG5002001Form"/>
+		<h:form id="MG5002001Form">
+			
+			<p:panelGrid styleClass="ui-grid">
+				<p:row styleClass="ui-grid-row">
+					<p:column>
+						<!-- 項目1: 条件名 -->
+						<p:outputLabel value="#{label['MG5002001.jokenMei']}"
+							styleClass="ui-grid-col-0-65 validate1" for="txtJokenMei" >
+							<span class="ui-outputlabel-rfi" style="margin-left: 0.2em;">*</span>
+						</p:outputLabel>
+						<p:inputText id="txtJokenMei"
+							styleClass="ui-grid-col-2 validate1 zenkaku-mode active-ime"
+							maxlength='15' label="#{label['MG5002001.jokenMei']}"
+							value="#{MG5002001_00_000Controller.model.jokenMei}"
+							tabindex="1" 
+							onkeyup="zenkakuInputMode.onKeyUp(this, event)">
+							<p:keyFilter preventPaste="false"
+								regEx="InputMode.ZENKAKU_REGEX" />
+							<p:ajax update="@form validateMsgs" global="false" />
+						</p:inputText>
+						<p:focus context="MG5002001Form"
+          						rendered="#{facesContext.validationFailed}" />
+
+						<p:outputLabel value="#{label['MG5002001.kokaiSettei']}"
+							for="radKokaiSetteiKojin"
+							styleClass="ui-grid-col-push-2-05 ui-grid-col-1" />
+						<h:panelGroup layout="block" id="KokaiSettei"
+							styleClass="KokaiSettei-Style">
+							<p:selectOneRadio id="radKokaiSetteiKojin"
+								styleClass="ui-grid-col-2-5" columns="2"
+								label="#{label['MG5002001.kokaiSettei']}"
+								value="#{MG5002001_00_000Controller.model.kokaiSettei}"
+								required="true" tabindex="2">
+								<!-- 項目2: 公開設定・個人 -->
+								<f:selectItem itemLabel="個人" itemValue="0"></f:selectItem>
+								<!-- 項目3: 公開設定・共有 -->
+								<f:selectItem itemLabel="共有" itemValue="1"></f:selectItem>
+							</p:selectOneRadio>
+
+						</h:panelGroup>
+
+						<!-- 項目4: クリア -->
+						<p:commandButton id="btnKuria" value="#{label['Base.kuria']}"
+							disabled="#{MG5002001_00_000Controller.authMap['btnKuria']}"
+							immediate="true" styleClass="ui-grid-col-push-2-75 ui-grid-col-1"
+							tabindex="3" resetValues="true"
+							actionListener="#{MG5002001_00_000Controller.btnKuriaClick}"
+							update="MG5002001Form"
+							oncomplete="PF('MG5002001TabWidget').select($('.ui-tabs-nav li').length - 1)" />
+					</p:column>
+					<p:column />
+				</p:row>
+				<p:row styleClass="ui-grid-row">
+					<p:column>
+						<div class="ui-grid-col-6">
+							<f:subview id="panel-left">
+								<p:panel styleClass="ui-grid-responsive " id="panel-left-1"
+									header="#{label['MG5002001.Chushutsu']}">
+									<p:panelGrid styleClass="ui-grid">
+										<p:row styleClass="ui-grid-row">
+											<p:column>
+												<!-- 項目5: 出力データ -->
+												<p:outputLabel value="#{label['MG5002001.shutsuryokuDeta']}"
+													for="selShutsuryokuDeta" styleClass="ui-grid-col-1-5" />
+												<p:selectOneMenu id="selShutsuryokuDeta"
+													styleClass="ui-grid-col-7-65"
+													label="#{label['MG5002001.shutsuryokuDeta']}"
+													value="#{MG5002001_00_000Controller.model.shutsuryokuDeta}"
+													tabindex="4">
+													<f:selectItem itemLabel="" itemValue="" />
+													<f:selectItems
+														value="#{MG5002001_00_000Controller.model.viewList}"
+														var="listView" itemLabel="#{listView.viewName}"
+														itemValue="#{listView.viewId}">
+													</f:selectItems>
+													<p:ajax event="change"
+														listener="#{MG5002001_00_000Controller.changeEUCView}"
+														oncomplete="PF('MG5002001TabWidget').select($('.ui-tabs-nav li').length - 1)">
+													</p:ajax>
+												</p:selectOneMenu>
+											</p:column>
+											<p:column />
+										</p:row>
+										<p:row styleClass="ui-grid-row">
+											<p:column>
+
+												<span class="ui-grid-responsive"> <p:panelGrid
+														styleClass="ui-grid">
+														<p:row styleClass="ui-grid-row">
+															<p:column>
+																<p:dataTable id="datKomokumei"
+																	styleClass="ui-grid-col-11-20"
+																	value="#{MG5002001_00_000Controller.model.viewListItemTop}"
+																	var="dataRow" resizableColumns="true" scrollable="true"
+																	scrollHeight="192" selectionMode="single"
+																	selection="#{MG5002001_00_000Controller.model.viewItemTop}"
+																	rowKey="#{dataRow.rowKey}" tabindex="-1"
+																	emptyMessage="#{label['Base.noRecordsFound']}">
+
+																	<!-- 項目6: 項目名-->
+																	<p:column styleClass="tap6-dataTable-cl1" width="100"
+																		sortBy="#{dataRow.columnName}">
+																		<f:facet name="header">#{label['MG5002001.komokumei']} </f:facet>
+																		<h:outputText value="#{dataRow.columnName}" />
+																	</p:column>
+																	<p:ajax event="rowSelect"
+																		listener="#{MG5002001_00_000Controller.viewItemTopSelect}" />
+																</p:dataTable>
+															</p:column>
+															<p:column />
+														</p:row>
+														<p:row styleClass="ui-grid-row">
+															<p:column>
+																<!--  項目7:↓↓  -->
+																<p:commandButton id="btnAddAll"
+																	icon="ui-button-icon-left ui-icon ui-c ui-icon ui-icon-arrowstop-1-s"
+																	disabled="#{MG5002001_00_000Controller.authMap['btnAddAll']}"
+																	styleClass="ui-grid-col-push-4 ui-grid-col-0-65 vertical-align-bottom  text-center no-padding-left"
+																	tabindex="5" ajax="true"
+																	actionListener="#{MG5002001_00_000Controller.btnArrowDownAllClick}"
+																	update="datChushutsuKomoku" immediate="true" />
+
+																<!-- 項目8: ↓ -->
+																<p:commandButton id="btnAdd"
+																	icon="ui-button-icon-left ui-icon ui-c ui-icon ui-icon-arrow-1-s"
+																	disabled="#{MG5002001_00_000Controller.authMap['btnAdd']}"
+																	styleClass="ui-grid-col-push-0-10 ui-grid-col-0-65  vertical-align-bottom text-center"
+																	tabindex="6" ajax="true"
+																	actionListener="#{MG5002001_00_000Controller.btnArrowDownClick}"
+																	update="datChushutsuKomoku" immediate="true" />
+
+																<!--  項目9: ↑  -->
+																<p:commandButton id="btnRemove"
+																	icon="ui-button-icon-left ui-icon ui-c ui-icon ui-icon-arrow-1-n"
+																	disabled="#{MG5002001_00_000Controller.authMap['btnRemove']}"
+																	styleClass="ui-grid-col-push-0-10 ui-grid-col-0-65 vertical-align-bottom  text-center no-padding-left"
+																	tabindex="7" ajax="true"
+																	actionListener="#{MG5002001_00_000Controller.btnArrowUpClick}"
+																	update="datChushutsuKomoku" immediate="true" />
+
+																<!-- 項目10: ↑↑ -->
+																<p:commandButton id="btnRemoveAll"
+																	icon="ui-button-icon-left ui-icon ui-c ui-icon ui-icon-arrowstop-1-n"
+																	disabled="#{MG5002001_00_000Controller.authMap['btnRemoveAll']}"
+																	styleClass="ui-grid-col-push-0-10 ui-grid-col-0-65  vertical-align-bottom text-center"
+																	tabindex="8" ajax="true"
+																	actionListener="#{MG5002001_00_000Controller.btnArrowUpAllClick}"
+																	update="datChushutsuKomoku" immediate="true" />
+															</p:column>
+															<p:column />
+														</p:row>
+														<p:row styleClass="ui-grid-row">
+															<p:column>
+																<p:dataTable id="datChushutsuKomoku" editable="true"
+																	editMode="cell"
+																	styleClass="ui-grid-col-11-20 datChushutsuKomokuClass"
+																	value="#{MG5002001_00_000Controller.model.viewListItemDown}"
+																	emptyMessage="#{label['Base.noRecordsFound']}"
+																	var="dataRow2" resizableColumns="true"
+																	scrollable="true" selectionMode="single"
+																	selection="#{MG5002001_00_000Controller.model.viewItemDown}"
+																	scrollHeight="191"
+																	rowKey="#{dataRow2.rowKey}" tabindex="-1">
+
+																	<!-- 項目11: 項目名 -->
+																	<p:column styleClass="tap6-dataTable-cl1" width="100"
+																		sortBy="#{dataRow2.eucJokenFieldName}">
+																		<f:facet name="header">#{label['MG5002001.komokumei']} </f:facet>
+																		<h:outputText value="#{dataRow2.eucJokenFieldName}" />
+																	</p:column>
+
+																	<!-- 項目12: ソート順 -->
+																	<p:column styleClass="tap6-dataTable-cl2" width="40"
+																		sortBy="#{dataRow2.eucJokenFieldSort}"
+																		headerText="#{label['MG5002001.sotoJun']}">
+																		<p:cellEditor>
+																			<f:facet name="output">
+																				<acc:outputLabelNumber
+																					styleClass="text-content-right"
+																					value="#{dataRow2.eucJokenFieldSort}"
+																					converter="#{ACCNumberConverter}" />
+																			</f:facet>
+																			<f:facet name="input">
+																				<acc:inputTextNumber
+																					value="#{dataRow2.eucJokenFieldSort}"
+																					styleClass="table-cell-edit" maxlength='3'
+																					tabindex="-1" />
+																			</f:facet>
+																		</p:cellEditor>
+
+																	</p:column>
+																	<p:ajax event="rowSelect"
+																		listener="#{MG5002001_00_000Controller.viewItemDownSelect}" />
+																</p:dataTable>
+																<!--  項目13: ↑   -->
+																<p:commandButton id="btnMoveUp"
+																	value="#{label['MG5002001.btnMoveUp']}"
+																	disabled="#{MG5002001_00_000Controller.authMap['btnMoveUp']}"
+																	onclick="return clickMoveUp();"
+																	styleClass="ui-grid-col-0-65 vertical-align-bottom buttom-up text-center no-padding-left"
+																	tabindex="9" ajax="true"
+																	actionListener="#{MG5002001_00_000Controller.btnMoveUpClick}"
+																	update="datChushutsuKomoku" immediate="true" />
+
+																<!-- 項目14: ↓ -->
+																<p:commandButton id="btnMoveDown"
+																	value="#{label['MG5002001.btnMoveDown']}"
+																	onclick="return clickMoveDown();"
+																	disabled="#{MG5002001_00_000Controller.authMap['btnMoveDown']}"
+																	styleClass="ui-grid-col-0-65 buttom-down vertical-align-bottom text-center"
+																	tabindex="10" ajax="true"
+																	actionListener="#{MG5002001_00_000Controller.btnMoveDownClick}"
+																	update="datChushutsuKomoku" immediate="true" />
+															</p:column>
+															<p:column />
+														</p:row>
+													</p:panelGrid>
+												</span>
+
+											</p:column>
+											<p:column />
+										</p:row>
+
+									</p:panelGrid>
+								</p:panel>
+							</f:subview>
+						</div>
+						<div class="ui-grid-col-6">
+							<f:subview id="panel-right">
+								<p:panel styleClass="ui-grid-responsive " id="panel-right-2"
+									header="#{label['MG5002001.ChushutsuJoken']}">
+									<p:tabView id="MG5002001Tab" widgetVar="MG5002001TabWidget" tabindex="-1"
+										activeIndex="#{MG5002001_00_000Controller.model.activeTabIndex}"
+										cache="false">
+										<p:ajax event="tabChange"
+											listener="#{MG5002001_00_000Controller.model.onTabChange}"
+											global="false" delay="1" />
+										<c:forEach items="#{MG5002001_00_000Controller.model.tabList}"
+											var="tab" varStatus="loop">
+											<p:tab id="tab#{tab.tabId}">
+												<f:facet name="title">条件#{tab.tabId + 1}</f:facet>
+												<p:panelGrid styleClass="ui-grid"
+													id="conditionForm#{tab.tabId}">
+													<p:row styleClass="ui-grid-row">
+														<p:column>
+															<c:if test="#{loop.index >= 1}">
+																<!-- 項目25: 接続条件 -->
+																<acc:selectOneMenuCode
+																	id="selsetsuzokuJoken#{tab.tabId}"
+																	styleClass="ui-grid-col-2-5"
+																	labelStyleClass="ui-grid-col-1-5 no-padding-left"
+																	codeListName="ACC_CODE" selectKeyCode1="TBL_COMM_TBL"
+																	selectKeyCode2="A00232" value="#{tab.setsuzokuJoken}"
+																	label="#{label['MG5002001.setsuzokuJoken']}"
+																	required="true" tabindex="#{20*tab.tabId+25}">
+																</acc:selectOneMenuCode>
+																<!-- 項目26: 条件削除 -->
+																<p:commandButton id="btnJokenSakujo#{tab.tabId}"
+																	value="#{label['Base.jokenSakujo']}"
+																	disabled="#{MG5002001_00_000Controller.authMap['btnJokenSakujo']}"
+																	immediate="true"
+																	styleClass="ui-grid-col-push-3-80 ui-grid-col-2"
+																	tabindex="#{20*tab.tabId+26}"
+																	actionListener="#{MG5002001_00_000Controller.btnJokenSakujoClick}"
+																	update="MG5002001Tab"
+																	oncomplete="PF('MG5002001TabWidget').select($('.ui-tabs-nav li').length - 1)" />
+																<!-- 項目15: 条件追加 -->
+																<p:commandButton id="btnJokenTsuika#{tab.tabId}"
+																	value="#{label['Base.jokenTsuika']}"
+																	disabled="#{MG5002001_00_000Controller.authMap['btnJokenTsuika']}"
+																	immediate="true"
+																	styleClass=" ui-grid-col-push-0-14 ui-grid-col-2"
+																	tabindex="#{20*tab.tabId+27}"
+																	actionListener="#{MG5002001_00_000Controller.btnJokenTsuikaClick}"
+																	update="MG5002001Tab"
+																	oncomplete="PF('MG5002001TabWidget').select($('.ui-tabs-nav li').length - 1)" />
+															</c:if>
+															<c:if test="#{loop.index == 0}">
+																<!-- 項目15: 条件追加 -->
+																<p:commandButton id="btnJokenTsuika#{tab.tabId}"
+																	value="#{label['Base.jokenTsuika']}"
+																	disabled="#{MG5002001_00_000Controller.authMap['btnJokenTsuika']}"
+																	immediate="true"
+																	styleClass=" ui-grid-col-push-9-83 ui-grid-col-2"
+																	tabindex="24"
+																	actionListener="#{MG5002001_00_000Controller.btnJokenTsuikaClick}"
+																	update="MG5002001Tab"
+																	oncomplete="PF('MG5002001TabWidget').select($('.ui-tabs-nav li').length - 1)" />
+															</c:if>
+														</p:column>
+
+														<p:column />
+													</p:row>
+													<p:row styleClass="ui-grid-row"
+														id="jokenItemChoice#{tab.tabId}">
+														<p:column>
+															<!-- 項目16: 条件項目 -->
+															<p:selectOneMenu id="selJokenKomoku#{tab.tabId}"
+																styleClass="ui-grid-col-6"
+																label="#{label['MG5002001.jokenKomoku']}"
+																value="#{tab.jokenKomoku}" tabindex="#{20*tab.tabId+28}">
+																<f:selectItem itemLabel="" itemValue="" />
+																<f:selectItems value="#{tab.conditionItemList}"
+																	var="listCondition"
+																	itemLabel="#{listCondition.columnName}"
+																	itemValue="#{listCondition.columnName}">
+																</f:selectItems>
+															</p:selectOneMenu>
+
+															<!-- 項目17: 比較 -->
+															<acc:selectOneMenuCodeDefault id="selHikaku#{tab.tabId}"
+																styleClass="ui-grid-col-push-0-25 ui-grid-col-1-85"
+																labelStyleClass="no-padding-left" labelText=""
+																codeListName="ACC_CODE" selectKeyCode1="TBL_COMM_TBL"
+																selectKeyCode2="A00233" value="#{tab.hikaku}"
+																label="#{label['MG5002001.hikaku']}"
+																tabindex="#{20*tab.tabId+29}">
+															</acc:selectOneMenuCodeDefault>
+
+															<!-- 項目18: 条件値 -->
+															<acc:inputTextMaxByte id="txtJokenChi#{tab.tabId}"
+																labelStyleClass="no-padding-left" labelText=""
+																styleClass="ui-grid-col-push-0-25 ui-grid-col-3-65"
+																style="width:28%;" maxbytelength="100"
+																label="#{label['MG5002001.jokenChi']}"
+																keyFilter="/[^']/" value="#{tab.jokenChi}"
+																tabindex="#{20*tab.tabId+30}">
+															</acc:inputTextMaxByte>
+														</p:column>
+														<p:column />
+													</p:row>
+													<p:row styleClass="ui-grid-row">
+														<p:column>
+															<!-- 項目19: 追加 -->
+															<p:commandButton id="btnTsuika#{tab.tabId}"
+																value="#{label['Base.tsuika']}"
+																disabled="#{MG5002001_00_000Controller.authMap['btnTsuika']}"
+																immediate="true" resetValues="true"
+																styleClass="ui-grid-col-push-6-15 ui-grid-col-1-75"
+																tabindex="#{20*tab.tabId+31}" process="tab#{tab.tabId}"
+																actionListener="#{MG5002001_00_000Controller.btnTsuikaClick}" update="@form validateMsgs" />
+
+															<!-- 項目20: 変更 -->
+															<p:commandButton id="btnHenko#{tab.tabId}"
+																value="#{label['Base.henko']}"
+																disabled="#{MG5002001_00_000Controller.authMap['btnHenko']}"
+																immediate="true" resetValues="true"
+																styleClass="ui-grid-col-push-0-25 ui-grid-col-1-75"
+																tabindex="#{20*tab.tabId+32}"
+																actionListener="#{MG5002001_00_000Controller.btnHenkoClick}"  update="@form validateMsgs" />
+
+															<!-- 項目21: 削除 -->
+															<p:commandButton id="btnSakujo#{tab.tabId}"
+																value="#{label['Base.sakujo']}"
+																disabled="#{MG5002001_00_000Controller.authMap['btnSakujo']}"
+																immediate="true" resetValues="true"
+																styleClass="ui-grid-col-push-0-25 ui-grid-col-1-75"
+																tabindex="#{20*tab.tabId+33}"
+																actionListener="#{MG5002001_00_000Controller.btnSakujoClick}"  update="@form validateMsgs" />
+														</p:column>
+														<p:column />
+													</p:row>
+													<p:row styleClass="ui-grid-row">
+														<p:column>
+															<p:dataTable id="datNyukinYakusokuRireki#{tab.tabId}"
+																value="#{tab.eucJokenItemList}" var="dataRow3"
+																resizableColumns="true" scrollable="true"
+																selectionMode="single" selection="#{tab.eucJokenItem}"
+																scrollHeight="322" tabindex="-1"
+																emptyMessage="#{label['Base.noRecordsFound']}"
+																rowKey="#{dataRow3.rowKey}">
+
+																<!-- 項目22: 項目名 -->
+																<p:column styleClass="tap6-dataTable-cl1" width="100"
+																	sortBy="#{dataRow3.eucJokenFieldName}">
+																	<f:facet name="header">#{label['MG5002001.komokumei']} </f:facet>
+																	<h:outputText value="#{dataRow3.eucJokenFieldName}" />
+																</p:column>
+
+																<!-- 項目23: 条件 -->
+																<p:column styleClass="tap6-dataTable-cl2" width="40"
+																	sortBy="#{dataRow3.eucCompareKbn}">
+																	<f:facet name="header">#{label['MG5002001.joken']} </f:facet>
+																	<h:outputText value="#{dataRow3.eucCompareKbnValue}" />
+																</p:column>
+
+																<!--  項目24: 値  -->
+																<p:column styleClass="tap6-dataTable-cl3" width="100"
+																	sortBy="#{dataRow3.eucCompareValue}">
+																	<f:facet name="header">#{label['MG5002001.ne']}</f:facet>
+																	<p:outputLabel value="#{dataRow3.eucCompareValue}"
+																		id="lblChi#{tab.tabId}" styleClass="text-right">
+																		<p:tooltip id="toolTiplblChi" for="lblChi#{tab.tabId}"
+																			value="#{dataRow3.eucCompareValue}" trackMouse="true" />
+																	</p:outputLabel>
+																</p:column>
+																<p:ajax event="rowSelect"
+																	listener="#{MG5002001_00_000Controller.model.eucJokenItemSelect}" />
+															</p:dataTable>
+														</p:column>
+														<p:column />
+													</p:row>
+												</p:panelGrid>
+											</p:tab>
+										</c:forEach>
+
+									</p:tabView>
+								</p:panel>
+							</f:subview>
+						</div>
+					</p:column>
+					<p:column />
+				</p:row>
+				<p:row styleClass="ui-grid-row">
+					<p:column>
+						<!-- 項目27: 更新 -->
+						<p:commandButton id="btnKoshin" value="#{label['Base.koshin']}"
+							disabled="#{MG5002001_00_000Controller.authMap['btnKoshin']}"
+							validateClient="true" styleClass=" ui-grid-col-1"
+							actionListener="#{MG5002001_00_000Controller.btnKoshinClick}"
+							tabindex="300" update="@form validateMsgs" />
+
+						<!-- 項目28: 件数取得 -->
+						<p:commandButton id="btnKensuShutoku"
+							value="#{label['Base.kensuShutoku']}"
+							disabled="#{MG5002001_00_000Controller.authMap['btnKensuShutoku']}"
+							validateClient="true"
+							actionListener="#{MG5002001_00_000Controller.btnKensuShutokuClick}"
+							styleClass="ui-grid-col-push-5 ui-grid-col-1" tabindex="301"
+							update="@form validateMsgs" />
+
+						<!-- 項目29: 取得件数 -->
+						<acc:inputTextNumber id="txtShutokuKensu"
+							styleClass="ui-grid-col-1 text-right"
+							labelStyleClass="no-padding-left" labelText=""
+							label="#{label['MG5002001.shutokuKensu']}"
+							value="#{MG5002001_00_000Controller.model.shutokuKensu}"
+							readonly="true" tabindex="-1" />
+
+						<!-- 項目30: データ作成 -->
+						<p:commandButton id="btnDetaSakusei"
+							value="#{label['Base.detaSakusei']}"
+							disabled="#{MG5002001_00_000Controller.authMap['btnDetaSakusei']}"
+							validateClient="true"
+							actionListener="#{MG5002001_00_000Controller.btnDetaSakuseiClick}"
+							styleClass="ui-grid-col-push-1-75 ui-grid-col-1" tabindex="302"
+							update="@form validateMsgs" />
+						<p:remoteCommand name="mg5002001_09_000ServiceHandle" async="true" global="false" 
+							actionListener="#{MG5002001_00_000Controller.mg5002001_09_000ServiceHandle}"/>
+
+						<!-- 項目31: 閉じる -->
+						<p:commandButton id="btnTojiru" value="#{label['Base.tojiru']}"
+							disabled="#{MG5002001_00_000Controller.authMap['btnTojiru']}"
+							immediate="false" styleClass="ui-grid-col-push-0-15 ui-grid-col-1"
+							tabindex="303"
+							actionListener="#{MG5002001_00_000Controller.btnTojiruClick}" />
+					</p:column>
+					<p:column />
+				</p:row>
+			</p:panelGrid>
+
+		</h:form>
+	</ui:define>
+</ui:composition>

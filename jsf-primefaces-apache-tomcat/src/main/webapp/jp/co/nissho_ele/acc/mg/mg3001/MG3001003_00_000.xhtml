@@ -1,0 +1,95 @@
+<!-- 抽出一覧タブフレーム(MG3001003_00_000)  -->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:acc="http://xmlns.jcp.org/jsf/composite/acc_component">
+	<p:panelGrid styleClass="ui-grid">
+		<p:row styleClass="ui-grid-row">
+			<p:column>
+				<!-- 1. 抽出済件数 -->
+				<p:outputLabel styleClass="ui-grid-col-2 nowrap"
+					for="txtChushutsuSumiKensu"
+					value="#{label['MG3001003.chushutsuSumiKensu']}" />
+				<p:inputText styleClass="ui-grid-col-1-5 text-right" readonly="true"
+					id="txtChushutsuSumiKensu" maxlength="7"
+					converter="#{ACCNumberConverter}"
+					value="#{MG3001003_00_000Controller.model.chushutsuSumiKensu}"
+					label="#{label['MG3001003.chushutsuSumiKensu']}" tabindex="-1">
+				</p:inputText>
+			</p:column>
+			<p:column />
+		</p:row>
+	</p:panelGrid>
+	<p:panel header="#{label['MG3001003.header1']}">
+		<p:panelGrid styleClass="ui-grid">
+			<p:row styleClass="ui-grid-row" style="margin-left: 1.66%">
+				<p:column>
+					<!-- 2. ソート順 -->
+					<h:panelGroup cellpadding="5" layout="block" 
+						styleClass="radSotoJunLayout ui-grid-col-6">
+						<p:selectOneRadio id="radSotoJun"
+							value="#{MG3001003_00_000Controller.model.sotoJun}" layout="grid"
+							columns="2" tabindex="137">
+							<f:selectItem itemLabel="未納額" itemValue="1" />
+							<f:selectItem itemLabel="総残高" itemValue="2" />
+							<f:selectItem itemLabel="会員番号" itemValue="3" />
+							<f:selectItem itemLabel="約定日" itemValue="4" />
+							<f:selectItem itemLabel="滞留月数" itemValue="5" />
+						</p:selectOneRadio>
+					</h:panelGroup>
+					<h:panelGroup cellpadding="5" layout="block"
+						styleClass="ui-grid-col-6 radShokoJunShiteiLayout">
+						<!-- 3. 昇降順指定 -->
+						<p:selectOneRadio id="radShokoJunShitei" layout="grid" columns="1"
+							value="#{MG3001003_00_000Controller.model.shokoJunShitei}"
+							tabindex="138">
+							<f:selectItem itemLabel="昇順" itemValue="1" />
+							<f:selectItem itemLabel="降順" itemValue="2" />
+						</p:selectOneRadio>
+					</h:panelGroup>
+				</p:column>
+				<p:column />
+			</p:row>
+
+		</p:panelGrid>
+	</p:panel>
+	<p:panelGrid styleClass="ui-grid push-down-mg3001-003">
+		<p:row styleClass="ui-grid-row">
+			<p:column>
+				<!-- 4. 件数取得 -->
+				<p:commandButton styleClass="ui-grid-col-1-65" id="btnKensuShutoku"
+					disabled="#{MG3001003_00_000Controller.authMap['btnKensuShutoku']}"
+					value="#{label['MG3001003.kensuShutoku']}"
+					actionListener="#{MG3001003_00_000Controller.btnKensuShutokuClick}"
+					update="@form validateMsgs" tabindex="139" />
+				<!-- 5. 取得件数 -->
+				<acc:inputTextNumber
+					styleClass="ui-grid-col-push-0-15 ui-grid-col-1-5 text-right"
+					id="txtShutokuKensu" maxlength="7" readonly="true"
+					labelStyleClass="no-padding-left" labelText=""
+					value="#{MG3001003_00_000Controller.model.shutokuKensu}"
+					label="#{label['MG3001003.shutokuKensu']}" tabindex="140">
+				</acc:inputTextNumber>
+
+				<!-- 6. 抽出 -->
+				<p:commandButton styleClass="ui-grid-col-push-5 ui-grid-col-1-5 "
+					id="btnChushutsu" value="#{label['MG3001003.chushutsu']}"
+					disabled="#{MG3001003_00_000Controller.authMap['btnChushutsu']}"
+					actionListener="#{MG3001003_00_000Controller.btnChushutsuClick}"
+					update="@form validateMsgs" tabindex="141" />
+				<!-- 7. スタート -->
+				<p:commandButton styleClass="ui-grid-col-push-0-25 ui-grid-col-1-75"
+					id="btnSutato" value="#{label['MG3001003.sutato']}"
+					immediate="true"
+					disabled="#{MG3001003_00_000Controller.authMap['btnSutato']}"
+					actionListener="#{MG3001003_00_000Controller.btnSutatoClick}"
+					tabindex="142" />
+			</p:column>
+			<p:column />
+		</p:row>
+	</p:panelGrid>
+</ui:composition>

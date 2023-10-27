@@ -1,21 +1,18 @@
 package main;
 
 import constants.Constants;
-import mxml.dto.mapping.ComponentMap;
-import mxml.dto.mapping.PropertyMap;
 import mxml.dto.modify.ElementReplace;
 import mxml.dto.modify.RadioGroupReplace;
 import mxml.dto.parser.HtmlElementParser;
 import mxml.service.ConvertMxmlService;
+import mxml.service.CssService;
 import mxml.service.JsoupService;
-import mxml.service.XmlService;
 import org.apache.commons.collections4.CollectionUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.parser.Parser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.*;
 import utils.FileUtils;
-import utils.Log;
 import utils.StringUtils;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -29,12 +26,18 @@ import java.util.List;
 import java.util.Map;
 
 public class MxmlConvert {
-
+    private static final Logger logger = LogManager.getLogger(MxmlConvert.class);
     // Script Inline source code
     private String scriptInline;
     // xml properties list
     private Map<String, List<String>> xmlObjectInline;
 
+    /**
+     * Convert syntax mxml to syntax xhtml
+     *
+     * @param inputPath
+     * @param outputPath
+     */
     public void convert(String inputPath, String outputPath) {
 
         String cssPath = Paths.get(outputPath, "css").toString();
@@ -58,8 +61,8 @@ public class MxmlConvert {
             factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
             Document doc = factory.newDocumentBuilder().parse(is);
 
-            Log.log("Root Element :" + doc.getDocumentElement().getNodeName());
-            Log.log("------");
+            logger.info("Root Element :" + doc.getDocumentElement().getNodeName());
+            logger.info("------");
 
             StringBuilder html = new StringBuilder();
 
@@ -77,65 +80,66 @@ public class MxmlConvert {
                 setXmlObjectInline(getXmlObjectProperties(xmlNodes));
             }
 
-            Map<String, ComponentMap> hmNodeMap = XmlService.getNodeMap();
-
-            Map<String, PropertyMap> hmAttributeMap = XmlService.getAttributeMap();
-
             HtmlElementParser elementRootParser = new HtmlElementParser("First Node", null, null, null, true);
 
             // Get mapping config
             if (doc.hasChildNodes()) {
-                new ConvertMxmlService(hmNodeMap, hmAttributeMap, xmlFileName, elementReplace)
-                        .handleNodeXml(elementRootParser, true, doc.getChildNodes(), baseHtml, html);
+                new ConvertMxmlService(xmlFileName, elementReplace)
+                        .parser(elementRootParser, true, doc.getChildNodes(), baseHtml, html);
             }
 
             StringBuilder htmlContent = new StringBuilder();
             List<HtmlElementParser> elementList = elementRootParser.getChildList();
-            handleElementNode(htmlContent, elementList);
+
+            processGenerateHtmlContent(htmlContent, elementList);
+
+            handleElementReplace(baseHtml, htmlContent, elementReplace, xmlFileName);
+
+            String jsoupDocument = JsoupService.createJsoupDocument(baseHtml, elementReplace);
+
+            baseHtml = new StringBuilder(jsoupDocument);
+
+            xmlnsReplace(baseHtml);
+
             StringUtils.replaceInStringBuilder(baseHtml, "{form_content}", htmlContent.toString());
-            StringUtils.replaceInStringBuilder(baseHtml, "{css_file_name}", xmlFileName);
 
-            handleElementReplace(baseHtml, elementReplace);
+            htmlWriter.write(baseHtml.toString());
 
-            org.jsoup.nodes.Document jsoupDoc = Jsoup.parse(baseHtml.toString(), "UTF-8", Parser.xmlParser());
-            JsoupService.handleTagJsoup(jsoupDoc, elementReplace);
-
-            htmlWriter.write(jsoupDoc.toString());
-            Log.log("Html file created successfully.");
+            logger.info("Html file created successfully.");
 
             cssWriter.write(cssInFile.toString());
-            Log.log("CSS file created successfully.");
+            logger.info("CSS file created successfully.");
         } catch (FileNotFoundException e) {
-            Log.log("File not found: " + inputFilePath);
+            logger.info("File not found: " + inputFilePath);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
-    private void handleElementNode(StringBuilder html, List<HtmlElementParser> elementParserList) {
+    private void processGenerateHtmlContent(StringBuilder html, List<HtmlElementParser> elementParserList) {
         for (HtmlElementParser elementParser : elementParserList) {
-            printElement(html, elementParser);
-            Log.debug(html);
+            generateHtmlContent(html, elementParser);
+            logger.debug(html);
         }
 
     }
 
-    private void printElement(StringBuilder html, HtmlElementParser elementParser) {
-        Log.debug("parent name: " + elementParser.getParentNodeName());
-        Log.debug("name: " + elementParser.getNodeName());
+    private void generateHtmlContent(StringBuilder html, HtmlElementParser elementParser) {
+        logger.debug("parent name: " + elementParser.getParentNodeName());
+        logger.debug("name: " + elementParser.getNodeName());
         boolean isGenerateHtml = elementParser.isGenerateHtml();
 
         if (isGenerateHtml) {
             html.append(elementParser.getStartTag());
 
-            StringBuilder cssElement = ConvertMxmlService.createCssElement(elementParser.getCssParsers());
+            StringBuilder cssElement = CssService.createCssElement(elementParser.getCssParsers());
             StringBuilder attributeElement = ConvertMxmlService.createSyntaxAttributeHtml(elementParser);
 
             html.append(attributeElement);
 
             if (org.apache.commons.lang3.StringUtils.isNotEmpty(cssElement)) {
-                StringBuilder cssElementInline = ConvertMxmlService.createSyntaxCssInline(cssElement);
+                StringBuilder cssElementInline = CssService.createSyntaxCssInline(cssElement);
                 html.append(cssElementInline);
             }
 
@@ -143,20 +147,20 @@ public class MxmlConvert {
 
             if (CollectionUtils.isNotEmpty(elementParser.getChildList())) {
                 for (HtmlElementParser item : elementParser.getChildList()) {
-                    printElement(html, item);
+                    generateHtmlContent(html, item);
                 }
             }
             html.append(elementParser.getEndTag());
         } else {
             if (CollectionUtils.isNotEmpty(elementParser.getChildList())) {
                 for (HtmlElementParser item : elementParser.getChildList()) {
-                    printElement(html, item);
+                    generateHtmlContent(html, item);
                 }
             }
         }
 
-        Log.debug("cssElement: " + ConvertMxmlService.createCssElement(elementParser.getCssParsers()));
-        Log.debug("attributeElement: " + ConvertMxmlService.createSyntaxAttributeHtml(elementParser));
+        logger.debug("cssElement: " + CssService.createCssElement(elementParser.getCssParsers()));
+        logger.debug("attributeElement: " + ConvertMxmlService.createSyntaxAttributeHtml(elementParser));
     }
 
     private static StringBuilder createHtmlBase() {
@@ -178,13 +182,15 @@ public class MxmlConvert {
         return baseHtml;
     }
 
-    private static void handleElementReplace(StringBuilder baseHtml, ElementReplace elementReplace) {
+    private static void handleElementReplace(StringBuilder baseHtml, StringBuilder htmlContent, ElementReplace elementReplace, String xmlFileName) {
+        StringUtils.replaceInStringBuilder(baseHtml, "{form_content}", htmlContent.toString());
+        StringUtils.replaceInStringBuilder(baseHtml, "{css_file_name}", xmlFileName);
         StringUtils.replaceInStringBuilder(baseHtml, "{title_form_content}", "<ui:define name=\"title\">" + elementReplace.getTitle() + "</ui:define>");
         StringUtils.replaceInStringBuilder(baseHtml, "{css_include_content}", "<h:outputStylesheet library=\"acc_css\" name=\"" + elementReplace.getFormName() + ".css\" />");
         StringUtils.replaceInStringBuilder(baseHtml, "{js_include_content}", "<h:outputScript library=\"acc_js\" name=\"" + elementReplace.getFormName() + ".js\" />");
         StringUtils.replaceInStringBuilder(baseHtml, "{form_id_content}", elementReplace.getFormName() + "Form");
         if (CollectionUtils.isNotEmpty(elementReplace.getCssCompositionFirstList())) {
-            StringBuilder styleFirstComposition = ConvertMxmlService.createSyntaxCssInline(elementReplace.getCssCompositionFirstList());
+            StringBuilder styleFirstComposition = CssService.createSyntaxCssInline(elementReplace.getCssCompositionFirstList());
             StringUtils.replaceInStringBuilder(baseHtml, "{style_composition_first}", styleFirstComposition.toString());
         }
         // Handle radio group
@@ -194,6 +200,18 @@ public class MxmlConvert {
                 StringUtils.replaceInStringBuilder(baseHtml, "id=\"" + groupId + "\">", "id=\"" + groupId + "\">" + radioItem);
             }
         }
+    }
+
+    private static void xmlnsReplace(StringBuilder baseHtml) {
+        StringUtils.replaceInStringBuilder(baseHtml, "{xmlns_lib_define}=\"\"", "\n    template=\"/jp/co/nissho_ele/acc/common/commonLayout.xhtml\"\n" +
+                "    xmlns=\"http://www.w3.org/1999/xhtml\"\n" +
+                "    xmlns:f=\"http://xmlns.jcp.org/jsf/core\"\n" +
+                "    xmlns:h=\"http://xmlns.jcp.org/jsf/html\"\n" +
+                "    xmlns:ui=\"http://xmlns.jcp.org/jsf/facelets\"\n" +
+                "    xmlns:pe=\"http://primefaces.org/ui/extensions\"\n" +
+                "    xmlns:p=\"http://primefaces.org/ui\"\n" +
+                "    xmlns:c=\"http://xmlns.jcp.org/jsp/jstl/core\"\n" +
+                "    xmlns:acc=\"http://xmlns.jcp.org/jsf/composite/acc_component\"");
     }
 
     /**

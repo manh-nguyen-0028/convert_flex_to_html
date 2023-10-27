@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+<composite:interface>
+	<composite:attribute name="menuItem1" default="true" />
+	<composite:attribute name="menuItem2" default="true" />
+	<composite:attribute name="menuItem3" default="true" />
+	<composite:attribute name="menuItem4" default="true" />
+	<composite:attribute name="for" />
+	<composite:attribute name="id" />
+	<composite:attribute name="fileName" default="export" />
+	<composite:attribute name="fontName" default="Arial Unicode MS" />
+	<composite:attribute name="encoding" default="Identity-H" />
+</composite:interface>
+
+<composite:implementation>
+	<!-- Menu items -->
+	<!-- <p:contextMenu for="#{cc.attrs.for}">
+		<p:menuitem id="printAllPdf" rendered="#{cc.attrs.menuItem1}"
+			value="#{label['HM1005001.ctm.AllPagePrinting']}" update=""
+			onclick="$('[id$=\\'#{cc.attrs.id}:btnExportAllPdf\\']').click()"
+			global="false">
+		</p:menuitem>
+		<p:menuitem id="printDisplayPartPdf" rendered="#{cc.attrs.menuItem2}"
+			value="#{label['HM1005001.cmt.DisplayPartPrinting']}" update=""
+			onclick="$('[id$=\\'#{cc.attrs.id}:btnExportDisplayPartPdf\\']').click()"
+			global="false">
+		</p:menuitem>
+		<p:menuitem id="printPreviewPdf" rendered="#{cc.attrs.menuItem3}"
+			value="#{label['HM1005001.cmt.Preview']}"
+			update="@([id$=dlgPrintPreview])"
+			actionListener="#{ContextMenuController.onPrintPreview}"
+			global="false">
+			<f:attribute name="tableID" value="#{cc.attrs.for}" />
+		</p:menuitem>
+		<p:menuitem id="saveFileCsv" rendered="#{cc.attrs.menuItem4}"
+			value="#{label['HM1005001.cmt.SaveFile']}" update=""
+			onclick="$('[id$=\\'#{cc.attrs.id}:btnExportCSV\\']').click()"
+			global="false">
+		</p:menuitem>
+	</p:contextMenu> -->
+	
+	<!-- List commands -->
+	<!-- <div style="display: none;">
+		<p:commandLink id="btnExportAllPdf" ajax="false" width="24" rendered="#{cc.attrs.menuItem1}">
+			<pe:exporter type="pdf" target="#{cc.attrs.for}"
+				fileName="#{cc.attrs.fileName}" encoding="#{cc.attrs.encoding}"
+				fontName="#{cc.attrs.fontName}" cellFontSize="5" facetFontSize="5"
+				preProcessor="#{ContextMenuController.preProcessPDF}" orientation="Landscape" />
+		</p:commandLink>
+		<p:commandLink id="btnExportDisplayPartPdf" ajax="false" width="24" rendered="#{cc.attrs.menuItem2}">
+			<pe:exporter type="pdf" target="#{cc.attrs.for}"
+				fileName="#{cc.attrs.fileName}" encoding="#{cc.attrs.encoding}"
+				fontName="#{cc.attrs.fontName}" cellFontSize="5" facetFontSize="5"
+				preProcessor="#{ContextMenuController.preProcessPDF}" orientation="Landscape"/>
+		</p:commandLink>
+		<p:dialog id="dlgPrintPreview" styleClass="dialog-width-1" rendered="#{cc.attrs.menuItem3}"
+			dynamic="true" onHide="PF('dlgPrintPreview').content.empty()"
+			resizable="true" closeOnEscape="true" appendTo="@(body)" modal="true"
+			header="Print preview" showEffect="fade" hideEffect="fade"
+			widgetVar="dlgPrintPreview" class="dialogPrintPreview">
+			<pe:documentViewer locale="pt" cache="false" height="500"
+				value="#{ContextMenuController.content}" />
+		</p:dialog>
+		<p:commandLink id="btnExportCSV" ajax="false" width="24" rendered="#{cc.attrs.menuItem4}">
+			<p:dataExporter type="csv" target="#{cc.attrs.for}"
+				fileName="export" encoding="MS932"/>
+		</p:commandLink>
+	</div> -->
+</composite:implementation>
+</html>

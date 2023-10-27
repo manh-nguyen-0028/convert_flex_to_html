@@ -1,0 +1,79 @@
+/*===MG3010001===*/
+#content .ui-messages {
+	width: 865px;
+	overflow: hidden !important; /*disable scroll*/
+	margin: 0 auto;
+}
+
+#MG3010001, #MG3010001 .ui-grid:first-child table.ui-grid {
+	width: 865px;
+	margin: 0 auto;
+}
+
+#MG3010001 .title-panel {
+	padding-left: 10px;
+	padding-top: 10px;
+}
+
+#MG3010001 .ui-column-1 .ui-panel, #MG3010001 .ui-column-2 .ui-panel {
+	height: 340px;
+}
+
+#MG3010001 .ui-selectoneradio label {
+	margin-top: 0px;
+	padding-left: 5px;
+	width: 100px;
+}
+
+#MG3010001 .ui-datatable-data .ui-column-left {
+	text-align: left;
+	border: solid 1px #D5D5D5;
+	padding-left: 5px;
+}
+
+#MG3010001 .button-panel {
+	margin-top: 0px;
+	padding-bottom: 10px;
+}
+
+#MG3010001 .ui-grid-row {
+	border-bottom: none;
+}
+
+#MG3010001 .disable-ime {
+	ime-mode: disabled;
+}
+/* Column 1: ‘ÎÛŒÚ‹qŒŸõ*/
+#MG3010001 .ui-column-1 {
+	width: 480px;
+	max-width: 480px;
+}
+
+#MG3010001 .ui-column-1 table.ui-grid:first-child, #MG3010001 .ui-column-1 .ui-grid:first-child tr
+	{
+	width: 450px;
+}
+
+#MG3010001 .ui-panel .ui-panel-content {
+	padding: 1.2em 1em;
+}
+
+/* Column 2: ‘ÎÛŒÚ‹qŒŸõ*/
+#MG3010001 .ui-column-2 {
+	width: 353px;
+	max-width: 353px;
+	padding-left: 0px;
+}
+
+#MG3010001 .ui-column-2 table.ui-grid:first-child, #MG3010001 .ui-column-2 .ui-grid:first-child tr
+	{
+	width: 300px;
+}
+
+#MG3010001 .ui-column-2 .ui-grid-row>td:first-child {
+	padding-top: 5px;
+}
+
+.push-left-10px {
+	margin-right:18px !important;
+}

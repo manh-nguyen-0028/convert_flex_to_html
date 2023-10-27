@@ -67,7 +67,7 @@ public class StringUtils {
      * Check string is null or empty
      */
     public static boolean isNullOrEmpty(String value) {
-        return value == null || value.trim().length() == 0;
+        return value == null || value.length() == 0;
     }
 
     public static String getDefaultValueString(String value, String fallback) {

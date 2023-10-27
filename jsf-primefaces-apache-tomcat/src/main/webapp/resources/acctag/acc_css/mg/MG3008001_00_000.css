@@ -1,0 +1,99 @@
+body, #MG3008001Form {
+	max-width: 1190px;
+}
+
+div.ui-messages {
+	overflow-y: auto;
+	min-height: 50px;
+}
+
+#MG3008001Form .ui-panel:first-child table.ui-grid {
+	
+}
+
+#MG3008001Form .button-panel {
+	padding-right: 16px;
+}
+
+#MG3008001Form [id$=datKomokuMei_data] tr {
+	height: 23px;
+}
+
+#MG3008001Form [id$=datKomokuMei_data] td {
+	padding-left: 5px;
+}
+
+#MG3008001Form div[id$=datKomokuMei] div.ui-datatable-scrollable-body {
+	border-bottom: 1px solid #000;
+}
+
+#MG3008001Form div[id$=pnlKomoku_content] {
+	padding-left: 15px;
+}
+
+#MG3008001Form thead.ui-datatable-scrollable-theadclone {
+	display: none;
+}
+
+#MG3008001Form tr.ui-datatable-empty-message {
+	display: none;
+}
+
+#MG3008001Form div[id$=datKomokuMei] div.ui-datatable-scrollable-body {
+	overflow-x: hidden;
+}
+
+#MG3008001Form .komokuGridRow>td.ui-panelgrid-cell {
+	padding-left: 0;
+}
+
+#MG3008001Form .komokuGridRow div.ui-datatable {
+	width: 360px;
+}
+
+#MG3008001Form .ui-grid:last tr {
+	width: 630px;
+}
+
+#MG3008001Form .panel-button-middle {
+	padding: 0 10px;
+}
+
+#MG3008001Form .panel-button-middle .vertical-middle {
+	padding-top: 270px;
+}
+
+#MG3008001Form .button-panel {
+	padding-top: 0px;
+	padding-bottom: 5px;
+	margin-top: 0px;
+}
+
+#MG3008001Form .button-panel .ui-panelgrid-cell {
+	padding-right: 0px;
+}
+
+#MG3008001Form .button-panel .ui-panelgrid-cell button {
+	margin-right: 0px;
+}
+
+#MG3008001Form .hidden {
+	display: none;
+}
+
+#MG3008001Form .rowCondition {
+	padding-left: 0;
+	padding-right: 0;
+}
+
+#MG3008001Form .rowCondition .push12px {
+	margin-left: 12px;
+}
+
+#MG3008001Form tr.ui-grid-row {
+	border-bottom: none;
+}
+
+#MG3008001Form .ui-selectonemenu-label {
+	line-height: 26px;
+}

@@ -1,0 +1,74 @@
+/*===MG3003001===*/
+body {
+	width: 100% !important;
+}
+
+#content .ui-panel {
+	margin-bottom: 0;
+}
+
+#content .ui-messages {
+	width: 390px;
+	margin: auto;
+	height: 50px;
+	overflow: hidden !important; /*disable scroll*/
+}
+
+#MG3003001, #MG3003001 .ui-panel:first-child table.ui-grid {
+	max-width: 390px;
+	width: 390px;
+	margin: 0 auto;
+}
+
+#MG3003001 table.ui-grid:first-child, #MG3003001 .ui-grid:first-child tr
+	{
+	width: 362px;
+}
+
+#MG3003001 .ui-grid-row {
+	border-bottom: none;
+	background: none;
+}
+
+#MG3003001 .ui-column-row-2 {
+	padding-left: 70px;
+}
+
+#MG3003001 .ui-panel-row-2 {
+	height: 70px;
+}
+
+#MG3003001 .ui-panel-row-2>div:first-child {
+	padding: 0 0;
+}
+
+#MG3003001 .ui-panel-row-2 :first-child.ui-panelgrid-cell {
+	padding: 2px 10px;
+}
+
+#MG3003001 .ui-selectoneradio label {
+	margin-top: 0px;
+	padding-left: 5px;
+	width: 30px;
+}
+
+#MG3003001 .ui-selectoneradio>tbody>tr>td:nth-child(2)>label {
+	width: 90px;
+}
+
+#MG3003001 .none-border {
+	border: none;
+}
+
+#MG3003001 .ui-panel .ui-panel-titlebar {
+	padding: 0.5em 1em 0.5em !important;
+}
+
+.acc-checkbox .ui-state-disabled {
+	opacity:1;
+}
+
+#MG3003001 .ui-selectoneradio .ui-state-disabled{
+ opacity:1;
+ background-color: transparent;
+}

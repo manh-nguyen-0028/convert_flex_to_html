@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite">
+<!-- コンポーネントの属性で外から指定できるようにするものを定義する -->
+<composite:interface>
+	<composite:attribute name="id" />
+	<composite:attribute name="value" />
+	<composite:attribute name="converter" />
+	<composite:attribute name="required" />
+	<composite:attribute name="label" />
+	<composite:attribute name="readonly" />
+	<composite:attribute name="size" />
+	<composite:attribute name="style" />
+	<composite:attribute name="styleClass" />
+	<composite:attribute name="pattern" />
+	<composite:attribute name="locale" />
+	<composite:attribute name="disabled" />
+	<composite:attribute name="labelText" />
+	<composite:attribute name="labelStyleClass" />
+	<composite:attribute name="tabindex" />
+	<composite:clientBehavior name="blur" event="blur"
+		targets="#{cc.attrs.id}" />
+	<composite:clientBehavior name="change" event="change"
+		targets="#{cc.attrs.id}" />
+	<composite:clientBehavior name="dblclick" event="dblclick"
+		targets="#{cc.attrs.id}" />
+	<composite:clientBehavior name="keydown" event="keydown"
+		targets="#{cc.attrs.id}" />
+	<composite:clientBehavior name="keypress" event="keypress"
+		targets="#{cc.attrs.id}" />
+	<composite:clientBehavior name="keyup" event="keyup"
+		targets="#{cc.attrs.id}" />
+	<composite:clientBehavior name="dateSelect" event="dateSelect"
+		targets="#{cc.attrs.id}" />
+</composite:interface>
+
+<!-- 複合コンポーネントに含むコンポーネントを定義する -->
+<composite:implementation>
+	<p:outputLabel escape="false"
+		value="#{cc.attrs.labelText != null ? cc.attrs.labelText: cc.attrs.label}"
+		styleClass="#{cc.attrs.labelStyleClass}"
+		rendered="#{cc.attrs.labelText != null or cc.attrs.label != null}"
+		for="#{cc.attrs.id}:#{cc.attrs.id}" />
+	<p:calendar id="#{cc.attrs.id}" style="#{cc.attrs.style}"
+		pattern="yyyy/MM/dd" mask="true" locale="ja"
+		converter="#{ACCDateConverter}" value="#{cc.attrs.value}"
+		required="#{cc.attrs.required}" label="#{cc.attrs.label}"
+		size="#{cc.attrs.size}" styleClass="#{cc.attrs.styleClass}"
+		disabled="#{cc.attrs.disabled}" readonly="#{cc.attrs.readonly}"
+		tabindex="#{cc.attrs.tabindex}">
+		<c:if test="#{cc.attrs.readonly or cc.attrs.disabled}">
+			<!-- Disable click action -->
+			<f:attribute name="showOn" value="" />
+		</c:if>
+	</p:calendar>
+</composite:implementation>
+</html>

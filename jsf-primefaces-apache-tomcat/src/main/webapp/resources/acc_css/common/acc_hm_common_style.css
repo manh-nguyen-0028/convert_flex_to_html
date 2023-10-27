@@ -1,0 +1,841 @@
+/*
+全体的な文字フォント設定。
+--------------------
+フォント：12px　ＭＳゴック
+--------------------
+*/
+.ui-widget, body, .ui-widget input, .ui-widget select, .ui-widget textarea,
+	.ui-widget button {
+	font-size: 12px;
+	font-style: normal;
+	font-family: "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", Osaka, "メイリオ",
+		Meiryo, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+}
+/* Override theme */
+.ui-widget .ui-widget, .ui-dialog.ui-widget-content .ui-dialog-title {
+	font-size: 12px;
+}
+
+.ui-widget-content {
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+}
+
+.ui-dialog.ui-widget-content .ui-dialog-titlebar {
+	border-bottom-color: #DDD;
+	background-color: #EEE;
+}
+
+textarea.ui-inputfield.ui-inputtextarea {
+	border-radius: 4px 0px 0px 4px;
+	resize: none;
+}
+
+/*
+画面標準サイズ。
+--------------------
+最大の高さ：1024px
+長さ：1280px
+位置：中央
+--------------------
+*/
+body {
+	margin: 0 auto !important;
+	width: 1280px !important;
+	max-height: 1024px !important;
+}
+
+html {
+	-ms-overflow-x: auto;
+	-ms-overflow-y: auto;
+}
+
+a {
+	text-decoration: none !important;
+}
+
+tr.ui-widget-content {
+	border: none;
+	border-bottom: 1px solid transparent;
+}
+
+table tr.ui-widget-content:last-child {
+	border-bottom: none;
+}
+
+td {
+	vertical-align: middle;
+}
+
+.ui-datatable table tbody tr td {
+	border-top-width: 0px !important;
+}
+
+.ui-datatable table tbody tr td:not(:last-child) {
+	border-right-width: 0px !important;
+}
+
+
+table tbody tr.ui-datatable-odd {
+	background-color: #EEEEEE;
+	background-image: none;
+}
+
+.ui-datatable thead th:not(:last-child) {
+	border-right-width: 0px !important;
+}
+
+.ui-datatable-scrollable-body .ui-datatable-scrollable-theadclone th {
+	border-top-width: 0px !important;
+}
+
+.ui-datatable-tablewrapper {
+	border-bottom: 1px solid #AAA;
+}
+/* Override PF style */
+#content .ui-grid .ui-selectonemenu {
+	height: 28px;
+}
+
+#content .ui-grid .ui-selectonemenu label {
+	height: 26px;
+}
+
+#content .ui-grid .ui-selectonemenu.ui-state-error label {
+	height: 22px;
+}
+
+.ui-calendar input {
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.ui-panelgrid td.ui-panelgrid-cell {
+	border-width: 0px;
+}
+
+#content .ui-panel {
+	margin-bottom: 10px;
+}
+
+.ui-outputlabel-rfi {
+	color: #FF0000;
+	height: 22px;
+	vertical-align: middle;
+	display: inline-block;
+}
+
+.pull-left {
+	float: left !important;
+}
+
+.pull-right {
+	float: right !important;
+}
+
+/*Validator*/
+.ui-state-error, .ui-widget-content .ui-state-error, .ui-widget-header .ui-state-error
+	{
+	border-color: red;
+	border-width: 2px;
+}
+
+input.ui-state-disabled, .ui-widget-content input.ui-state-disabled,
+	.ui-widget-header input.ui-state-disabled, textarea.ui-state-disabled {
+	background-color: #EEEEEE !important;
+}
+
+.title-panel {
+	padding-top: 5px;
+	padding-bottom: 5px;
+	font-weight: bold;
+	font-size: 16px;
+	padding-left: 1px;
+}
+
+.button-panel {
+	text-align: right;
+	margin-top: 10px;
+}
+
+button, input[type='button']  {
+	width: 84.56px;
+	margin-left: 10px;
+	float: none;
+	height: 27.2px;
+}
+
+.button-panel button.medium-width, .button-panel input[type='button'].medium-width
+	{
+	width: 100px;
+	margin-left: 10px;
+	float: none;
+}
+
+.button-panel button.long-width, .button-panel input[type='button'].long-width
+	{
+	width: 120px;
+	margin-left: 10px;
+	float: none;
+}
+
+.button-panel-2 {
+	text-align: right;
+	margin-top: 10px;
+}
+
+.button-panel-2 button, .button-panel input[type='button'] {
+	margin-right: 50px;
+}
+
+.button-panel-3 {
+	text-align: right;
+	margin-top: 10px;
+}
+
+.button-panel-3 button, .button-panel input[type='button'] {
+	margin-left: 10px;
+}
+
+.button-panel-4 {
+	margin-right: 130px;
+}
+
+.button-panel-5 {
+	text-align: right;
+	margin-top: 10px;
+}
+
+.button-panel-5 button, .button-panel input[type='button'] {
+	margin-left: 10px;
+}
+
+.button-panel .button-panel-6 {
+	margin-right: 10%;
+}
+
+.ui-messages {
+	max-height: 100px;
+	overflow-y: scroll;
+	margin: 0 15px 5px 0;
+}
+
+/* Message dialog */
+.MessageFrame1 {
+	max-width: 520px !important;
+}
+
+.MessageFrame1 table.ui-grid tr {
+	border-bottom: none !important;
+	max-width: 500px !important;
+}
+
+.MessageFrame1 .ui-dialog-content {
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+}
+
+.MessageFrame1 table.ui-grid textarea {
+	overflow: auto !important;
+	height: 82px !important;
+	/* white-space: normal !important; */
+}
+
+.MessageFrame1 table.ui-grid .message-label {
+	line-height: 80px !important;
+}
+
+.MessageFrame1 table.ui-grid img.message-img {
+	padding: 10px !important;
+}
+
+.MessageFrame1 table.ui-grid .message-button {
+	padding-top: 8px !important;
+}
+
+.MessageFrame1 table.ui-grid .message-button button {
+	margin-right: 5px !important;
+	float: none !important;
+}
+
+.MessageFrame1 table.ui-grid .ui-panelgrid-cell {
+	padding-bottom: 2px !important;
+}
+
+/* For message dialog in popup screen */
+.MessageFrame1.popup {
+	max-width: 380px !important;
+}
+
+.MessageFrame1.popup table.ui-grid tr {
+	max-width: 355px !important;
+}
+
+.MessageFrame1.popup table.ui-grid textarea {
+	overflow: auto !important;
+	height: 82px !important;
+	/* white-space: normal !important; */
+}
+
+.MessageFrame1.popup table.ui-grid .message-label {
+	line-height: 40px !important;
+}
+
+.MessageFrame1.popup table.ui-grid img.message-img {
+	padding: 0 !important;
+	width: 36px !important;
+	height: 36px !important;
+	margin: 6px 21px 0 12px !important;
+}
+
+/* Bootstrap + PrimeFaces theme */
+table.ui-grid {
+	border-collapse: collapse;
+}
+
+table.ui-grid, .ui-grid tr, .ui-grid td {
+	width: 100%;
+}
+
+.ui-grid label {
+	line-height: 26px;
+	padding-left: 15px;
+}
+
+.ui-grid .ui-selectonemenu label {
+	line-height: 30px;
+}
+
+td.ui-panelgrid-cell label:first-child {
+	padding-left: 0px;
+}
+
+.ui-grid .ui-selectonemenu {
+	height: 30px;
+}
+
+.ui-grid .ui-selectonemenu label {
+	line-height: 28px;
+	padding: 0px 4px;
+	max-height: 30px;
+}
+
+.ui-grid .ui-selectonemenu.ui-state-error label {
+	height: 26px;
+}
+
+.ui-grid-row td:last-child {
+	width: 0;
+	padding: 0 1px;
+}
+
+.small-popup-size {
+	width: 540px;
+	height: 450px;
+}
+
+.ui-datatable.borderless thead th, .ui-datatable.borderless tbody,
+	.ui-datatable.borderless tbody tr, .ui-datatable.borderless tbody td {
+	border-style: none;
+}
+
+.text-left {
+	text-align: left;
+}
+
+.text-right {
+	text-align: right;
+}
+
+.text-center {
+	text-align: center !important;
+}
+
+.nowrap {
+	white-space: nowrap;
+}
+
+a.ui-commandlink {
+	transform: translateY(50%);
+	text-decoration: underline !important;
+}
+
+.no-padding-left {
+	padding-left: 0px !important;
+}
+
+.ui-radiobutton .ui-radiobutton-box {
+	color: #333333;
+	text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+	cursor: pointer;
+	background-color: rgba(192, 192, 192, 1);
+	background-image: -ms-linear-gradient(top, #ffffff, #e6e6e6);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff),
+		to(#e6e6e6));
+	background-image: -webkit-linear-gradient(top, #ffffff, #e6e6e6);
+	background-image: -o-linear-gradient(top, #ffffff, #e6e6e6);
+	background-image: linear-gradient(to bottom, #cedce7 100%, #596a72 100%);
+	background-image: -moz-linear-gradient(top, #ffffff, #e6e6e6);
+	background-repeat: repeat-x;
+	border: 1px solid #cccccc;
+	border-color: #e6e6e6 #e6e6e6 #bfbfbf;
+	border-bottom-color: #b3b3b3;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px
+		rgba(0, 0, 0, 0.05);
+	-moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px
+		rgba(0, 0, 0, 0.05);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px
+		rgba(0, 0, 0, 0.05);
+}
+
+.padleft {
+	padding-left: 4px !important;
+}
+
+.ui-data-table {
+	border: solid 1px #D5D5D5 !important;
+}
+
+.ui-datatable-resizable thead th, .ui-datatable-resizable tbody td,
+	.ui-datatable-resizable tfoot td {
+	border: solid 1px #D5D5D5 !important;
+}
+
+.ui-radiobutton .ui-state-active .ui-icon {
+	background-image:
+		url("#{request.contextPath}/javax.faces.resource/images/ui-icons_8dc262_256x240.png.xhtml?ln=primefaces-south-street");
+}
+
+.break-word {
+	word-wrap: break-word;
+}
+
+.ui-state-highlight, .ui-widget-content .ui-state-highlight,
+	.ui-widget-header .ui-state-highlight {
+	border: 1px solid #308fbc;
+	background: #14c9d8 50% 50% repeat-x;
+	color: #000000;
+}
+
+/*↓　css for pickList header*/
+/*spring theme */
+.pickList_south-street.ui-picklist .ui-picklist-list-wrapper .ui-widget-header
+	{
+	background: #459e00;
+	color: white;
+	font-weight: bold;
+	height: auto;
+	margin: 0px;
+	padding: 0px;
+}
+
+.piclist-border_south-street {
+	border-right: 1px solid #327e04;
+}
+
+/*summer theme */
+.pickList_start.ui-picklist .ui-picklist-list-wrapper .ui-widget-header
+	{
+	background: #0078ae
+		url("#{request.contextPath}/javax.faces.resource/images/ui-bg_glass_45_0078ae_1x400.png.xhtml?ln=primefaces-start")
+		50% 50% repeat-x;
+	color: #ffffff;
+	font-weight: normal;
+	height: auto;
+	margin: 0px;
+	padding: 0px;
+}
+
+.piclist-border_start {
+	border-right: 1px solid #77d5f7;
+}
+
+/*autumn theme */
+.pickList_sunny.ui-picklist .ui-picklist-list-wrapper .ui-widget-header
+	{
+	background: #fece2f
+		url("#{request.contextPath}/javax.faces.resource/images/ui-bg_gloss-wave_60_fece2f_500x100.png.xhtml?ln=primefaces-sunny")
+		50% 50% repeat-x;
+	color: #4c3000;
+	font-weight: bold;
+	height: auto;
+	margin: 0px;
+	padding: 0px;
+}
+
+.piclist-border_sunny {
+	border-right: 1px solid #d19405;
+}
+
+/*winter theme */
+.pickList_cupertino.ui-picklist .ui-picklist-list-wrapper .ui-widget-header
+	{
+	background: #d7ebf9
+		url("#{request.contextPath}/javax.faces.resource/images/ui-bg_glass_80_d7ebf9_1x400.png.xhtml?ln=primefaces-cupertino")
+		50% 50% repeat-x;
+	color: #2779aa;
+	font-weight: bold;
+	height: auto;
+	margin: 0px;
+	padding: 0px;
+}
+
+.piclist-border_cupertino {
+	border-right: 1px solid #aed0ea;
+}
+
+/*↑ css for pickList header*/
+.disable-ime {
+	ime-mode: disabled;
+}
+
+.active-ime {
+	ime-mode: active;
+}
+
+.inactive-ime {
+	ime-mode: inactive;
+}
+
+.text-bold {
+	font-weight: bold !important;
+}
+
+.commonSectionInfo .ui-grid {
+	border: none;
+}
+
+.acc-readonly-radio .ui-state-disabled {
+	opacity: 1;
+}
+
+.ui-state-disabled.acc-readonly-checkbox {
+	opacity: 1;
+}
+
+.acc-readonly .ui-state-disabled{
+	opacity: 1;
+}
+
+.ui-calendar>input {
+	ime-mode: disabled;
+}
+
+.acc-validate-error {
+	border: red 2px solid !important;
+}
+
+.ui-state-focus {
+	border:#14c9d8 1px solid !important;
+}
+
+label.ui-state-error {
+  background:none !important;
+  color: #383838 !important;
+}
+
+.acc-hide {
+	display:none;
+}
+
+.white_font {
+	color:white;
+}
+
+.hideLabel0 {
+	color: transparent;
+}
+
+.hideButton0{
+	margin-top: 1.9%;
+}
+
+.ui-datepicker-days-cell-over.ui-datepicker-today.gyomu-date a{
+	border: 1px solid #308fbc !important;
+	background: #14c9d8 50% 50% repeat-x !important;
+	color: #000000 !important;
+}
+
+#iconChat {
+	position: absolute;
+	top: 5px;
+	right: 4px;
+}
+
+.ui-layout-container #iconChat {
+	position: absolute;
+	top: 5px;
+	right: 4px;
+}
+
+#page {
+	position: relative;
+}
+
+.ui-layout-container #page {
+	position: static;
+}
+
+.ui-grid-row .ui-grid-col-push-1-78 {
+	margin-left: 14.8%;
+}
+
+.acc-system-date-overwrite .ui-state-highlight,
+	.acc-system-date-overwrite .ui-widget-content .ui-state-highlight,
+	.acc-system-date-overwrite .ui-widget-header .ui-state-highlight {
+	background: #fece2f
+		url("/acc_web/javax.faces.resource/images/ui-bg_gloss-wave_60_fece2f_500x100.png.xhtml?ln=primefaces-sunny")
+		50% 50% repeat-x;
+	color: #4c3000;
+	font-weight: bold;
+	border: 1px solid #d19405;
+}
+
+.acc-system-date-overwrite .ui-state-highlight.ui-state-active,
+	.acc-system-date-overwrite .ui-widget-content .ui-state-highlight.ui-state-active,
+	.acc-system-date-overwrite .ui-widget-header .ui-state-active {
+	background: #ffffff
+		url("/acc_web/javax.faces.resource/images/ui-bg_inset-soft_30_ffffff_1x100.png.xhtml?ln=primefaces-sunny")
+		50% 50% repeat-x;
+	border: 1px solid #655e4e;
+	color: #0074c7;
+	font-weight: bold;
+}
+/* add css hommu start*/
+#layoutMain_scrn10 button {
+	width: 100px;
+	height: 28px;
+}
+
+.ui-tabs .ui-tabs-nav.ui-widget-header li.ui-state-active a {
+	font-weight: bold;
+}
+.ui-tabs.ui-tabs-top {
+	border-bottom: 0px;
+}
+.panel_input_form .ui-grid-row {
+	padding-bottom: 10px
+}
+
+.tab-view-cl .ui-tabs-panels {
+	border: 1px solid #cecece;
+	padding-top: 10px
+}
+html .ui-tabs-left>.ui-tabs-nav, html .ui-tabs-right>.ui-tabs-nav {
+	width: 30px;
+	height: auto;
+}
+
+.ui-tabs-left.ui-tabs {
+	border: none;
+}
+
+html .ui-tabs-left>.ui-tabs-panels {
+	width: auto;
+	margin-left: 29px;
+	float: none;
+	padding-top: 5px;
+	padding-right: 3px;
+}
+
+/* css for tab oritation right */
+html .ui-tabs-right>.ui-tabs-panels {
+	width: auto;
+	float: none;
+	padding-top: 5px;
+	padding-right: 3px;
+	float: right !important;
+}
+
+html .ui-tabs.ui-tabs-right>.ui-tabs-nav {
+	width: 30px;
+	height: auto;
+}
+
+.ui-tabs-left>.ui-tabs-nav li a, .ui-tabs-right>.ui-tabs-nav li a {
+	/* 	-webkit-transform: rotate(-90deg);
+	-moz-transform: rotate(-90deg);
+	-ms-transform: rotate(-90deg);
+	-o-transform: rotate(-90deg);
+	filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3); */
+	writing-mode: lr-tb;
+	text-align: center;
+	width: auto !important;
+	height: auto !important;
+	padding: 0.5em 0.5em !important;
+}
+
+/* panel of content with border */
+.pnl_body_content .ui-panel-titlebar {
+	display: none;
+}
+
+.ui-panel.pnl_body_content .ui-panel-content {
+	padding: 2px 2px;
+}
+.ui-grid label {
+	padding-left: 0px;
+}
+
+.ui-grid-row label.text-right {
+	padding-right: 3px;
+}
+.ui-inputfield.input-ctl-inline, .ui-outputlabel.input-ctl-inline,
+	.input-ctl-inline {
+	float: left;
+}
+
+body .ui-datatable thead th, body .ui-datatable tbody td, body .ui-datatable tfoot td,
+	body .ui-datatable tfoot th {
+	padding: 1px 5px 0px;
+	height: 20px;
+	vertical-align: middle;
+}
+
+.ui-datatable  table {
+	border-collapse: separate !important;
+}
+
+input::-ms-clear {
+  display: none;
+}
+
+.acc_input_wareki input::-ms-clear {
+	display: none!important;
+}
+.grey-background {
+	background-color: rgba(211, 211, 211, 1) !important;
+}
+.group_input.pnl_body_content, .group_input.pnl_body_content .ui-widget-content
+	{
+	padding: 0 !important;
+	margin: 0 !important;
+	overflow: hidden;
+}
+
+.group_input.pnl_body_content input {
+	padding: 2px 5px;
+	height: 24px !important;
+	border: none !important;
+	box-shadow: none !important;
+	-webkit-shadow: none !important;
+	-moz-box-shadow: none !important;
+	-moz-box-transition: none !important;
+	-webkit-transition: none !important;
+	transition: none !important;
+	box-sizing: border-box;
+	border-radius: 0px;
+}
+
+.arrow_all_h {
+	position: absolute;
+}
+
+.h_line {
+	height: 3px;
+	background: url("#{resource['acc_img:line_h.png']}") repeat-x;
+	margin-top: 12px;
+}
+
+.h_arrow {
+	background: url("#{resource['acc_img:arrow.jpg']}") no-repeat;
+	height: 14px;
+	margin-top: 5px;
+}
+
+.v_line {
+	background: url("#{resource['acc_img:line.png']}") repeat-y;
+	width: 2px;
+}
+/* no padding */
+.nopadding.ui-panelgrid .ui-panelgrid-cell {
+	padding: 0;
+	border: none;
+}
+
+.nopadding {
+	padding: 0 !important;
+}
+/* tabel edit */
+.ui-datatable .ui-selectonemenu {
+	border-radius: 0px !important;
+	height: 25px !important;
+}
+
+.ui-datatable .ui-selectonemenu label {
+	border-radius: 0px !important;
+	height: 17px !important;
+	padding-top: 8px !important;
+	padding-bottom: 0px !important;
+}
+
+.ui-datatable .ui-selectonemenu  .ui-selectonemenu-trigger {
+	border-radius: 0px !important;
+	height: 25px !important;
+}
+
+.ui-datatable input {
+	border-radius: 0px !important;
+}
+
+.ui-datatable .ui-editable-column {
+	background: none !important;
+}
+
+/* button 5 characters */
+button.medium-width {
+	width: 92px !important;
+}
+
+/* button 6 characters */
+button.long-width {
+	width: 102px !important;
+}
+
+/* button 7 characters */
+button.big-width {
+	width: 110px !important;
+}
+
+.ui-panel .ui-panel-titlebar {
+	padding: 6px 12px 3px 12px !important;
+}
+
+.ui-tabs .ui-tabs-nav li {
+	margin-right: 2px !important;
+}
+
+.acc-hide-button{
+    display: none !important;
+}
+
+.acc-cl1029-faijc{
+display: flex;align-items: center;justify-content: center;
+}
+
+/*テキストエリアに自動改行しない*/
+textarea {
+	white-space: pre !important;
+}
+
+.ui-datatable-scrollable-header {
+	background: none;
+}
+
+.ui-widget a:focus {
+	outline: 1px dotted #000000;
+	outline-offset: 3px;
+}
+
+.ui-button:focus {
+	outline: 1px dotted #000000;
+	outline-offset: -3px;
+}
+
+.ui-button-nowrap {
+	white-space: nowrap;
+}

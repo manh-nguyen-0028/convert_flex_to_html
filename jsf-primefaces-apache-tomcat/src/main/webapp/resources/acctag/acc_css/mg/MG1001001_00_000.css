@@ -1,0 +1,91 @@
+ /*===Login===*/
+
+#login-wrapper {
+  margin: 0 auto;
+  margin-top: 200px;
+  height: 377px;
+  width: 520px;
+  background: url("#{resource['acc_img:login.jpg']}");
+  background-size: 520px 350px;
+  background-repeat: no-repeat;
+  box-shadow: 5px 5px 10px #888888;
+}
+
+form#login {
+    position: relative;
+    top: 140px;
+    left: 240px;
+}
+
+form#login input {
+	padding: 0;
+	font-size: 14px;
+	height: 20px;
+	width: 180px;
+}
+
+form#login button {
+  margin: 0;
+  border-radius: 5px;
+  height: 22px;
+  width: 80px;
+}
+
+form#login button span {
+	font-size: 11px;
+}
+
+#login-table td {
+	padding-top: 5px;
+	padding-right: 5px;
+	text-align: right;
+    color: #fff;
+    text-shadow:
+   -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+     1px 1px 0 #000;
+     font-size: 14px;
+     font-family: "ÉqÉâÉMÉmäpÉS Pro W3", "Hiragino Kaku Gothic Pro",Osaka, "ÉÅÉCÉäÉI", Meiryo, "ÇlÇr ÇoÉSÉVÉbÉN", "MS PGothic", sans-serif;
+}
+
+#banner {
+	position: relative;
+	top: 150px;
+	height: 75px;
+	width: auto;
+	text-align: right;
+	background-color: rgb(255, 0, 0);
+	background-color: rgba(252, 5, 5, .7);
+}
+
+#banner-text {
+	height: 60px;
+    width: 450px;
+    margin-left: 340px;
+    background: url("#{resource['acc_img:logo.gif']}") no-repeat;
+}
+
+span.banner-copyright.version {
+	color: #FD5050;
+}	
+
+span.banner-copyright {
+	color: #fff;
+	font-size: 11px;
+	font-family: Verdana, Geneva, sans-serif;
+	margin-right: 5px;
+	vertical-align: super;
+}
+
+#progressBar {
+	position: relative;
+	top: 155px;
+}
+
+#progress {
+	display: none;
+	height: 12px;
+	font-size: 11px;
+}
+

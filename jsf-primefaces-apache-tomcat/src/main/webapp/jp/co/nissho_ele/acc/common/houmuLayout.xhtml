@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:pacc="http://xmlns.jcp.org/jsf/acctag"
+	xmlns:acc="http://xmlns.jcp.org/jsf/composite/acc_component"
+	xmlns:p="http://primefaces.org/ui" lang="#{accLanguageSwitcher.locale}"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<f:view locale="#{accLanguageSwitcher.locale}">
+	<h:head>
+		<link rel="icon" href="#{resource['acc_img:AutoCall.ico']}" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta content="IE=edge" http-equiv="X-UA-Compatible" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="cache-control" content="max-age=0" />
+		<meta http-equiv="cache-control" content="no-cache" />
+		<meta http-equiv="pragma" content="no-cache" />
+
+		<title><ui:insert name="title"></ui:insert></title>
+		
+		<pacc:outputStylesheet library="acc_css" name="common/acc_NewMessage.css" />
+		<pacc:outputStylesheet library="acc_css" name="common/reset.css" />
+		<pacc:outputStylesheet library="acc_css" name="cl/CL1029001_00_000.css" />
+		<pacc:outputStylesheet library="acc_css" name="common/acc_hm_common_style.css" />
+		<pacc:outputStylesheet library="acc_css" name="common/acc_ui_grid_col.css" />
+		<ui:insert name="stylesheet"></ui:insert>
+		<pacc:outputScript library="primefaces" name="jquery/jquery.js" />
+		<pacc:outputScript library="acc_js" name="common/acc_common.js" />
+		<pacc:outputScript library="acc_js" name="common/acc_ime.js" />
+		<pacc:outputScript library="acc_js" name="common/acc_popup.js" />
+		<pacc:outputScript library="acc_js" name="common/acc_util.js" />
+		<pacc:outputScript library="acc_js" name="common/acc_check_utility.js" />
+		<pacc:outputScript library="acc_js" name="common/acc_input_mode.js" />
+		<pacc:outputScript library="acc_js" name="common/acc_tabkey_controller.js" />
+		<pacc:outputScript library="acc_js" name="common/acc_hotkey_controller.js" />
+		<pacc:outputScript library="acc_js" name="common/jquery.cookie.js" />
+		<pacc:outputScript library="acc_js" name="chat/acc_NewMessage.js" />
+		<pacc:outputScript library="acc_js" name="chat/moment.min.js" />
+		<pacc:outputScript library="acc_js" name="chat/acc_mainChat.js" />
+		<pacc:outputScript library="acc_js" name="chat/acc_orasocket.js" />
+		<pacc:outputScript library="acc_js" name="chat/Acc_ChatObject.js" />
+		<pacc:outputScript library="acc_js" name="chat/acc_longPoll.js" />
+		<pacc:outputScript library="acc_js" name="common/acc_common_datepicker.js" />	
+		<c:choose>
+			<c:when test="#{accUserInfo.ttOpDispStyle == 1}">
+				<style>
+					 .acc-system-date-overwrite .ui-state-highlight, .acc-system-date-overwrite .ui-widget-content .ui-state-highlight,
+						.acc-system-date-overwrite .ui-widget-header .ui-state-highlight {
+						background: #459e00 url("/acc_web/javax.faces.resource/images/ui-bg_highlight-hard_15_459e00_1x100.png.xhtml?ln=primefaces-south-street") 50% 50% repeat-x;
+						color: #ffffff;
+						border: 1px solid #327e04;
+					}
+					 .acc-system-date-overwrite .ui-state-highlight.ui-state-active,.acc-system-date-overwrite .ui-widget-content .ui-state-highlight.ui-state-active, 
+					 .acc-system-date-overwrite .ui-widget-header .ui-state-active {
+						background: #fafaf4 url("/acc_web/javax.faces.resource/images/ui-bg_highlight-hard_100_fafaf4_1x100.png.xhtml?ln=primefaces-south-street") 50% 50% repeat-x;
+						border: 1px solid #d4ccb0;
+						color: #459e00;
+						font-weight: bold;			
+					} 
+				</style>
+			</c:when>
+			<c:when test="#{accUserInfo.ttOpDispStyle == 2}">
+				<style>
+					 .acc-system-date-overwrite .ui-state-highlight, .acc-system-date-overwrite .ui-widget-content .ui-state-highlight,
+						.acc-system-date-overwrite .ui-widget-header .ui-state-highlight {
+						background: #0078ae
+							url("/acc_web/javax.faces.resource/images/ui-bg_glass_45_0078ae_1x400.png.xhtml?ln=primefaces-start")
+							50% 50% repeat-x;
+						color: #ffffff;
+						font-weight: normal;
+						border: 1px solid #77d5f7;
+					}
+					.acc-system-date-overwrite .ui-state-highlight.ui-state-active,.acc-system-date-overwrite .ui-widget-content .ui-state-highlight.ui-state-active, 
+					 .acc-system-date-overwrite .ui-widget-header .ui-state-active {
+					background: #6eac2c url("/acc_web/javax.faces.resource/images/ui-bg_gloss-wave_50_6eac2c_500x100.png.xhtml?ln=primefaces-start") 50% 50% repeat-x;
+					border: 1px solid #acdd4a;
+					color: #ffffff;
+					font-weight: normal;
+									} 
+				</style>
+			</c:when>
+			<c:when test="#{accUserInfo.ttOpDispStyle == 3}">
+				<style>
+					 .acc-system-date-overwrite .ui-state-highlight, .acc-system-date-overwrite .ui-widget-content .ui-state-highlight,
+						.acc-system-date-overwrite .ui-widget-header .ui-state-highlight {
+						background: #fece2f 
+							url("/acc_web/javax.faces.resource/images/ui-bg_gloss-wave_60_fece2f_500x100.png.xhtml?ln=primefaces-sunny") 
+							50% 50% repeat-x;
+						color: #4c3000;
+						font-weight: bold;
+						border: 1px solid #d19405;
+					}
+					 .acc-system-date-overwrite .ui-state-highlight.ui-state-active,.acc-system-date-overwrite .ui-widget-content .ui-state-highlight.ui-state-active, 
+					 .acc-system-date-overwrite .ui-widget-header .ui-state-active {
+						background: #ffffff url("/acc_web/javax.faces.resource/images/ui-bg_inset-soft_30_ffffff_1x100.png.xhtml?ln=primefaces-sunny") 50% 50% repeat-x;
+						border: 1px solid #655e4e;
+						color: #0074c7;
+						font-weight: bold;
+										} 
+				</style>
+			</c:when>
+			<c:when test="#{accUserInfo.ttOpDispStyle == 4}">
+				<style>
+					 .acc-system-date-overwrite .ui-state-highlight, .acc-system-date-overwrite .ui-widget-content .ui-state-highlight,
+						.acc-system-date-overwrite .ui-widget-header .ui-state-highlight {
+						background: #d7ebf9 url("/acc_web/javax.faces.resource/images/ui-bg_glass_80_d7ebf9_1x400.png.xhtml?ln=primefaces-cupertino") 50% 50% repeat-x;
+						color: #2779aa;
+						border: 1px solid #aed0ea;
+					}
+					 .acc-system-date-overwrite .ui-state-highlight.ui-state-active,.acc-system-date-overwrite .ui-widget-content .ui-state-highlight.ui-state-active, 
+					 .acc-system-date-overwrite .ui-widget-header .ui-state-active {
+						background: #3baae3 url("/acc_web/javax.faces.resource/images/ui-bg_glass_50_3baae3_1x400.png.xhtml?ln=primefaces-cupertino") 50% 50% repeat-x;
+						border: 1px solid #2694e8;
+						color: #ffffff;
+						font-weight: bold;
+					} 
+				</style>
+			</c:when>
+			<c:otherwise>
+				<style>
+					 .acc-system-date-overwrite .ui-state-highlight, .acc-system-date-overwrite .ui-widget-content .ui-state-highlight,
+						.acc-system-date-overwrite .ui-widget-header .ui-state-highlight {
+						background: #d7ebf9 url("/acc_web/javax.faces.resource/images/ui-bg_glass_80_d7ebf9_1x400.png.xhtml?ln=primefaces-cupertino") 50% 50% repeat-x;
+						color: #2779aa;
+						border: 1px solid #aed0ea;
+					}
+					 .acc-system-date-overwrite .ui-state-highlight.ui-state-active,.acc-system-date-overwrite .ui-widget-content .ui-state-highlight.ui-state-active, 
+					 .acc-system-date-overwrite .ui-widget-header .ui-state-active {
+						background: #3baae3 url("/acc_web/javax.faces.resource/images/ui-bg_glass_50_3baae3_1x400.png.xhtml?ln=primefaces-cupertino") 50% 50% repeat-x;
+						border: 1px solid #2694e8;
+						color: #ffffff;
+						font-weight: bold;
+					} 
+				</style>
+	
+			</c:otherwise>
+		</c:choose>
+
+		<script type="text/javascript">
+			var currentUser = "#{accUserInfo.ttCd}";
+			var currentUserName = "#{accUserInfo.ttNameSeimei}";
+			var currentCorpCd = "#{accUserInfo.corpCd}";
+			var msgContentOperator = "#{accMessageInfoUtility.getMessageTextByCorpCd(accBaseInfoModel.corpCd, 'I11019')}"
+			var msgContentGroup = "#{accMessageInfoUtility.getMessageTextByCorpCd(accBaseInfoModel.corpCd, 'I11020')}"
+			var msgSecurity = "#{accMessageInfoUtility.getMessageTextByCorpCd(accBaseInfoModel.corpCd, 'W11019')}"
+			var msgTranfer = "#{accMessageInfoUtility.getMessageTextByCorpCd(accBaseInfoModel.corpCd, 'E91034')}"
+			var msgTranferResponse = "#{accMessageInfoUtility.getMessageTextByCorpCd(accBaseInfoModel.corpCd, 'E91035')}"
+			var msgTranferApprovalResponse = "#{accMessageInfoUtility.getMessageTextByCorpCd(accBaseInfoModel.corpCd, 'E91036')}"
+			var msgStartNotification = "#{accMessageInfoUtility.getMessageTextByCorpCd(accBaseInfoModel.corpCd, 'E91032')}"
+			var msgEndNotification = "#{accMessageInfoUtility.getMessageTextByCorpCd(accBaseInfoModel.corpCd, 'E91033')}"
+			var _CTI_MODAL = '';
+			var screenType = "#{screenType}";
+            var flagFunctionKey = "#{accSystemParamUtility.getSystemParam(accUserInfo.corpCd,'FK-MODE')}";
+			function closeCti() {
+				if (_CTI_MODAL) {
+					_CTI_MODAL.close();
+				}
+			}
+			var warekiDateValidationMessage = "#{accMessageInfoUtility.getMessageTextByCorpCd(accBaseInfoModel.corpCd, 'E91041')}";
+		</script>
+
+	</h:head>
+	<h:body>
+		<p:ajaxStatus onstart="PF('ajaxStatusDialog').show()"
+			onsuccess="PF('ajaxStatusDialog').hide()"
+			onerror="PF('ajaxStatusDialog').hide()" />
+		<p:dialog widgetVar="ajaxStatusDialog" modal="true" draggable="false"
+			closable="false" resizable="false" showHeader="false">
+			<p:graphicImage library="acc_img" name="ajaxloadingbar.gif" />
+		</p:dialog>
+
+		<p:ajaxExceptionHandler type="java.lang.Throwable"
+			update="messageException"
+			onexception="PF('messageException').show();" />
+
+		<div id="page">
+			<c:choose>
+				<!--  ポップアップ画面の場合 -->
+				<c:when test="#{screenType!='popup' and screenType!='chat' }">
+					<!-- <div id="iconChat">
+						<span><i class="pi pi-comment"></i></span>
+					</div> -->
+					<div id="messageNotifyPanel"></div>
+					<h:form id="comfirmDialogForm">
+						<p:confirmDialog message="" id="messageRequest"
+							header="#{label['CL1029001.title']}" widgetVar="dlg"
+							closable="false">
+							<p:inputText id="hiddenToUser"
+								value="#{CL1029001_00_000Controller.toUser}" type="hidden" />
+							<p:inputText id="hiddenToUserName"
+								value="#{CL1029001_00_000Controller.toUserName}" type="hidden" />
+							<p:inputText id="hiddenToKcifno" type="hidden"
+								value="#{CL1029001_00_000Controller.toKcifno}" />
+							<p:inputText id="hiddenFromUser" type="hidden"
+								value="#{CL1029001_00_000Controller.fromUser}" />
+							<p:commandButton value="#{label['CL1029001.btnHyoji']}" tabindex="1"
+								id='btnHyoji' styleClass="ui-grid-col-2 ui-button"
+								disabled="#{CL1029001_00_000Controller.authMap['btnHyoji']}"
+								actionListener="#{CL1029001_00_000Controller.btnHyojiClick}" />
+							<p:commandButton value="#{label['CL1029001.btnKyohi']}"
+								id="btnKyohi" tabindex="2"
+								disabled="#{CL1029001_00_000Controller.authMap['btnKyohi']}"
+								styleClass="ui-grid-col-2 ui-button"
+								actionListener="#{CL1029001_00_000Controller.btnKyohiClick}" />
+						</p:confirmDialog>
+						
+						<p:confirmDialog id="dateConfirm" widgetVar="warekiDateConfirm"
+							closable="false" message="%MsgContent%">
+							<div id="rowWarekiDateComponentConfirm">
+								<p:commandButton id="message2Btn1" value="#{label['Base.ok']}"
+									styleClass="dialogFrameBtn1 mr-2" tabindex="1000" ajax="true"
+									onclick="PF('warekiDateConfirm').hide();" />
+							</div>
+							<p:focus for="message2Btn1" />
+						</p:confirmDialog>
+					</h:form>
+				</c:when>
+			</c:choose>
+			<div id="header">
+				<ui:insert name="header">
+					<ui:include src="commonHeader.xhtml" />
+				</ui:insert>
+			</div>
+			<div id="content">
+				<p:messages autoUpdate="true" closable="false" showDetail="false"
+					redisplay="true" id="validateMsgs" />
+				<ui:insert name="content">
+					<ui:include src="commonContent.xhtml" />
+				</ui:insert>
+			</div>
+			<div id="footer">
+				<ui:insert name="footer">
+					<ui:include src="commonFooter.xhtml" />
+				</ui:insert>
+			</div>
+		</div>
+
+		<ui:insert name="script">
+
+		</ui:insert>
+
+		<c:choose>
+			<!--  ポップアップ画面の場合 -->
+			<c:when test="#{screenType=='popup' }">
+				<h:form id="message">
+					<acc:smallDialogFrame />
+				</h:form>
+
+				<h:form id="messageException">
+					<acc:smallDialogFrameException />
+				</h:form>
+
+			</c:when>
+
+			<!--  Main画面、タブ画面の場合 -->
+			<c:otherwise>
+				<h:form id="message">
+					<acc:dialogFrame />
+				</h:form>
+
+				<h:form id="messageException">
+					<acc:dialogFrameException />
+				</h:form>
+			</c:otherwise>
+		</c:choose>
+
+		<c:if test="#{screenType =='popup' }">
+			<style>
+				html {
+					overflow-x: hidden;
+					-ms-overflow-x: hidden;
+					overflow-y: auto;
+					-ms-overflow-y: auto;
+				}
+			</style>
+		</c:if>
+	</h:body>
+	<script type="text/javascript">
+		
+	</script>
+</f:view>
+</html>

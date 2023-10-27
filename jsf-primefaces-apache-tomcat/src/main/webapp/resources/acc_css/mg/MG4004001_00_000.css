@@ -1,0 +1,73 @@
+/*===MG4004001===*/
+#MG4004001, #MG4004001 .ui-panel:first-child table.ui-grid {
+	max-width: 935px;
+	width: 935px;
+	margin: 0 auto;
+}
+
+#MG4004001 table.ui-grid:first-child, #MG4004001 .ui-grid:first-child tr
+	{
+	width: 905px;
+}
+
+#MG4004001 .ui-grid-row {
+	border-bottom: none;
+}
+
+#MG4004001 .ui-lbl-taitoru {
+	text-align: center;
+	font-weight: bold;
+	font-style: italic;
+	text-decoration: underline;
+	font-size: 26px;
+	margin: 40px 0;
+}
+
+#MG4004001 .ui-datatable-data .ui-column-left {
+	text-align: left;
+	border: solid 1px #D5D5D5;
+	padding-left: 5px;
+}
+
+#MG4004001 .ui-datatable-data .ui-column-center {
+	text-align: center;
+	border: solid 1px #D5D5D5;
+}
+
+#MG4004001 .ui-datatable-data .ui-column-right {
+	text-align: right;
+	border: solid 1px #D5D5D5;
+	padding-right: 5px;
+}
+
+#MG4004001 .ui-kensu {
+	float: left;
+	text-align: center;
+	padding: 0 8px;
+}
+
+#MG4004001 .ui-lbl-kei-ken {
+	padding-left: 0;
+	float: left;
+}
+
+#MG4004001 .ui-div-kensu {
+	float: right;
+	margin-right: 65px;
+}
+
+#MG4004001 .ui-datatable-scrollable-body {
+	border-bottom-color: #d5d5d5;
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+}
+
+#MG4004001 .button-panel {
+	margin-bottom: 12px;
+}
+
+#MG4004001\:datTasukuIchiran a {
+	position: relative;
+	top: -7px;
+	color: blue;
+}

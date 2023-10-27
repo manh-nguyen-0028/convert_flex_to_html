@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:acc="http://xmlns.jcp.org/jsf/composite/acc_component">
+
+	<f:subview id="MG5001002">
+		<p:panel header="#{label['MG5001001.Frame1Title']}"
+			styleClass="ui-grid-responsive MG5001002-width">
+			<p:dataTable id="datKojinSakuseiJo" var="dataRow"
+				value="#{MG5001001_00_000Controller.model.jokenPrivateList}"
+				selectionMode="single" tabindex="-1"
+				selection="#{MG5001001_00_000Controller.model.jokenPrivateRecord}"
+				rowKey="#{dataRow.rowKey}" styleClass="ui-grid-col-12"
+				resizableColumns="true" scrollable="true" scrollHeight="129"
+				emptyMessage="#{label['Base.noRecordsFound']}" style="height:152px">
+
+				<!-- 項目1: 部署 -->
+				<p:column width="19" headerText="#{label['MG5001001.busho']}" sortBy="#{dataRow.sectionNameRyakusho}">
+					<h:outputText id="lblBusho" value="#{dataRow.sectionNameRyakusho}" />
+					<p:tooltip id="toolTiplblBusho" for="lblBusho"
+						value="#{dataRow.sectionNameRyakusho}" trackMouse="true" />
+				</p:column>
+
+				<!-- 項目2: 作成者 -->
+				<p:column width="29" headerText="#{label['MG5001001.sakuseisha']}" sortBy="#{dataRow.ttName}">
+					<h:outputText id="lblSakuseisha" value="#{dataRow.ttName}" />
+					<p:tooltip for="lblSakuseisha" value="#{dataRow.ttName}"
+						trackMouse="true" />
+				</p:column>
+
+				<!-- 項目3: 更新日 -->
+				<p:column styleClass="ui-column-center" width="5"
+					headerText="#{label['MG5001001.koshimbi']}"
+					sortBy="#{dataRow.updTimes}">
+					<h:outputText value="#{dataRow.updTimes}" />
+				</p:column>
+
+				<!-- 項目4: 出力データ -->
+				<p:column width="55"
+					headerText="#{label['MG5001001.shutsuryokuDeta']}"
+					sortBy="#{dataRow.viewName}">
+					<h:outputText id="lblShutsuryokuDeta"
+						value="#{dataRow.viewName}" />
+					<p:tooltip for="lblShutsuryokuDeta"
+						value="#{dataRow.viewName}" trackMouse="true" />
+				</p:column>
+
+				<!-- 項目5: 条件名 -->
+				<p:column width="71" headerText="#{label['MG5001001.jokenMei']}" sortBy="#{dataRow.jokenName}">
+					<h:outputText id="lblJokenMei" value="#{dataRow.jokenName}" />
+					<p:tooltip for="lblJokenMei" value="#{dataRow.jokenName}"
+						trackMouse="true" />
+
+				</p:column>
+
+				<!-- 項目6: 公開設定 -->
+
+				<p:column width="43"
+					headerText="#{label['MG5001001.kokaiSettei']}"
+					sortBy="#{dataRow.jokenPublicSetName}">
+					<h:outputText id="lblKokaiSettei" value="#{dataRow.jokenPublicSetName}" />
+					<p:tooltip for="lblKokaiSettei" value="#{dataRow.jokenPublicSetName}"
+						trackMouse="true" />
+
+				</p:column>
+
+			</p:dataTable>
+			<div class="button-panel ui-grid-row margin-top ">
+				<!-- 項目7: 新規作成 -->
+				<p:commandButton id="btnShinkiSakusei"
+					value="#{label['Base.shinkiSakusei']}"
+					disabled="#{MG5001001_00_000Controller.authMap['btnShinkiSakusei']}"
+					validateClient="true" ajax="false"
+					styleClass="ui-grid-col-push-6-70 ui-grid-col-0-95 margin-top" tabindex="1" 
+					action="#{MG5001001_00_000Controller.btnShinkiSakuseiClick}" />
+
+				<!-- 項目8: 別名登録 -->
+				<p:commandButton id="btnBetsumeiToroku"
+					value="#{label['Base.betsumeiToroku']}"
+					disabled="#{MG5001001_00_000Controller.authMap['btnBetsumeiToroku']}"
+					validateClient="true" ajax="false"
+					styleClass="ui-grid-col-push-0-25 ui-grid-col-0-95 margin-top" tabindex="2" 
+					action="#{MG5001001_00_000Controller.btnBetsumeiToroku1Click}" />
+
+				<!-- 項目9: 更新 -->
+				<p:commandButton id="btnKoshin" value="#{label['Base.koshin']}"
+					disabled="#{MG5001001_00_000Controller.authMap['btnKoshin']}"
+					validateClient="true" ajax="false"
+					styleClass="ui-grid-col-push-0-25 ui-grid-col-0-95 margin-top" tabindex="3"
+					action="#{MG5001001_00_000Controller.btnKoshinClick}" />
+
+				<!-- 項目10: 削除 -->
+				<p:commandButton id="btnSakujo" value="#{label['Base.sakujo']}"
+					disabled="#{MG5001001_00_000Controller.authMap['btnSakujo']}"
+					validateClient="true" ajax="false"
+					styleClass="ui-grid-col-push-0-25 ui-grid-col-0-95 margin-top" tabindex="4" 
+					actionListener="#{MG5001001_00_000Controller.btnSakujoClick}" />
+
+			</div>
+
+		</p:panel>
+	</f:subview>
+</ui:composition>

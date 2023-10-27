@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite">
+<!-- コンポーネントの属性で外から指定できるようにするものを定義する -->
+<composite:interface>
+	<composite:attribute name="id" />
+	<composite:attribute name="value" />
+	<composite:attribute name="required" />
+	<composite:attribute name="maxlength" />
+	<composite:attribute name="label" />
+	<composite:attribute name="style" />
+	<composite:attribute name="disabled" />
+	<composite:attribute name="styleClass" />
+	<composite:attribute name="readonly" />
+	<composite:attribute name="labelText" />
+	<composite:attribute name="labelStyleClass" />
+	<composite:attribute name="tabindex" />
+	<composite:clientBehavior name="blur" event="blur"
+		targets="#{cc.attrs.id}" />
+	<composite:clientBehavior name="change" event="change"
+		targets="#{cc.attrs.id}" />
+	<composite:clientBehavior name="dblclick" event="dblclick"
+		targets="#{cc.attrs.id}" />
+	<composite:clientBehavior name="keydown" event="keydown"
+		targets="#{cc.attrs.id}" />
+	<composite:clientBehavior name="keypress" event="keypress"
+		targets="#{cc.attrs.id}" />
+	<composite:clientBehavior name="keyup" event="keyup"
+		targets="#{cc.attrs.id}" />
+</composite:interface>
+
+<!-- 複合コンポーネントに含むコンポーネントを定義する -->
+<composite:implementation>
+	<p:outputLabel
+		value="#{cc.attrs.labelText != null ? cc.attrs.labelText: cc.attrs.label}"
+		styleClass="#{cc.attrs.labelStyleClass}"
+		rendered="#{cc.attrs.labelText != null or cc.attrs.label != null}"
+		for="#{cc.attrs.id}:#{cc.attrs.id}" />
+	<p:inputText id="#{cc.attrs.id}" value="#{cc.attrs.value}"
+		required="#{cc.attrs.required}" maxlength="#{cc.attrs.maxlength}"
+		label="#{cc.attrs.label}"
+		style="ime-mode:disabled;-ms-image-mode:disabled;#{cc.attrs.style}"
+		disabled="#{cc.attrs.disabled}" styleClass="#{cc.attrs.styleClass} acc-tel-input"
+		readonly="#{cc.attrs.readonly}" tabindex="#{cc.attrs.tabindex}">
+		<p:keyFilter preventPaste="false" regEx="/[0-9\-]/i" />
+	</p:inputText>
+</composite:implementation>
+</html>

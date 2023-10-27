@@ -1,0 +1,205 @@
+[
+  {
+    "name": "mx:Image",
+    "htmlTagStart": "<p:panel",
+    "htmlEndStartTag": "/>",
+    "isGenerateHtml": true,
+    "htmlTagEnd": ""
+  },
+  {
+    "name": "Containers:ACCCanvas",
+    "htmlTagStart": "<p:outputPanel",
+    "htmlEndStartTag": ">",
+    "isGenerateHtml": true,
+    "htmlTagEnd": "</p:outputPanel>"
+  },
+  {
+    "name": "Containers:ACCTitleWindow",
+    "htmlTagStart": "<p:outputPanel",
+    "htmlEndStartTag": ">",
+    "isGenerateHtml": true,
+    "htmlTagEnd": "</p:outputPanel>"
+  },
+  {
+    "name": "Controls:ACCLabel",
+    "htmlTagStart": "<p:outputLabel",
+    "htmlEndStartTag": ">",
+    "isGenerateHtml": true,
+    "htmlTagEnd": "</p:outputLabel>"
+  },
+  {
+    "name": "Controls:ACCTextInput",
+    "htmlTagStart": "<p:inputText",
+    "htmlEndStartTag": ">",
+    "isGenerateHtml": true,
+    "htmlTagEnd": "</p:inputText>"
+  },
+  {
+    "name": "Controls:ACCTextInputMaskNumberOnly",
+    "htmlTagStart": "<acc:inputTextNumber",
+    "htmlEndStartTag": "/>",
+    "isGenerateHtml": true,
+    "htmlTagEnd": ""
+  },
+  {
+    "name": "Controls:ACCTextInputMaskZip",
+    "htmlTagStart": "<acc:inputTextZip",
+    "htmlEndStartTag": ">",
+    "isGenerateHtml": true,
+    "htmlTagEnd": "</acc:inputTextZip>"
+  },
+  {
+    "name": "Controls:ACCTextInputMaskDate",
+    "htmlTagStart": "<p:calendar",
+    "htmlEndStartTag": ">",
+    "isGenerateHtml": true,
+    "htmlTagEnd": "</p:calendar>"
+  },
+  {
+    "name": "Controls:ACCButton",
+    "htmlTagStart": "<p:commandButton",
+    "htmlEndStartTag": ">",
+    "isGenerateHtml": true,
+    "htmlTagEnd": "</p:commandButton>"
+  },
+  {
+    "name": "Controls:ACCRadioButton",
+    "htmlTagStart": " <f:selectItem",
+    "htmlEndStartTag": "/>",
+    "isGenerateHtml": false,
+    "htmlTagEnd": "</f:selectItem>"
+  },
+  {
+    "name": "Controls:ACCCheckBox",
+    "htmlTagStart": "<p:selectBooleanCheckbox",
+    "htmlEndStartTag": ">",
+    "isGenerateHtml": true,
+    "htmlTagEnd": "</p:selectBooleanCheckbox>"
+  },
+  {
+    "name": "Containers:ACCVBox",
+    "htmlTagStart": "<p:panelGrid",
+    "htmlEndStartTag": ">",
+    "isGenerateHtml": true,
+    "htmlTagEnd": "</p:panelGrid>"
+  },
+  {
+    "name": "Containers:ACCHBox",
+    "htmlTagStart": "<p:panelGrid",
+    "htmlEndStartTag": ">",
+    "isGenerateHtml": true,
+    "htmlTagEnd": "</p:panelGrid>"
+  },
+  {
+    "name": "Containers:ACCTabNavigator",
+    "htmlTagStart": "<p:tabView",
+    "htmlEndStartTag": ">",
+    "isGenerateHtml": true,
+    "htmlTagEnd": "</p:tabView>"
+  },
+  {
+    "name": "Controls:ACCTree",
+    "htmlTagStart": "<p:panelMenu",
+    "htmlEndStartTag": ">",
+    "isGenerateHtml": true,
+    "htmlTagEnd": "</p:panelMenu>"
+  },
+  {
+    "name": "Controls:ACCAdvancedDataGrid",
+    "htmlTagStart": "<p:dataTable",
+    "htmlEndStartTag": ">",
+    "isGenerateHtml": true,
+    "htmlTagEnd": "</p:dataTable>"
+  },
+  {
+    "name": "mx:AdvancedDataGridColumn",
+    "htmlTagStart": "<p:column",
+    "htmlEndStartTag": ">",
+    "isGenerateHtml": true,
+    "htmlTagEnd": "</p:column>"
+  },
+  {
+    "name": "Controls:ACCComboBoxCode",
+    "htmlTagStart": "<p:selectOneMenu",
+    "htmlEndStartTag": " ><f:selectItem itemLabel=\"\" itemValue=\"\" /><f:selectItems value=\"\" itemLabel=\"\" itemValue=\"\"/>",
+    "isGenerateHtml": true,
+    "htmlTagEnd": "</p:selectOneMenu>"
+  },
+  {
+    "name": "Containers:ACCPanel",
+    "htmlTagStart": "<p:panel",
+    "htmlEndStartTag": ">",
+    "isGenerateHtml": true,
+    "htmlTagEnd": "</p:panel>"
+  },
+  {
+    "name": "Controls:ACCRadioButtonGroup",
+    "htmlTagStart": "<p:selectOneRadio",
+    "htmlEndStartTag": ">",
+    "isGenerateHtml": true,
+    "htmlTagEnd": "</p:selectOneRadio>"
+  },
+  {
+    "name": "Controls:ACCDataGrid",
+    "htmlTagStart": "<p:dataTable style='border:1px solid #cccc'",
+    "htmlEndStartTag": ">",
+    "isGenerateHtml": true,
+    "htmlTagEnd": "</p:dataTable>"
+  },
+  {
+    "name": "mx:DataGridColumn",
+    "htmlTagStart": "<p:column",
+    "htmlEndStartTag": ">",
+    "isGenerateHtml": true,
+    "htmlTagEnd": "</p:column>"
+  },
+  {
+    "name": "mx:itemEditor",
+    "htmlTagStart": "<p:cellEditor",
+    "htmlEndStartTag": ">",
+    "isGenerateHtml": true,
+    "htmlTagEnd": "</p:cellEditor>"
+  },
+  {
+    "name": "mx:TextInput",
+    "htmlTagStart": "<p:inputText",
+    "htmlEndStartTag": ">",
+    "isGenerateHtml": true,
+    "htmlTagEnd": "</p:inputText>"
+  },
+  {
+    "name": "Controls:columns",
+    "htmlTagStart": "",
+    "htmlEndStartTag": "",
+    "isGenerateHtml": true,
+    "htmlTagEnd": ""
+  },
+  {
+    "name": "mx:headerRenderer",
+    "htmlTagStart": "",
+    "htmlEndStartTag": "",
+    "isGenerateHtml": false,
+    "htmlTagEnd": ""
+  },
+  {
+    "name": "mx:Component",
+    "htmlTagStart": "",
+    "htmlEndStartTag": "",
+    "isGenerateHtml": false,
+    "htmlTagEnd": ""
+  },
+  {
+    "name": "Controls:ACCSectionInfoComboBox",
+    "htmlTagStart": "<acc:sectionInfoComboBox style='border:1px solid #cccc'",
+    "htmlEndStartTag": ">",
+    "isGenerateHtml": true,
+    "htmlTagEnd": "</acc:sectionInfoComboBox>"
+  },
+  {
+    "name": "mx:Label",
+    "htmlTagStart": "<p:outputLabel style='border:1px solid #cccc'",
+    "htmlEndStartTag": ">",
+    "isGenerateHtml": true,
+    "htmlTagEnd": "</p:outputLabel>"
+  }
+]

@@ -1,0 +1,47 @@
+<!-- Component to make selectOneRadio look like readonly
+but it same to disable, can not submit data to server
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+<!-- コンポーネントの属性で外から指定できるようにするものを定義する -->
+<composite:interface>
+	<composite:attribute name="id" />
+	<composite:attribute name="value" />
+	<composite:attribute name="required" />
+	<composite:attribute name="disabled" />
+	<composite:attribute name="readOnly" default="true" />
+	<composite:attribute name="label" />
+	<composite:attribute name="style" />
+	<composite:attribute name="styleClass" />
+	<composite:attribute name="tabindex" />
+	<composite:attribute name="labelText" />
+	<composite:attribute name="labelStyleClass" />
+</composite:interface>
+
+<!-- 複合コンポーネントに含むコンポーネントを定義する -->
+<composite:implementation>
+	<p:outputLabel
+		value="#{cc.attrs.labelText != null ? cc.attrs.labelText: cc.attrs.label}"
+		styleClass="#{cc.attrs.labelStyleClass}"
+		rendered="#{cc.attrs.labelText != null or cc.attrs.label != null}"
+		for="#{cc.attrs.id}:#{cc.attrs.id}" />
+	<p:selectOneRadio id="#{cc.attrs.id}" value="#{cc.attrs.value}"
+		required="#{cc.attrs.required}"
+		disabled="#{cc.attrs.readOnly ? true : false}"
+		label="#{cc.attrs.label}" style="#{cc.attrs.style}"
+		styleClass="#{cc.attrs.styleClass} #{cc.attrs.readOnly ? 'acc-readonly-radio' : ''}"
+		tabindex="#{cc.attrs.tabindex}">
+
+		<c:forEach items="#{cc.children}" var="child">
+			<f:selectItem type="radio" itemValue="#{child.itemValue}"
+				itemLabel="#{child.itemLabel}"/>
+		</c:forEach>
+	</p:selectOneRadio>
+</composite:implementation>
+</html>

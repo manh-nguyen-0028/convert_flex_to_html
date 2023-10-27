@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class PropertyMap {
     private String name;
-    private String startTag;
+    private String convertTo;
     private String endTag;
     private String type;
     private boolean valueCompareTrue;

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+<!-- コンポーネントの属性で外から指定できるようにするものを定義する -->
+<composite:interface>
+	<!-- Allow input negative number -->
+	<composite:attribute name="allowNegative" default="false" />
+	<composite:attribute name="allowDecimal" default="false" />
+	<!-- Calculate sign in the length of input -->
+	<composite:attribute name="includeSignInLength" default="false" />
+	<composite:attribute name="id" />
+	<composite:attribute name="rendered" />
+	<composite:attribute name="binding" />
+	<composite:attribute name="value" />
+	<composite:attribute name="converter" />
+	<composite:attribute name="immediate" />
+	<composite:attribute name="required" />
+	<composite:attribute name="validator" />
+	<composite:attribute name="accesskey" />
+	<composite:attribute name="alt" />
+	<composite:attribute name="autocomplete" />
+	<composite:attribute name="dir" />
+	<composite:attribute name="disabled" />
+	<composite:attribute name="label" />
+	<composite:attribute name="lang" />
+	<composite:attribute name="maxlength" />
+	<composite:attribute name="readonly" />
+	<composite:attribute name="size" />
+	<composite:attribute name="style" />
+	<composite:attribute name="styleClass" />
+	<composite:attribute name="tabindex" />
+	<composite:attribute name="title" />
+	<composite:attribute name="widgetVar" />
+	<composite:attribute name="labelText" />
+	<composite:attribute name="labelStyleClass" />
+	<composite:attribute name="labelDisplay" default="true" />
+	<composite:attribute name="isMoney" default="false" />
+
+	<composite:clientBehavior name="blur" event="blur"
+		targets="#{cc.attrs.id}" />
+	<composite:clientBehavior name="change" event="change"
+		targets="#{cc.attrs.id}" />
+	<composite:clientBehavior name="dblclick" event="dblclick"
+		targets="#{cc.attrs.id}" />
+	<composite:clientBehavior name="keydown" event="keydown"
+		targets="#{cc.attrs.id}" />
+	<composite:clientBehavior name="keypress" event="keypress"
+		targets="#{cc.attrs.id}" />
+	<composite:clientBehavior name="keyup" event="keyup"
+		targets="#{cc.attrs.id}" />
+</composite:interface>
+
+<!-- 複合コンポーネントに含むコンポーネントを定義する -->
+<composite:implementation>
+	<c:if test="#{cc.attrs.labelDisplay}">
+		<p:outputLabel
+			value="#{cc.attrs.labelText != null ? cc.attrs.labelText: cc.attrs.label}"
+			styleClass="#{cc.attrs.labelStyleClass}"
+			rendered="#{cc.attrs.labelText != null or cc.attrs.label != null}"
+			for="#{cc.attrs.id}:#{cc.attrs.id}" />
+	</c:if>
+	<p:inputText id="#{cc.attrs.id}" converter="#{ACCNumberConverter}"
+		style="ime-mode:disabled;text-align: right;#{cc.attrs.style}"
+	 	value="#{cc.attrs.value}" label="#{cc.attrs.label}"
+		onblur="accInputNumber.onBlur(this)"
+		onfocus="accInputNumber.onFocus(this)"
+		onkeydown="accInputNumber.onKeyDown(event, this)"
+		required="#{cc.attrs.required}" binding="#{cc.attrs.binding}"
+		immediate="#{cc.attrs.immediate}" accesskey="#{cc.attrs.accesskey}"
+		alt="#{cc.attrs.alt}" autocomplete="#{cc.attrs.autocomplete}"
+		dir="#{cc.attrs.dir}" disabled="#{cc.attrs.disabled}"
+		readonly="#{cc.attrs.readonly}" size="#{cc.attrs.size}"
+		styleClass="#{cc.attrs.styleClass} acc-number-input"
+		tabindex="#{cc.attrs.readonly ? '-1' : cc.attrs.tabindex}"
+		title="#{cc.attrs.title}" placeholder="#{cc.attrs.placeholder}"
+		widgetVar="#{cc.attrs.widgetVar}" maxlength="#{cc.attrs.maxlength}">
+		<c:if test="#{cc.attrs.allowNegative}">
+			<p:keyFilter
+				regEx="#{cc.attrs.allowDecimal ? '/[-0-9\\.]/i' : '/[-0-9]/i'}"
+				preventPaste="false" />
+		</c:if>
+		<c:if test="#{not cc.attrs.allowNegative}">
+			<p:keyFilter
+				regEx="#{cc.attrs.allowDecimal ? '/[0-9.]/i' : '/[0-9]/i'}"
+				preventPaste="false" />
+		</c:if>
+		<f:passThroughAttribute name="onpaste"
+			value="accInputNumber.onPaste(event, this)" />
+		<f:passThroughAttribute name="data-allowNegative"
+			value="#{cc.attrs.allowNegative}" />
+		<f:passThroughAttribute name="data-includeSignInLength"
+			value="#{cc.attrs.includeSignInLength}" />
+		<c:if test="#{cc.attrs.isMoney}">
+			<f:passThroughAttribute name="money" value="true" />
+		</c:if>
+	</p:inputText>
+</composite:implementation>
+</html>

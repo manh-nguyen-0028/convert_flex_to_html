@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:acc="http://xmlns.jcp.org/jsf/composite/acc_component">
+
+	<f:subview id="MG5001003">
+		<p:panel header="#{label['MG5001001.Frame2Title']}"
+			styleClass="ui-grid-responsive MG5001003-width" style="height:380px">
+			<p:panelGrid styleClass="ui-grid">
+				<p:row styleClass="ui-grid-row">
+					<p:column>
+						<acc:sectionInfoComboBox id="section" styleClass="ui-grid"
+								labelStyleClass="ui-grid-col-0-5 nowrap" required="false"
+								selectStyleClass="ui-grid-col-3" tabindex="5"/>
+					</p:column>
+					<p:column />
+				</p:row>
+			</p:panelGrid>
+			<div class="button-panel ui-grid-row mg5001-button-style">
+				<!-- 項目4: 検索 -->
+				<p:commandButton id="btnKensaku" value="#{label['Base.kensaku']}"
+					disabled="#{MG5001001_00_000Controller.authMap['btnKensaku']}"
+					validateClient="true" ajax="true" styleClass="ui-grid-col-1"
+					 actionListener="#{MG5001001_00_000Controller.btnKensakuClick}" tabindex="6" />
+			</div>
+			<p:dataTable id="datPublicSakuseiJo" var="dataRow"
+				value="#{MG5001001_00_000Controller.model.jokenPublicList}"
+				rowKey="#{dataRow.rowKey}" styleClass="ui-grid-col-12"
+				resizableColumns="true" selectionMode="single"
+				selection="#{MG5001001_00_000Controller.model.jokenPublicRecord}" scrollable="true"
+				scrollHeight="42%" tabindex="-1" emptyMessage="#{label['Base.noRecordsFound']}"
+				paginator="true"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rows="15" paginatorPosition="bottom" rowsPerPageTemplate="10,15,20,25,30" style="height:152px">
+
+				<!-- 項目5: 部署 -->
+				<p:column width="17" headerText="#{label['MG5001001.busho']}" sortBy="#{dataRow.sectionNameRyakusho}">
+					<h:outputText id="lblBusho" value="#{dataRow.sectionNameRyakusho}" />
+					<p:tooltip for="lblBusho" value="#{dataRow.sectionNameRyakusho}"
+						trackMouse="true" />
+				</p:column>
+
+				<!-- 項目6: 作成者 -->
+				<p:column width="27" headerText="#{label['MG5001001.sakuseisha']}" sortBy="#{dataRow.ttName}">
+					<h:outputText id="lblSakuseisha" value="#{dataRow.ttName}" />
+					<p:tooltip for="lblSakuseisha" value="#{dataRow.ttName}"
+						trackMouse="true" />
+				</p:column>
+
+				<!-- 項目7: 更新日 -->
+				<p:column styleClass="ui-column-center" width="4"
+					headerText="#{label['MG5001001.koshimbi']}"
+					sortBy="#{dataRow.updTimes}">
+					<h:outputText value="#{dataRow.updTimes}" />
+				</p:column>
+
+				<!-- 項目8: 出力データ -->
+				<p:column width="53"
+					headerText="#{label['MG5001001.shutsuryokuDeta']}"
+					sortBy="#{dataRow.viewName}">
+					<h:outputText id="lblShutsuryokuDeta"
+						value="#{dataRow.viewName}" />
+					<p:tooltip for="lblShutsuryokuDeta"
+						value="#{dataRow.viewName}" trackMouse="true" />
+				</p:column>
+
+				<!-- 項目9: 条件名 -->
+				<p:column width="123" headerText="#{label['MG5001001.jokenMei']}" sortBy="#{dataRow.jokenName}">
+					<h:outputText id="lblJokenMei" value="#{dataRow.jokenName}" />
+					<p:tooltip for="lblJokenMei" value="#{dataRow.jokenName}"
+						trackMouse="true" />
+
+				</p:column>
+
+
+			</p:dataTable>
+			<div class="button-panel ui-grid-row mg5001-button-style">
+				<!-- 項目10: 別名登録 -->
+				<p:commandButton id="btnBetsumeiToroku"
+					value="#{label['Base.betsumeiToroku']}"
+					disabled="#{MG5001001_00_000Controller.authMap['btnBetsumeiToroku']}"
+					validateClient="true" ajax="false" styleClass="ui-grid-col-1 margin-top"
+					actionListener="#{MG5001001_00_000Controller.btnBetsumeiToroku2Click}" tabindex="7"/>
+			</div>
+
+		</p:panel>
+	</f:subview>
+</ui:composition>

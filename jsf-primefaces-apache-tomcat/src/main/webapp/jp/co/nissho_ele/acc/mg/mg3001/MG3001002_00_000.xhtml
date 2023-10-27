@@ -1,0 +1,1828 @@
+<!-- 統合抽出条件フレーム(MG3001002_00_000) -->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pacc="http://xmlns.jcp.org/jsf/acctag"
+	xmlns:acc="http://xmlns.jcp.org/jsf/composite/acc_component">
+	<ui:define name="title">#{label['MG3001002.title']}</ui:define>
+	<ui:define name="stylesheet">
+		<pacc:outputStylesheet library="acc_css" name="mg/MG3001001_00_000.css" />
+	</ui:define>
+	<pe:layout style="min-width:1280px; max-width:1280px; height:916px;" fullPage="false"
+		id="mg3001Layout">
+		<pe:layoutPane position="west" styleClass="mg3001-style-tab" fullPage="false" closable="false" resizable="false" size="605" id="mg3001tab">
+			<p:panel id="LEFT-PANEL" style="width: 585px"
+				styleClass="ui-grid-responsive ui-left-panel">
+				<p:panelGrid styleClass="ui-grid">
+					<p:row styleClass="ui-grid-row">
+						<p:column styleClass="ui-grid-col">
+							<!-- 1. 条件名 -->
+							<p:outputLabel styleClass="ui-grid-col-0-85 nowrap"
+								for="txtJokenMei" value="#{label['MG3001002.jokenMei']}" />
+							<acc:inputTextZenkaku styleClass="ui-grid-col-8-30 push10px"
+								readonly="true" id="txtJokenMei" maxlength="15" labelText=""
+								value="#{MG3001002_00_000Controller.model002.jokenMei}"
+								label="#{label['MG3001002.jokenMei']}" tabindex="-1">
+							</acc:inputTextZenkaku>
+							<!-- 2. 条件呼出 -->
+							<p:commandButton styleClass="ui-grid-col-2  push10px"
+								id="btnJokenYobidashi" process="@this"
+								disabled="#{MG3001002_00_000Controller.authMap['btnJokenYobidashi']}"
+								value="#{label['MG3001002.jokenYobidashi']}"
+								actionListener="#{MG3001002_00_000Controller.btnJokenYobidashiClick}"
+								tabindex="#{MG3001002_00_000Controller.authMap['btnJokenYobidashi'] ? '-1' : '1'}">
+							</p:commandButton>
+							<p:remoteCommand id="dialogReturnJs"
+								actionListener="#{MG3001002_00_000Controller.mg3004DailogReturn}"
+								name="dialogReturnJs1" resetValues="true" process="@this" />
+
+						</p:column>
+						<p:column />
+					</p:row>
+					<p:row styleClass="ui-grid-row">
+						<p:column>
+							<!-- 3. 担当者 -->
+							<p:outputLabel styleClass="ui-grid-col-0-85 nowrap"
+								for="txtTantosha" value="#{label['MG3001002.tantosha']}" />
+							<acc:inputTextZenkaku styleClass="ui-grid-col-3-5 push10px"
+								readonly="true" id="txtTantosha" maxlength="15" labelText=""
+								value="#{MG3001002_00_000Controller.model.tantosha}"
+								label="#{label['MG3001002.tantosha']}" tabindex="-1">
+							</acc:inputTextZenkaku>
+							<!-- 4. 担当者を条件に加える -->
+							<p:selectBooleanCheckbox
+								styleClass="ui-grid-col-0-30 push10px opacity-1"
+								id="chkTantoshaOJokenNiKuwaeru"
+								value="#{MG3001002_00_000Controller.model.tantoshaOJokenNiKuwaeru}"
+								disabled="#{MG3001002_00_000Controller.model.exeMode eq 4}"
+								label="#{label['MG3001002.tantoshaOJokenNiKuwaeru']}"
+								tabindex="#{MG3001002_00_000Controller.model.exeMode == 4 ? '-1' : (MG3001002_00_000Controller.authMap['btnJokenYobidashi'] ? '1' : '4' )}">
+								<p:ajax event="change" delay="1" global="false" />
+							</p:selectBooleanCheckbox>
+							<p:outputLabel styleClass="ui-grid-col-1 nowrap"
+								for="chkTantoshaOJokenNiKuwaeru"
+								value="#{label['MG3001002.tantoshaOJokenNiKuwaeru']}" />
+
+						</p:column>
+						<p:column />
+					</p:row>
+					<p:row styleClass="ui-grid-row">
+						<p:column>
+							<!-- 5. 入金約束を条件に含む -->
+							<p:selectBooleanCheckbox
+								styleClass="ui-grid-col-push-4-75 ui-grid-col-0-30"
+								id="chkNyukinYakusokuOJokenNiFukumu"
+								disabled="#{MG3001002_00_000Controller.model.exeMode eq 2}"
+								value="#{MG3001002_00_000Controller.model.nyukinYakusokuOJokenNiFukumu}"
+								label="#{label['MG3001002.nyukinYakusokuOJokenNiFukumu']}"
+								tabindex="#{MG3001002_00_000Controller.model.exeMode == 2 ? '-1' : (MG3001002_00_000Controller.authMap['btnJokenYobidashi'] and MG3001002_00_000Controller.model.exeMode == 4 ? '1' : '5')}">
+								<p:ajax event="change" global="false" delay="1"
+									update=":#{p:resolveFirstComponentWithId('PANEL-LEFT-TAB-3-PANEL-4', view).clientId}"
+									listener="#{MG3001002_00_000Controller.chkNyukinYakusokuOJokenNiFukumuChanged}" />
+							</p:selectBooleanCheckbox>
+							<p:outputLabel styleClass="ui-grid-col-3"
+								for="chkNyukinYakusokuOJokenNiFukumu"
+								value="#{label['MG3001002.nyukinYakusokuOJokenNiFukumu']}" />
+							<!-- 6. みなし入金を条件に含む -->
+							<p:selectBooleanCheckbox
+								styleClass="ui-grid-col-push-0-75 ui-grid-col-0-30"
+								id="chkMinashiNyukinOJokenNiFukumu"
+								value="#{MG3001002_00_000Controller.model.minashiNyukinOJokenNiFukumu}"
+								label="#{label['MG3001002.minashiNyukinOJokenNiFukumu']}"
+								tabindex="6">
+								<p:ajax event="change" delay="1" global="false" />
+							</p:selectBooleanCheckbox>
+							<p:outputLabel styleClass="ui-grid-col-1 nowrap"
+								for="chkMinashiNyukinOJokenNiFukumu"
+								value="#{label['MG3001002.minashiNyukinOJokenNiFukumu']}" />
+
+						</p:column>
+						<p:column />
+					</p:row>
+
+				</p:panelGrid>
+				<p:tabView class="ui-mg3001001-tabview" id="ANKEN_TABS" tabindex="-1">
+					<p:tab title="#{label['MG3001002.tap1']}">
+
+						<p:panelGrid styleClass="ui-grid left-panel-width" id="tab1_top">
+							<p:row styleClass="ui-grid-row ">
+								<p:column styleClass="ui-grid-col">
+									<!-- 7. 性別 -->
+									<p:outputLabel styleClass="ui-grid-col-1-5 padding-left-15px"
+										value="#{label['MG3001002.seibetsu']}" />
+
+									<p:selectBooleanCheckbox styleClass="ui-grid-col-0-60"
+										id="chkSeibetsu" label="#{label['MG3001002.seibetsu']}"
+										value="#{MG3001002_00_000Controller.model.seibetsuOtoko}"
+										tabindex="7">
+										<p:ajax event="change" delay="1" global="false" />
+									</p:selectBooleanCheckbox>
+									<p:outputLabel styleClass="ui-grid-col-1 no-padding-left"
+										for="chkSeibetsu" value="#{label['MG3001002.seibetsuOtoko']}" />
+
+									<p:selectBooleanCheckbox styleClass="ui-grid-col-0-60"
+										id="chkSeibetsuOnna"
+										value="#{MG3001002_00_000Controller.model.seibetsuOnna}"
+										label="#{label['MG3001002.seibetsuOnna']}" tabindex="8">
+										<p:ajax event="change" delay="1" global="false" />
+									</p:selectBooleanCheckbox>
+									<p:outputLabel styleClass="ui-grid-col-1 no-padding-left"
+										for="chkSeibetsuOnna"
+										value="#{label['MG3001002.seibetsuOnna']}" />
+									<p:selectBooleanCheckbox styleClass="ui-grid-col-0-60"
+										id="chkSeibetsuFumei"
+										value="#{MG3001002_00_000Controller.model.seibetsuFumei}"
+										label="#{label['MG3001002.seibetsuFumei']}" tabindex="8">
+										<p:ajax event="change" delay="1" global="false" />
+									</p:selectBooleanCheckbox>
+									<p:outputLabel styleClass="ui-grid-col-1 no-padding-left"
+										for="chkSeibetsuFumei"
+										value="#{label['MG3001002.seibetsuFumei']}" />
+
+									<!-- 8. 配偶者 -->
+
+									<acc:selectOneMenuCodeDefault
+										styleClass="ui-grid-col-1-5 text-center"
+										labelStyleClass="ui-grid-col-1-5" id="selHaigusha"
+										codeListName="ACC_CODE" selectKeyCode1="TBL_COMM_TBL"
+										selectKeyCode2="A00021"
+										value="#{MG3001002_00_000Controller.model.haigusha}"
+										label="#{label['MG3001002.haigusha']}" tabindex="9">
+									</acc:selectOneMenuCodeDefault>
+								</p:column>
+								<p:column />
+							</p:row>
+							<p:row styleClass="ui-grid-row">
+								<p:column styleClass="ui-grid-col">
+									<!-- 9. 年齢From -->
+									<acc:inputTextNumber styleClass="ui-grid-col-1"
+										labelStyleClass="ui-grid-col-1-5 padding-left-15px"
+										id="txtNenreiFrom" maxlength="3"
+										value="#{MG3001002_00_000Controller.model.nenreiFrom}"
+										labelText="#{label['MG3001002.nenreiFrom']}"
+										label="#{label['MG3001002.nenreiFrom']}From" tabindex="10">
+									</acc:inputTextNumber>
+									<!-- 10. 年齢To -->
+									<acc:inputTextNumber styleClass="ui-grid-col-1"
+										labelStyleClass="ui-grid-col-0-75" id="txtNenreiTo"
+										maxlength="3"
+										value="#{MG3001002_00_000Controller.model.nenreiTo}"
+										labelText="#{label['MG3001002.nenreiTo']}"
+										label="#{label['MG3001002.nenreiFrom']}To" tabindex="11">
+									</acc:inputTextNumber>
+
+									<!-- 11. 郵便番号From -->
+									<acc:inputTextZip styleClass="ui-grid-col-1-5 text-center"
+										labelStyleClass=" ui-grid-col-push-2-05 ui-grid-col-1-5"
+										id="txtYubinBangoFrom" maxlength="8" autoClear="true"
+										value="#{MG3001002_00_000Controller.model.yubinBangoFrom}"
+										labelText="#{label['MG3001002.yubinbangoFrom']}"
+										label="#{label['MG3001002.yubinbangoFrom']}From" tabindex="12">
+									</acc:inputTextZip>
+									<!-- 12. 郵便番号To -->
+									<acc:inputTextZip styleClass="ui-grid-col-1-5 text-center" autoClear="true"
+										labelStyleClass=" ui-grid-col-0-75" id="txtYubinBangoTo"
+										maxlength="8" labelText="#{label['MG3001002.nenreiTo']}"
+										value="#{MG3001002_00_000Controller.model.yubinBangoTo}"
+										label="#{label['MG3001002.yubinbangoFrom']}To" tabindex="13">
+									</acc:inputTextZip>
+
+								</p:column>
+								<p:column />
+							</p:row>
+						</p:panelGrid>
+
+						<p:panel id="PANEL-LEFT-CHILD1"
+							header="#{label['MG3001002.yukomuko']}"
+							styleClass="ui-grid-responsive ui-left-child-panel-1">
+
+							<p:panelGrid styleClass="ui-grid">
+								<p:row styleClass="ui-grid-row">
+									<p:column>
+										<!-- 13. 住所区分 -->
+										<acc:selectOneMenuCodeDefault styleClass="ui-grid-col-3"
+											labelStyleClass="ui-grid-col-2-5 padding-left-15px"
+											id="selJushoKubun" codeListName="ACC_CODE"
+											selectKeyCode1="TBL_COMM_TBL" selectKeyCode2="A00023"
+											value="#{MG3001002_00_000Controller.model.jushoKubun}"
+											label="#{label['MG3001002.jushoKubun']}" tabindex="14">
+										</acc:selectOneMenuCodeDefault>
+										<!-- 14. 勤務先電話 -->
+										<acc:selectOneMenuCodeDefault styleClass="ui-grid-col-3"
+											labelStyleClass="ui-grid-col-3" id="selKinmusakiDenwa"
+											codeListName="ACC_CODE" selectKeyCode1="TBL_COMM_TBL"
+											selectKeyCode2="A00030"
+											value="#{MG3001002_00_000Controller.model.kinmusakiDenwa}"
+											label="#{label['MG3001002.kinmusakiDenwa']}" tabindex="16">
+										</acc:selectOneMenuCodeDefault>
+									</p:column>
+									<p:column />
+								</p:row>
+								<p:row styleClass="ui-grid-row">
+									<p:column>
+
+										<!-- 15. 自宅電話 -->
+										<acc:selectOneMenuCodeDefault styleClass="ui-grid-col-3"
+											labelStyleClass="ui-grid-col-2-5 padding-left-15px"
+											id="selJitakuDenwa" codeListName="ACC_CODE"
+											selectKeyCode1="TBL_COMM_TBL" selectKeyCode2="A00027"
+											value="#{MG3001002_00_000Controller.model.jitakuDenwa}"
+											label="#{label['MG3001002.jitakuDenwa']}" tabindex="15">
+										</acc:selectOneMenuCodeDefault>
+										<!-- 16. 携帯電話 -->
+										<acc:selectOneMenuCodeDefault styleClass="ui-grid-col-3"
+											labelStyleClass="ui-grid-col-3" id="selKeitaiDenwa"
+											codeListName="ACC_CODE" selectKeyCode1="TBL_COMM_TBL"
+											selectKeyCode2="A00027"
+											value="#{MG3001002_00_000Controller.model.keitaiDenwa}"
+											label="#{label['MG3001002.keitaiDenwa']}" tabindex="17">
+										</acc:selectOneMenuCodeDefault>
+									</p:column>
+									<p:column />
+								</p:row>
+								<p:row styleClass="ui-grid-row">
+									<p:column>
+										<!-- 17. 連絡先電話 -->
+										<acc:selectOneMenuCodeDefault styleClass="ui-grid-col-3"
+											labelStyleClass="ui-grid-col-push-5-5 ui-grid-col-3 padding-left-15px"
+											id="selRenrakusakiDenwa" codeListName="ACC_CODE"
+											selectKeyCode1="TBL_COMM_TBL" selectKeyCode2="A00027"
+											value="#{MG3001002_00_000Controller.model.renrakusakiDenwa}"
+											label="#{label['MG3001002.renrakusakiDenwa']}" tabindex="18">
+										</acc:selectOneMenuCodeDefault>
+									</p:column>
+									<p:column />
+								</p:row>
+							</p:panelGrid>
+						</p:panel>
+
+						<p:panel id="PANEL-LEFT-CHILD2"
+							header="#{label['CL4001002.title2']}"
+							styleClass="ui-grid-responsive ui-left-child-panel-2">
+							<p:panelGrid styleClass="ui-grid">
+								<p:row styleClass="ui-grid-row">
+									<p:column>
+										<!-- 18. 勤務先連絡可否 -->
+										<acc:selectOneMenuCodeDefault styleClass="ui-grid-col-6-5 "
+											labelStyleClass="ui-grid-col-5 padding-left-15px"
+											id="selKinmusakiRenrakuKahi" codeListName="ACC_CODE"
+											selectKeyCode1="TBL_COMM_TBL" selectKeyCode2="A00025"
+											value="#{MG3001002_00_000Controller.model.kinmusakiRenrakuKahi}"
+											label="#{label['MG3001002.kinmusakiRenrakuKahi']}"
+											tabindex="19">
+										</acc:selectOneMenuCodeDefault>
+									</p:column>
+									<p:column />
+								</p:row>
+								<p:row styleClass="ui-grid-row">
+									<p:column>
+										<!-- 19. 携帯連絡可否 -->
+										<acc:selectOneMenuCodeDefault styleClass="ui-grid-col-6-5"
+											labelStyleClass="ui-grid-col-5 padding-left-15px"
+											id="selKeitaiRenrakuKahi" codeListName="ACC_CODE"
+											selectKeyCode1="TBL_COMM_TBL" selectKeyCode2="A00025"
+											value="#{MG3001002_00_000Controller.model.keitaiRenrakuKahi}"
+											label="#{label['MG3001002.keitaiRenrakuKahi']}" tabindex="20">
+										</acc:selectOneMenuCodeDefault>
+									</p:column>
+									<p:column />
+								</p:row>
+								<p:row styleClass="ui-grid-row">
+									<p:column>
+										<!-- 20. その他連絡可否 -->
+										<acc:selectOneMenuCodeDefault styleClass="ui-grid-col-6-5"
+											labelStyleClass="ui-grid-col-5 padding-left-15px"
+											id="selSonotaRenrakuKahi" codeListName="ACC_CODE"
+											selectKeyCode1="TBL_COMM_TBL" selectKeyCode2="A00025"
+											value="#{MG3001002_00_000Controller.model.sonotaRenrakuKahi}"
+											label="#{label['MG3001002.sonotaRenrakuKahi']}" tabindex="21">
+										</acc:selectOneMenuCodeDefault>
+									</p:column>
+									<p:column />
+								</p:row>
+							</p:panelGrid>
+						</p:panel>
+
+
+						<p:panel id="PANEL-LEFT-CHILD3"
+							header="#{label['CL4001002.title3']}"
+							styleClass="ui-grid-responsive ui-left-child-panel-3">
+							<p:panelGrid styleClass="ui-grid">
+								<p:row styleClass="ui-grid-row">
+									<p:column styleClass="ui-grid-col-10">
+										<p:pickList id="pickList"
+											class="pickList_#{accUserInfo.theme}"
+											label="#{label['CL4001002.title3']}"
+											value="#{MG3001002_00_000Controller.model.eriakodoRecords}"
+											var="mg3001002_00_000Records"
+											itemLabel="#{mg3001002_00_000Records}"
+											itemValue="#{mg3001002_00_000Records}"
+											showTargetControls="true" converter="#{ACCPickListConverter}"
+											disabled="#{MG3001002_00_000Controller.authMap['pickList']}">
+											<p:ajax global="false" event="transfer" delay="1"
+												listener="#{MG3001002_00_000Controller.pickListTransfer}"
+												oncomplete="updatePickListTabindex();"/>
+											<f:facet name="sourceCaption">
+												<table>
+													<tr>
+														<td
+															class="ui-div-picklist-source-col-1 ui-header-col-1 piclist-border_#{accUserInfo.theme}">#{label['CL4001002.kodo']}</td>
+														<td
+															class="ui-div-picklist-source-col-2 piclist-border_#{accUserInfo.theme}">#{label['CL4001002.namae']}</td>
+													</tr>
+												</table>
+											</f:facet>
+											<f:facet name="targetCaption">
+												<table>
+													<tr>
+														<td
+															class="ui-div-picklist-source-col-1 ui-header-col-1 piclist-border_#{accUserInfo.theme}">#{label['CL4001002.kodo']}</td>
+														<td
+															class="ui-div-picklist-source-col-2 piclist-border_#{accUserInfo.theme}">#{label['CL4001002.namae']}</td>
+													</tr>
+												</table>
+											</f:facet>
+											<!-- 21 & 27. ：全コード  /選択コード -->
+											<p:column
+												styleClass="ui-div-picklist-source-col-1 ui-kodo-column">
+												<h:outputText value="#{mg3001002_00_000Records.kodo}" />
+											</p:column>
+											<!-- 22 & 28. 全名前/選択名前 -->
+											<p:column styleClass="ui-div-picklist-source-col-2">
+												<h:outputText value="#{mg3001002_00_000Records.namae}" />
+											</p:column>
+										</p:pickList>
+									</p:column>
+									<p:column />
+								</p:row>
+							</p:panelGrid>
+
+						</p:panel>
+
+
+
+					</p:tab>
+					<p:tab title="#{label['MG3001002.tap2']}">
+
+						<p:panel header="#{label['MG3001002.tap2PanelTitle']}"
+							styleClass="ui-grid-responsive" id="LEFT-TAB-2-PANEL-1">
+							<!-- 29. 状態区分 -->
+							<p:selectOneRadio id="radJotaiKubun"
+								value="#{MG3001002_00_000Controller.model.jotaiKubun}"
+								layout="grid" columns="５" tabindex="26">
+								<f:selectItem itemLabel="状態１" itemValue="C01" />
+								<f:selectItem itemLabel="状態２" itemValue="C02" />
+								<f:selectItem itemLabel="状態３" itemValue="C03" />
+								<f:selectItem itemLabel="状態４" itemValue="C04" />
+								<f:selectItem itemLabel="状態５" itemValue="C05" />
+								<p:ajax event="change" update=":#{p:resolveFirstComponentWithId('pickList3', view).clientId}"
+									global="false" delay="1"
+									listener="#{MG3001002_00_000Controller.jotaiKubunSelectionChanged}" 
+									oncomplete="updatePickList3Tabindex();"/>
+							</p:selectOneRadio>
+							<p:panelGrid columns="1" cellpadding="5" styleClass="ui-grid">
+								<!-- register to TBL_JOKEN_HOZON_KJ_STATUS -->
+								<p:row styleClass="ui-grid-row">
+									<p:column>
+										<p:pickList id="pickList3"
+											class="pickList_#{accUserInfo.theme}"
+											label="#{label['CL4001002.title']}"
+											value="#{MG3001002_00_000Controller.model.kjjyotaiRecords}"
+											var="mg3001002_00_000JotaiRecords"
+											itemLabel="#{mg3001002_00_000JotaiRecords}"
+											itemValue="#{mg3001002_00_000JotaiRecords}"
+											showTargetControls="true" converter="#{ACCPickListConverter}"
+											disabled="#{MG3001002_00_000Controller.authMap['pickList3']}">
+											<p:ajax global="false" event="transfer" delay="1"
+												listener="#{MG3001002_00_000Controller.pickListTransfer}"
+												oncomplete="updatePickList3Tabindex();"/>
+											<f:facet name="sourceCaption">
+												<table style="table-layout: fixed;">
+													<tr>
+														<td
+															class="ui-div-picklist-jotai-1 ui-header-col-1 piclist-border_#{accUserInfo.theme}">#{label['MG3001002.pickList3Col1']}</td>
+														<td
+															class="ui-div-picklist-jotai-2 piclist-border_#{accUserInfo.theme}">#{label['MG3001002.pickList3Col2']}</td>
+														<td
+															class="ui-div-picklist-jotai-3 piclist-border_#{accUserInfo.theme}">#{label['MG3001002.pickList3Col3']}</td>
+													</tr>
+												</table>
+											</f:facet>
+											<f:facet name="targetCaption">
+												<table style="table-layout: fixed;">
+													<tr>
+														<td
+															class="ui-div-picklist-jotai-1 ui-header-col-1 piclist-border_#{accUserInfo.theme}">#{label['MG3001002.pickList3Col1']}</td>
+														<td
+															class="ui-div-picklist-jotai-2 piclist-border_#{accUserInfo.theme}">#{label['MG3001002.pickList3Col2']}</td>
+														<td
+															class="ui-div-picklist-jotai-3 piclist-border_#{accUserInfo.theme}">#{label['MG3001002.pickList3Col3']}</td>
+													</tr>
+												</table>
+											</f:facet>
+											<!-- 30 & 37. 状態(左部：状態一覧)/状態(右部：選択状態一覧) -->
+											<p:column styleClass="ui-div-picklist-jotai-1"
+												resizable="true">
+												<h:outputText value="#{mg3001002_00_000JotaiRecords.jotai}" />
+											</p:column>
+											<!-- 31 & 38. コード(左部：コード一覧)/コード(右部：選択コード一覧) -->
+											<p:column
+												styleClass="ui-div-picklist-jotai-2 text-cut-off"
+												resizable="true">
+												<h:outputText id="lblbunrui"
+													value="#{mg3001002_00_000JotaiRecords.kodo}" />
+												<p:tooltip id="toolTiplblbunrui" for="lblbunrui"
+													value="#{mg3001002_00_000JotaiRecords.kodo}"
+													trackMouse="true" />
+											</p:column>
+											<!-- 32 & 39. 顧客状態(左部：顧客状態一覧)/顧客状態(右部：選択顧客状態一覧) -->
+											<p:column styleClass="ui-div-picklist-jotai-3"
+												resizable="true">
+												<h:outputText
+													value="#{mg3001002_00_000JotaiRecords.kokyakuJotai}" />
+											</p:column>
+										</p:pickList>
+									</p:column>
+									<p:column />
+								</p:row>
+							</p:panelGrid>
+						</p:panel>
+						<p:panelGrid styleClass="ui-grid " id="LEFT-TAB-2-PANELGRID-1">
+							<p:row styleClass="ui-grid-row ">
+								<p:column>
+									<!-- 40. 架電停止 -->
+									<p:outputLabel
+										styleClass="ui-grid-col-2 padding-left-15px margin-top-5px"
+										for="selKadenTeishi" value="#{label['MG3001002.kadenTeishi']}" />
+									<acc:selectOneMenuCodeDefault
+										styleClass="ui-grid-col-3 margin-top-5px" labelText=""
+										id="selKadenTeishi" codeListName="ACC_CODE"
+										selectKeyCode1="TBL_COMM_TBL" selectKeyCode2="A00220"
+										value="#{MG3001002_00_000Controller.model.kadenTeishi}"
+										label="#{label['MG3001002.kadenTeishi']}" tabindex="31"
+										>
+										<p:ajax event="change" listener="#{MG3001002_00_000Controller.selKadenTeishiOnValueChange}" 
+										global="false" resetValues="true" update=":#{p:resolveFirstComponentWithId('LEFT-TAB-2-PANELGRID-1', view).clientId}"/>
+									</acc:selectOneMenuCodeDefault>
+									<!-- 41. 架電停止日From -->
+									<p:calendar 
+										styleClass="ui-grid-col-push-0-25 ui-grid-col-1-80 text-center margin-top-5px"
+										id="txtKadenTeishiBiFrom" maxlength="10" pattern="yyyy/MM/dd" locale="ja" mask="true"
+										value="#{MG3001002_00_000Controller.model.kadenTeishiBiFrom}" converter="#{ACCDateConverter}"
+										label="#{label['MG3001002.kadenTeishiBiFrom']}From"
+										disabled="#{MG3001002_00_000Controller.kadenTeishiBiStatus}"
+										tabindex="32">
+										<p:ajax event="dateSelect" update="@this" global="false" />
+									</p:calendar>
+									<!-- 42. 架電停止日To -->
+									<p:outputLabel escape="false"
+										value="#{label['MG3001002.nenreiTo']}"
+										styleClass="ui-grid-col-0-95 text-center padddingLabel"
+										rendered="true"
+										for="txtKadenTeishiBiTo" />
+									<p:calendar
+										pattern="yyyy/MM/dd" locale="ja" converter="#{ACCDateConverter}"
+										styleClass="ui-grid-col-1-80 text-center margin-top-5px" mask="true"
+										id="txtKadenTeishiBiTo" maxlength="10"
+										value="#{MG3001002_00_000Controller.model.kadenTeishiBiTo}"
+										disabled="#{MG3001002_00_000Controller.kadenTeishiBiStatus}"
+										label="#{label['MG3001002.kadenTeishiBiTo']}" tabindex="33">
+										<p:ajax event="dateSelect" update="@this" global="false" />
+									</p:calendar>
+
+
+								</p:column>
+								<p:column />
+							</p:row>
+
+							<p:row styleClass="ui-grid-row">
+								<p:column>
+									<!-- 43. 文書停止 -->
+									<p:outputLabel styleClass="ui-grid-col-2 padding-left-15px"
+										for="selBunshoTeishi"
+										value="#{label['MG3001002.bunshoTeishi']}" />
+									<acc:selectOneMenuCodeDefault styleClass="ui-grid-col-3"
+										labelText="" id="selBunshoTeishi" codeListName="ACC_CODE"
+										selectKeyCode1="TBL_COMM_TBL" selectKeyCode2="A00051"
+										value="#{MG3001002_00_000Controller.model.bunshoTeishi}"
+										label="#{label['MG3001002.bunshoTeishi']}" tabindex="34">
+										<p:ajax event="change" listener="#{MG3001002_00_000Controller.selBunshoTeishiOnValueChange}" 
+										update=":#{p:resolveFirstComponentWithId('LEFT-TAB-2-PANELGRID-1', view).clientId}" global="false"/>
+									</acc:selectOneMenuCodeDefault>
+									<!-- 44. 文書停止From -->
+									<p:calendar 
+										styleClass="ui-grid-col-push-0-25 ui-grid-col-1-80 text-center"
+										pattern="yyyy/MM/dd" locale="ja" converter="#{ACCDateConverter}"
+										id="txtBunshoTeishiFrom" maxlength="10" mask="true"
+										value="#{MG3001002_00_000Controller.model.bunshoTeishiFrom}"
+										label="#{label['MG3001002.bunshoTeishiFrom']}From"
+										disabled="#{MG3001002_00_000Controller.bunshoTeishiStatus}"
+										tabindex="35">
+										<p:ajax event="dateSelect" update="@this" global="false" />
+									</p:calendar>
+									<!-- 45. 文書停止To -->
+									<p:outputLabel escape="false"
+										value="#{label['MG3001002.nenreiTo']}"
+										styleClass="ui-grid-col-0-95 text-center padddingLabel"
+										rendered="true"
+										for="txtBunshoTeishiTo" />
+									<p:calendar styleClass="ui-grid-col-1-80 text-center"
+										pattern="yyyy/MM/dd" locale="ja" converter="#{ACCDateConverter}"
+										id="txtBunshoTeishiTo" maxlength="10" mask="true"
+										value="#{MG3001002_00_000Controller.model.bunshoTeishiTo}"
+										disabled="#{MG3001002_00_000Controller.bunshoTeishiStatus}"
+										label="#{label['MG3001002.bunshoTeishiTo']}" tabindex="36">
+										<p:ajax event="dateSelect" update="@this" global="false" />
+									</p:calendar>
+								</p:column>
+								<p:column />
+							</p:row>
+
+							<p:row styleClass="ui-grid-row">
+								<p:column>
+									<!-- 46. 延滞回数From -->
+									<acc:inputTextNumber styleClass="ui-grid-col-2 text-right"
+										id="txtEntaiKaisuFrom" maxlength="6"
+										labelStyleClass="ui-grid-col-2 padding-left-15px"
+										value="#{MG3001002_00_000Controller.model.entaiKaisuFrom}"
+										labelText="#{label['MG3001002.entaiKaisuFrom']}"
+										label="#{label['MG3001002.entaiKaisuFrom']}From" tabindex="37">
+									</acc:inputTextNumber>
+									<!-- 47. 延滞回数To -->
+									<acc:inputTextNumber styleClass="ui-grid-col-2 text-right"
+										id="txtEntaiKaisuTo" maxlength="6"
+										labelStyleClass="ui-grid-col-0-75"
+										labelText="#{label['MG3001002.nenreiTo']}"
+										value="#{MG3001002_00_000Controller.model.entaiKaisuTo}"
+										label="#{label['MG3001002.entaiKaisuTo']}" tabindex="38">
+									</acc:inputTextNumber>
+								</p:column>
+								<p:column />
+							</p:row>
+							<p:row styleClass="ui-grid-row">
+								<p:column>
+									<!-- 48. 延滞月数From -->
+									<acc:inputTextNumber styleClass="ui-grid-col-2 text-right"
+										id="txtEntaiGessuFrom" maxlength="2"
+										labelStyleClass="ui-grid-col-2 nowrap padding-left-15px"
+										value="#{MG3001002_00_000Controller.model.entaiGessuFrom}"
+										labelText="#{label['MG3001002.entaiGessuFrom']}"
+										label="#{label['MG3001002.entaiGessuFrom']}From" tabindex="39">
+									</acc:inputTextNumber>
+									<!-- 49. 延滞月数To -->
+									<acc:inputTextNumber styleClass="ui-grid-col-2 text-right"
+										id="txtEntaiGessuTo" maxlength="2"
+										labelStyleClass="ui-grid-col-0-75"
+										labelText="#{label['MG3001002.nenreiTo']}"
+										value="#{MG3001002_00_000Controller.model.entaiGessuTo}"
+										label="#{label['MG3001002.entaiGessuTo']}" tabindex="40">
+									</acc:inputTextNumber>
+								</p:column>
+								<p:column />
+							</p:row>
+							<p:row styleClass="ui-grid-row">
+								<p:column>
+									<!-- 50. 未納額From -->
+
+									<acc:inputTextNumber styleClass="ui-grid-col-2 text-right"
+										id="txtMinoGakuFrom" maxlength="12"
+										labelStyleClass="ui-grid-col-2 nowrap padding-left-15px"
+										value="#{MG3001002_00_000Controller.model.minoGakuFrom}"
+										labelText="#{label['MG3001002.minoGakuFrom']}"
+										label="#{label['MG3001002.minoGakuFrom']}From" tabindex="41">
+									</acc:inputTextNumber>
+									<!-- 51. 未納額To -->
+									<acc:inputTextNumber styleClass="ui-grid-col-2 text-right"
+										id="txtMinoGakuTo" maxlength="12"
+										labelStyleClass="ui-grid-col-0-75"
+										labelText="#{label['MG3001002.nenreiTo']}"
+										value="#{MG3001002_00_000Controller.model.minoGakuTo}"
+										label="#{label['MG3001002.minoGakuTo']}" tabindex="42">
+									</acc:inputTextNumber>
+								</p:column>
+								<p:column />
+							</p:row>
+							<p:row styleClass="ui-grid-row">
+								<p:column>
+									<!-- 52. 元金From -->
+									<acc:inputTextNumber styleClass="ui-grid-col-2 text-right"
+										id="txtMotokinFrom" maxlength="12"
+										labelStyleClass="ui-grid-col-2 nowrap padding-left-15px"
+										value="#{MG3001002_00_000Controller.model.motokinFrom}"
+										labelText="#{label['MG3001002.motokinFrom']}"
+										label="#{label['MG3001002.motokinFrom']}From" tabindex="43">
+									</acc:inputTextNumber>
+									<!-- 53. 元金To -->
+									<acc:inputTextNumber styleClass="ui-grid-col-2 text-right"
+										id="txtMotokinTo" maxlength="12"
+										labelStyleClass="ui-grid-col-0-75"
+										labelText="#{label['MG3001002.nenreiTo']}"
+										value="#{MG3001002_00_000Controller.model.motokinTo}"
+										label="#{label['MG3001002.motokinTo']}" tabindex="44">
+									</acc:inputTextNumber>
+								</p:column>
+								<p:column />
+							</p:row>
+							<p:row styleClass="ui-grid-row">
+								<p:column>
+									<!-- 54. 利息From -->
+									<acc:inputTextNumber styleClass="ui-grid-col-2 text-right"
+										id="txtRisokuFrom" maxlength="12"
+										labelStyleClass="ui-grid-col-2 nowrap padding-left-15px"
+										value="#{MG3001002_00_000Controller.model.risokuFrom}"
+										labelText="#{label['MG3001002.risokuFrom']}"
+										label="#{label['MG3001002.risokuFrom']}From" tabindex="45">
+									</acc:inputTextNumber>
+									<!-- 55. 利息To -->
+									<acc:inputTextNumber styleClass="ui-grid-col-2 text-right"
+										id="txtRisokuTo" maxlength="12"
+										labelStyleClass="ui-grid-col-0-75"
+										labelText="#{label['MG3001002.nenreiTo']}"
+										value="#{MG3001002_00_000Controller.model.risokuTo}"
+										label="#{label['MG3001002.risokuTo']}" tabindex="46">
+									</acc:inputTextNumber>
+								</p:column>
+								<p:column />
+							</p:row>
+							<p:row styleClass="ui-grid-row">
+								<p:column>
+									<!-- 56. 損害金From -->
+									<acc:inputTextNumber styleClass="ui-grid-col-2 text-right"
+										id="txtSongaiKinFrom" maxlength="12"
+										labelStyleClass="ui-grid-col-2 nowrap padding-left-15px"
+										value="#{MG3001002_00_000Controller.model.songaiKinFrom}"
+										labelText="#{label['MG3001002.songaiKinFrom']}"
+										label="#{label['MG3001002.songaiKinFrom']}From" tabindex="47">
+									</acc:inputTextNumber>
+									<!-- 57. 損害金To -->
+									<acc:inputTextNumber styleClass="ui-grid-col-2 text-right"
+										id="txtSongaiKinTo" maxlength="12"
+										labelStyleClass="ui-grid-col-0-75"
+										labelText="#{label['MG3001002.nenreiTo']}"
+										value="#{MG3001002_00_000Controller.model.songaiKinTo}"
+										label="#{label['MG3001002.songaiKinTo']}" tabindex="48">
+									</acc:inputTextNumber>
+								</p:column>
+								<p:column />
+							</p:row>
+							<p:row styleClass="ui-grid-row">
+								<p:column>
+									<!-- 58. 元金＋損害金From -->
+									<acc:inputTextNumber styleClass="ui-grid-col-2 text-right"
+										id="txtMotokinSongaiKinFrom" maxlength="12"
+										labelStyleClass="ui-grid-col-2 nowrap padding-left-15px"
+										value="#{MG3001002_00_000Controller.model.motokinSongaiKinFrom}"
+										labelText="#{label['MG3001002.motokinSongaiKinFrom']}"
+										label="#{label['MG3001002.motokinSongaiKinFrom']}From"
+										tabindex="49">
+									</acc:inputTextNumber>
+									<!-- 59. 元金＋損害金To -->
+									<acc:inputTextNumber styleClass="ui-grid-col-2 text-right"
+										id="txtMotokinSongaiKinTo" maxlength="12"
+										labelStyleClass="ui-grid-col-0-75"
+										labelText="#{label['MG3001002.nenreiTo']}"
+										value="#{MG3001002_00_000Controller.model.motokinSongaiKinTo}"
+										label="#{label['MG3001002.motokinSongaiKinTo']}" tabindex="50">
+									</acc:inputTextNumber>
+								</p:column>
+								<p:column />
+							</p:row>
+							<p:row styleClass="ui-grid-row">
+								<p:column>
+									<!-- 60. 未請求額From -->
+									<acc:inputTextNumber styleClass="ui-grid-col-2 text-right"
+										id="txtMiSeikyuGakuFrom" maxlength="12"
+										labelStyleClass="ui-grid-col-2 nowrap padding-left-15px"
+										value="#{MG3001002_00_000Controller.model.miSeikyuGakuFrom}"
+										labelText="#{label['MG3001002.miSeikyuGakuFrom']}"
+										label="#{label['MG3001002.miSeikyuGakuFrom']}From"
+										tabindex="51">
+									</acc:inputTextNumber>
+									<!-- 61. 未請求額To -->
+									<acc:inputTextNumber styleClass="ui-grid-col-2 text-right"
+										id="txtMiSeikyuGakuTo" maxlength="12"
+										labelStyleClass="ui-grid-col-0-75"
+										labelText="#{label['MG3001002.nenreiTo']}"
+										value="#{MG3001002_00_000Controller.model.miSeikyuGakuTo}"
+										label="#{label['MG3001002.miSeikyuGakuTo']}" tabindex="52">
+									</acc:inputTextNumber>
+								</p:column>
+								<p:column />
+							</p:row>
+							<p:row styleClass="ui-grid-row">
+								<p:column>
+									<!-- 62. 総残高From -->
+									<acc:inputTextNumber styleClass="ui-grid-col-2 text-right"
+										id="txtSoZandakaFrom" maxlength="12"
+										labelStyleClass="ui-grid-col-2 nowrap padding-left-15px"
+										value="#{MG3001002_00_000Controller.model.soZandakaFrom}"
+										labelText="#{label['MG3001002.soZandakaFrom']}"
+										label="#{label['MG3001002.soZandakaFrom']}From" tabindex="53">
+									</acc:inputTextNumber>
+									<!-- 63. 総残高To -->
+									<acc:inputTextNumber styleClass="ui-grid-col-2 text-right"
+										id="txtSoZandakaTo" maxlength="12"
+										labelStyleClass="ui-grid-col-0-75"
+										labelText="#{label['MG3001002.nenreiTo']}"
+										value="#{MG3001002_00_000Controller.model.soZandakaTo}"
+										label="#{label['MG3001002.soZandakaTo']}" tabindex="54">
+									</acc:inputTextNumber>
+								</p:column>
+								<p:column />
+							</p:row>
+							<p:row styleClass="ui-grid-row">
+								<p:column>
+									<!-- 64. 直近入金日From -->
+									<acc:inputTextDate styleClass="ui-grid-col-1-80 text-center"
+										labelStyleClass="ui-grid-col-2 nowrap padding-left-15px"
+										id="txtChokkinNyukinBiFrom" maxlength="10"
+										value="#{MG3001002_00_000Controller.model.chokkinNyukinBiFrom}"
+										label="#{label['MG3001002.chokkinNyukinBiFrom']}From"
+										labelText="#{label['MG3001002.chokkinNyukinBiFrom']}"
+										tabindex="55">
+									</acc:inputTextDate>
+									<!-- 65. 直近入金日To -->
+									<acc:inputTextDate styleClass="ui-grid-col-1-80  text-center"
+										labelStyleClass="ui-grid-col-0-95 margin-top-5px text-center"
+										labelText="#{label['MG3001002.nenreiTo']}"
+										id="txtChokkinNyukinBiTo" maxlength="10"
+										value="#{MG3001002_00_000Controller.model.chokkinNyukinBiTo}"
+										label="#{label['MG3001002.chokkinNyukinBiTo']}" tabindex="56">
+									</acc:inputTextDate>
+								</p:column>
+								<p:column />
+							</p:row>
+							<p:row styleClass="ui-grid-row">
+								<p:column>
+									<!-- 66. 直近入金額From -->
+									<acc:inputTextNumber styleClass="ui-grid-col-2 text-right"
+										id="txtChokkinNyuKingakuFrom" maxlength="12"
+										labelStyleClass="ui-grid-col-2 nowrap padding-left-15px"
+										value="#{MG3001002_00_000Controller.model.chokkinNyuKingakuFrom}"
+										label="#{label['MG3001002.chokkinNyuKingakuFrom']}From"
+										labelText="#{label['MG3001002.chokkinNyuKingakuFrom']}"
+										tabindex="57">
+									</acc:inputTextNumber>
+									<!-- 67. 直近入金額To -->
+									<acc:inputTextNumber styleClass="ui-grid-col-2 text-right"
+										id="txtChokkinNyuKingakuTo" maxlength="12"
+										labelStyleClass="ui-grid-col-0-75"
+										labelText="#{label['MG3001002.nenreiTo']}"
+										value="#{MG3001002_00_000Controller.model.chokkinNyuKingakuTo}"
+										label="#{label['MG3001002.chokkinNyuKingakuTo']}"
+										tabindex="58">
+									</acc:inputTextNumber>
+								</p:column>
+								<p:column />
+							</p:row>
+							<p:row styleClass="ui-grid-row">
+								<p:column>
+									<!-- 68. 未入金日From -->
+									<acc:inputTextDate styleClass="ui-grid-col-1-80 text-center"
+										labelStyleClass="ui-grid-col-2 nowrap padding-left-15px"
+										id="txtMiNyukinBiFrom" maxlength="10"
+										value="#{MG3001002_00_000Controller.model.miNyukinBiFrom}"
+										labelText="#{label['MG3001002.miNyukinBiFrom']}"
+										label="#{label['MG3001002.miNyukinBiFrom']}From" tabindex="59">
+									</acc:inputTextDate>
+									<!-- 69. 未入金日To -->
+									<acc:inputTextDate styleClass="ui-grid-col-1-80 text-center"
+										labelStyleClass="ui-grid-col-0-95 text-center"
+										labelText="#{label['MG3001002.nenreiTo']}"
+										id="txtMiNyukinBiTo" maxlength="10"
+										value="#{MG3001002_00_000Controller.model.miNyukinBiTo}"
+										label="#{label['MG3001002.miNyukinBiTo']}" tabindex="60">
+									</acc:inputTextDate>
+								</p:column>
+								<p:column />
+							</p:row>
+							<p:row styleClass="ui-grid-row">
+								<p:column>
+									<!-- 70. 基準日種別 -->
+									<acc:selectOneMenuCodeDefault styleClass="ui-grid-col-2"
+										labelStyleClass="ui-grid-col-2 padding-left-15px"
+										id="selKijunBiShubetsu" codeListName="ACC_CODE"
+										selectKeyCode1="TBL_COMM_TBL" selectKeyCode2="A00221"
+										value="#{MG3001002_00_000Controller.model.kijunBiShubetsu}"
+										label="#{label['MG3001002.kijunBiShubetsu']}" tabindex="61">
+									</acc:selectOneMenuCodeDefault>
+
+									<p:selectBooleanCheckbox
+										styleClass="ui-grid-col-push-0-25 ui-grid-col-0-25"
+										id="chkKijunBiJogai"
+										value="#{MG3001002_00_000Controller.model.kijunBiJogai}"
+										label="#{label['MG3001002.kijunBiJogai']}" tabindex="62">
+										<p:ajax event="change" delay="1" global="false" />
+									</p:selectBooleanCheckbox>
+									<p:outputLabel styleClass="ui-grid-col-1" for="chkKijunBiJogai"
+										value="#{label['MG3001002.kijunBiJogai']}" />
+									<!-- 72. 基準日From -->
+									<acc:inputTextDate labelStyleClass="ui-grid-col-1"
+										styleClass="ui-grid-col-push-0-25  ui-grid-col-1-80 text-center"
+										id="txtKijunBiFrom" maxlength="10"
+										value="#{MG3001002_00_000Controller.model.kijunBiFrom}"
+										labelText="" label="#{label['MG3001002.kijunBiFrom']}"
+										tabindex="63">
+									</acc:inputTextDate>
+									<!-- 73. 基準日To -->
+									<acc:inputTextDate styleClass="ui-grid-col-1-80 text-center	"
+										labelStyleClass="ui-grid-col-0-95 text-center"
+										labelText="#{label['MG3001002.nenreiTo']}" id="txtKijunBiTo"
+										maxlength="10"
+										value="#{MG3001002_00_000Controller.model.kijunBiTo}"
+										label="#{label['MG3001002.kijunBiTo']}" tabindex="64">
+									</acc:inputTextDate>
+								</p:column>
+								<p:column />
+							</p:row>
+							<p:row styleClass="ui-grid-row">
+								<p:column>
+									<!-- 74. 弁護士事務所 -->
+									<p:outputLabel styleClass="ui-grid-col-2 padding-left-15px "
+										for="txtBengoshiJimusho"
+										value="#{label['MG3001002.bengoshiJimusho']}" />
+									<acc:inputTextZenkaku styleClass="ui-grid-col-7"
+										readonly="true" id="txtBengoshiJimusho" maxlength="35"
+										labelText=""
+										value="#{MG3001002_00_000Controller.model.bengoshiJimusho}"
+										label="#{label['MG3001002.bengoshiJimusho']}" tabindex="-1">
+									</acc:inputTextZenkaku>
+									<!-- 75. 検索 -->
+									<p:commandButton
+										styleClass="ui-grid-col-push-0-25 ui-grid-col-1-5"
+										id="btnKensaku" value="#{label['MG3001002.kensaku']}"
+										process="@this"
+										disabled="#{MG3001002_00_000Controller.authMap['btnKensaku']}"
+										actionListener="#{MG3001002_00_000Controller.btnKensakuClick}"
+										tabindex="66">
+										<p:ajax event="dialogReturn"
+											listener="#{MG3001002_00_000Controller.cl5009DialogReturn}" />
+									</p:commandButton>
+								</p:column>
+								<p:column />
+							</p:row>
+
+						</p:panelGrid>
+
+
+
+						<!-- TAB 3  -->
+					</p:tab>
+					<p:tab title="#{label['MG3001002.tap3']}">
+						<p:panel header="#{label['MG3001002.tap3Panel1Title']}"
+							id="LEFT-TAB-3-PANEL-1" styleClass="ui-grid-responsive">
+							<p:panelGrid styleClass="ui-grid" id="LEFT-TAB-3-PANELGRID-1">
+								<p:row styleClass="ui-grid-row ">
+									<p:column styleClass="ui-grid-col">
+										<!-- 76. 契約番号 -->
+										<acc:inputTextKeiyakuBango styleClass="ui-grid-col-3-55"
+										    labelStyleClass="ui-grid-col-2 nowrap padding-left-15px"
+											id="txtKeiyakuBango" maxlength="16"
+											style="ime-mode:disabled; image-mode:disabled;"
+											value="#{MG3001002_00_000Controller.model.keiyakuBango}"
+											label="#{label['MG3001002.keiyakuBango']}" tabindex="67"
+											mask="?9999-9999-9999-9999"  converter="#{ACCKeiyakuBangoConverter}" />
+									</p:column>
+									<p:column />
+								</p:row>
+								<p:row styleClass="ui-grid-row">
+									<p:column>
+										<!-- 77. カード状態除外 -->
+										<p:outputLabel styleClass="ui-grid-col-2  padding-left-15px"
+											for="chkKadoJotaiJogai"
+											value="#{label['MG3001002.kadoJotaiJogai']}" />
+										<p:selectBooleanCheckbox
+											styleClass="ui-grid-col-push-0-5 ui-grid-col-0-25"
+											id="chkKadoJotaiJogai"
+											value="#{MG3001002_00_000Controller.model.kadoJotaiJogai}"
+											label="#{label['MG3001002.kadoJotaiJogai']}" tabindex="68">
+											<p:ajax event="change" delay="1" global="false" />
+										</p:selectBooleanCheckbox>
+										<p:outputLabel value="#{label['MG3001002.Jogai']}"
+											styleClass="ui-grid-col-1-25 text-left">
+										</p:outputLabel>
+										<!-- 78. カード状態 -->
+										<acc:selectOneMenuCodeDefault id="selKadoJotai"
+											styleClass="ui-grid-col-3" labelStyleClass="ui-grid-col-0-05"
+											labelText="" codeListName="ACC_CODE"
+											selectKeyCode1="TBL_COMM_TBL" selectKeyCode2="A00070"
+											value="#{MG3001002_00_000Controller.model.kadoJotai}"
+											label="#{label['MG3001002.kadoJotai']}" tabindex="69">
+
+										</acc:selectOneMenuCodeDefault>
+									</p:column>
+									<p:column />
+								</p:row>
+								<p:row styleClass="ui-grid-row">
+									<p:column>
+										<!-- 79. 警戒コード除外 -->
+										<p:outputLabel styleClass="ui-grid-col-2 padding-left-15px"
+											for="chkKeikaiKodoJogai"
+											value="#{label['MG3001002.keikaiKodoJogai']}" />
+										<p:selectBooleanCheckbox
+											styleClass="ui-grid-col-push-0-5 ui-grid-col-0-25"
+											id="chkKeikaiKodoJogai"
+											value="#{MG3001002_00_000Controller.model.keikaiKodoJogai}"
+											label="#{label['MG3001002.keikaiKodoJogai']}" tabindex="70">
+											<p:ajax event="change" delay="1" global="false" />
+										</p:selectBooleanCheckbox>
+										<p:outputLabel value="#{label['MG3001002.Jogai']}"
+											styleClass="ui-grid-col-1-25 text-left">
+										</p:outputLabel>
+										<!-- 80. 警戒コード -->
+										<acc:selectOneMenuCodeDefault id="selKeikaiKodo"
+											styleClass="ui-grid-col-3" labelText=""
+											codeListName="ACC_CODE" selectKeyCode1="TBL_COMM_TBL"
+											selectKeyCode2="A00071"
+											value="#{MG3001002_00_000Controller.model.keikaiKodo}"
+											label="#{label['MG3001002.keikaiKodo']}" tabindex="71">
+
+										</acc:selectOneMenuCodeDefault>
+									</p:column>
+									<p:column />
+								</p:row>
+								<p:row styleClass="ui-grid-row">
+									<p:column>
+										<!-- 81. 口座不備除外 -->
+										<p:outputLabel styleClass="ui-grid-col-2 padding-left-15px"
+											for="chkKozaFubiJogai"
+											value="#{label['MG3001002.kozaFubiJogai']}" />
+										<p:selectBooleanCheckbox
+											styleClass="ui-grid-col-push-0-5 ui-grid-col-0-25"
+											id="chkKozaFubiJogai"
+											value="#{MG3001002_00_000Controller.model.kozaFubiJogai}"
+											label="#{label['MG3001002.kozaFubiJogai']}" tabindex="72">
+											<p:ajax event="change" delay="1" global="false" />
+										</p:selectBooleanCheckbox>
+										<p:outputLabel value="#{label['MG3001002.Jogai']}"
+											styleClass="ui-grid-col-1-25 text-left">
+										</p:outputLabel>
+										<!-- 82. 口座不備 -->
+										<acc:selectOneMenuCodeDefault id="selKozaFubi"
+											styleClass="ui-grid-col-3" labelStyleClass="ui-grid-col-1"
+											labelText="" codeListName="ACC_CODE"
+											selectKeyCode1="TBL_COMM_TBL" selectKeyCode2="A00080"
+											value="#{MG3001002_00_000Controller.model.kozaFubi}"
+											label="#{label['MG3001002.kozaFubi']}" tabindex="73" />
+									</p:column>
+									<p:column />
+								</p:row>
+								<p:row styleClass="ui-grid-row">
+									<p:column>
+										<!-- 83. 延滞理由除外 -->
+										<p:outputLabel styleClass="ui-grid-col-2 padding-left-15px"
+											for="chkEntaiRiyuJogai"
+											value="#{label['MG3001002.entaiRiyuJogai']}" />
+										<p:selectBooleanCheckbox
+											styleClass="ui-grid-col-push-0-5 ui-grid-col-0-25"
+											id="chkEntaiRiyuJogai"
+											value="#{MG3001002_00_000Controller.model.entaiRiyuJogai}"
+											label="#{label['MG3001002.entaiRiyuJogai']}" tabindex="74">
+											<p:ajax event="change" delay="1" global="false" />
+										</p:selectBooleanCheckbox>
+										<p:outputLabel value="#{label['MG3001002.Jogai']}"
+											styleClass="ui-grid-col-1-25 text-left">
+										</p:outputLabel>
+										<!-- 84. 延滞理由 -->
+										<acc:selectOneMenuCodeDefault id="selEntaiRiyu"
+											styleClass="ui-grid-col-3" labelStyleClass="ui-grid-col-1"
+											labelText="" codeListName="ACC_CODE"
+											selectKeyCode1="TBL_COMM_TBL" selectKeyCode2="A00099"
+											value="#{MG3001002_00_000Controller.model.entaiRiyu}"
+											label="#{label['MG3001002.entaiRiyu']}" tabindex="75" />
+									</p:column>
+									<p:column />
+								</p:row>
+
+							</p:panelGrid>
+							<p:panel id="LEFT-TAB-3-PANEL-2" styleClass="ui-grid-responsive"
+								header="#{label['MG3001002.tap3Panel2Title']}">
+								<p:panelGrid styleClass="ui-grid" id="LEFT-TAB-3-PANEL-GRID-2">
+									<p:row styleClass="ui-grid-row">
+										<p:column>
+											<!-- 85. ステータスコードフィルタ -->
+											<acc:inputAlphaNumber styleClass="ui-grid-col-2"
+												id="txtSutetasukodofiruta" maxlength="2"
+												value="#{MG3001002_00_000Controller.model.sutetasukodofiruta}"
+												label="#{label['MG3001002.sutetasukodofiruta']}"
+												labelText="#{label['MG3001002.sutetasukodofiruta']}"
+												labelStyleClass="ui-grid-col-2 nowrap" tabindex="76">
+												<p:ajax event="keyup" update=":#{p:resolveFirstComponentWithId('pickList4', view).clientId}"
+													global="false" delay="1"
+													listener="#{MG3001002_00_000Controller.txtSutetasukodofirutaChanged}" 
+													oncomplete="updatePickList4Tabindex();"/>
+											</acc:inputAlphaNumber>
+										</p:column>
+										<p:column />
+									</p:row>
+									<p:row styleClass="ui-grid-row">
+										<p:column>
+											<p:pickList id="pickList4"
+												class="pickList_#{accUserInfo.theme}"
+												label="#{label['MG3001002.tap3Panel2Title']}"
+												value="#{MG3001002_00_000Controller.model.kystatusRecords}"
+												var="mg3001002_00_000Records"
+												itemLabel="#{mg3001002_00_000Records}"
+												itemValue="#{mg3001002_00_000Records}"
+												showTargetControls="true"
+												converter="#{ACCPickListConverter}"
+												disabled="#{MG3001002_00_000Controller.authMap['pickList4']}">
+												<p:ajax global="false" event="transfer" delay="1"
+													listener="#{MG3001002_00_000Controller.pickListTransfer}"
+													oncomplete="updatePickList4Tabindex();" />
+												<f:facet name="sourceCaption">
+													<table>
+														<tr>
+															<td
+																class="ui-div-picklist-source-col-1 ui-header-col-1 piclist-border_#{accUserInfo.theme}">#{label['CL4001002.kodo']}</td>
+															<td
+																class="ui-div-picklist-source-col-2 piclist-border_#{accUserInfo.theme}">#{label['CL4001002.namae']}</td>
+														</tr>
+													</table>
+												</f:facet>
+												<f:facet name="targetCaption">
+													<table>
+														<tr>
+															<td
+																class="ui-div-picklist-source-col-1 ui-header-col-1 piclist-border_#{accUserInfo.theme}">#{label['CL4001002.kodo']}</td>
+															<td
+																class="ui-div-picklist-source-col-2 piclist-border_#{accUserInfo.theme}">#{label['CL4001002.namae']}</td>
+														</tr>
+													</table>
+												</f:facet>
+												<!-- 86/92 ：ステータスコード(左部：全コード一覧)/ステータスコード(右部：選択コード一覧) -->
+												<p:column
+													styleClass="ui-div-picklist-source-col-1 ui-header-col-1 ui-kodo-column">
+													<h:outputText value="#{mg3001002_00_000Records.kodo}" />
+												</p:column>
+												<!-- 22 & 28. 全名前/選択名前 -->
+												<p:column styleClass="ui-div-picklist-source-col-2">
+													<h:outputText value="#{mg3001002_00_000Records.namae}" />
+												</p:column>
+											</p:pickList>
+										</p:column>
+									</p:row>
+								</p:panelGrid>
+							</p:panel>
+						</p:panel>
+
+
+						<p:panel id="PANEL-LEFT-TAB-3-PANEL-3"
+							header="#{label['MG3001002.tap3Panel3Title']}"
+							styleClass="ui-grid-responsive panel-left-tab-3-panel-3">
+
+							<p:panelGrid styleClass="ui-grid"
+								id="PANEL-LEFT-TAB-3-PANEL-GRID-3">
+								<p:row styleClass="ui-grid-row">
+									<p:column>
+										<!-- 94. 再契約残高From -->
+										<acc:inputTextNumber styleClass="ui-grid-col-1-95"
+											id="txtSaiKeiyakuZandakaFrom" maxlength="12"
+											labelStyleClass="ui-grid-col-1-75 padding-left-15px"
+											value="#{MG3001002_00_000Controller.model.saiKeiyakuZandakaFrom}"
+											label="#{label['MG3001002.saiKeiyakuZandakaFrom']}From"
+											labelText="#{label['MG3001002.saiKeiyakuZandakaFrom']}"
+											tabindex="85">
+										</acc:inputTextNumber>
+										<!-- 95. 再契約残高To -->
+										<acc:inputTextNumber styleClass="ui-grid-col-1-95"
+											id="txtSaiKeiyakuZandakaTo" maxlength="12"
+											labelText="#{label['MG3001002.nenreiTo']}"
+											labelStyleClass="ui-grid-col-0-25 no-padding-left text-center"
+											value="#{MG3001002_00_000Controller.model.saiKeiyakuZandakaTo}"
+											label="#{label['MG3001002.saiKeiyakuZandakaTo']}"
+											tabindex="86">
+										</acc:inputTextNumber>
+										<!-- 96. 延滞金額From -->
+										<acc:inputTextNumber styleClass="ui-grid-col-1-95"
+											id="txtEntaiKingakuFrom" maxlength="12"
+											labelStyleClass="ui-grid-col-push-0-25 ui-grid-col-1-5"
+											value="#{MG3001002_00_000Controller.model.entaiKingakuFrom}"
+											labelText="#{label['MG3001002.entaiKingakuFrom']}"
+											label="#{label['MG3001002.entaiKingakuFrom']}From"
+											tabindex="93">
+										</acc:inputTextNumber>
+										<!-- 97. 延滞金額To -->
+										<acc:inputTextNumber styleClass="ui-grid-col-1-95"
+											id="txtEntaiKingakuTo" maxlength="12"
+											labelText="#{label['MG3001002.nenreiTo']}"
+											labelStyleClass="ui-grid-col-0-25 no-padding-left text-center"
+											value="#{MG3001002_00_000Controller.model.entaiKingakuTo}"
+											label="#{label['MG3001002.entaiKingakuTo']}" tabindex="94">
+										</acc:inputTextNumber>
+									</p:column>
+									<p:column />
+								</p:row>
+
+								<p:row styleClass="ui-grid-row">
+									<p:column>
+										<!-- 98. 支払予定日From -->
+										<acc:inputTextDate styleClass="ui-grid-col-1-75 text-center"
+											labelStyleClass="ui-grid-col-1-75 padding-left-15px"
+											labelText="#{label['MG3001002.shiharaiYoteiBiFrom']}"
+											id="txtShiharaiYoteiBiFrom" maxlength="10"
+											value="#{MG3001002_00_000Controller.model.shiharaiYoteiBiFrom}"
+											label="#{label['MG3001002.shiharaiYoteiBiFrom']}From"
+											tabindex="87">
+										</acc:inputTextDate>
+										<!-- 99. 支払予定日To -->
+										<acc:inputTextDate styleClass="ui-grid-col-1-75 text-center"
+											labelStyleClass="ui-grid-col-0-45 no-padding-left  text-right"
+											labelText="#{label['MG3001002.nenreiTo']}"
+											id="txtShiharaiYoteiBiTo" maxlength="10"
+											value="#{MG3001002_00_000Controller.model.shiharaiYoteiBiTo}"
+											label="#{label['MG3001002.shiharaiYoteiBiTo']}" tabindex="88">
+										</acc:inputTextDate>
+										<!-- 100. 延滞日数From -->
+										<acc:inputTextNumber styleClass="ui-grid-col-1"
+											labelStyleClass="ui-grid-col-push-0-45 ui-grid-col-1-5"
+											labelText="#{label['MG3001002.entaiNissuFrom']}"
+											id="txtEntaiNissuFrom" maxlength="3"
+											value="#{MG3001002_00_000Controller.model.entaiNissuFrom}"
+											label="#{label['MG3001002.entaiNissuFrom']}From"
+											tabindex="95">
+										</acc:inputTextNumber>
+										<!-- 101. 延滞日数To -->
+										<acc:inputTextNumber styleClass="ui-grid-col-1"
+											id="txtEntaiNissuTo" maxlength="3"
+											labelStyleClass="ui-grid-col-0-25 no-padding-left text-center"
+											labelText="#{label['MG3001002.nenreiTo']}"
+											value="#{MG3001002_00_000Controller.model.entaiNissuTo}"
+											label="#{label['MG3001002.entaiNissuTo']}" tabindex="96">
+										</acc:inputTextNumber>
+									</p:column>
+									<p:column />
+								</p:row>
+
+								<p:row styleClass="ui-grid-row">
+									<p:column>
+										<!-- 102. 次回支払金額From -->
+										<acc:inputTextNumber styleClass="ui-grid-col-1-95"
+											labelStyleClass="ui-grid-col-1-75 padding-left-15px"
+											id="txtJikaiShiharaiKingakuFrom" maxlength="12"
+											value="#{MG3001002_00_000Controller.model.jikaiShiharaiKingakuFrom}"
+											labelText="#{label['MG3001002.jikaiShiharaiKingakuFrom']}"
+											label="#{label['MG3001002.jikaiShiharaiKingakuFrom']}From"
+											tabindex="89">
+										</acc:inputTextNumber>
+										<!-- 103. 次回支払金額To -->
+										<acc:inputTextNumber styleClass="ui-grid-col-1-95"
+											labelStyleClass="ui-grid-col-0-25 no-padding-left text-center"
+											id="txtJikaiShiharaiKingakuTo" maxlength="12"
+											labelText="#{label['MG3001002.nenreiTo']}"
+											value="#{MG3001002_00_000Controller.model.jikaiShiharaiKingakuTo}"
+											label="#{label['MG3001002.jikaiShiharaiKingakuTo']}"
+											tabindex="90">
+										</acc:inputTextNumber>
+									</p:column>
+									<p:column />
+								</p:row>
+								<p:row styleClass="ui-grid-row">
+									<p:column id="saiKeiyakuCheckBox">
+										<!-- 104. 再契約約束 -->
+										<p:outputLabel styleClass="ui-grid-col-1-75 padding-left-15px"
+											for="chkSaiKeiyakuYakusoku"
+											value="#{label['MG3001002.saiKeiyakuYakusoku']}" />
+
+										<p:selectBooleanCheckbox id="chkSaiKeiyakuYakusoku"
+											styleClass="ui-grid-col-0-25"
+											label="#{label['MG3001002.saiKeiyakuYakusoku']}"
+											value="#{MG3001002_00_000Controller.model.saiKeiyakuYakusoku}"
+											tabindex="91">
+											<p:ajax event="change" global="false" delay="1"
+												listener="#{MG3001002_00_000Controller.chkSaiKeiyakuYakusokuChanged}" />
+										</p:selectBooleanCheckbox>
+										<p:outputLabel value="履行" for="chkSaiKeiyakuYakusoku"
+											styleClass="ui-grid-col-1-75"></p:outputLabel>
+
+										<p:selectBooleanCheckbox id="chkSaiKeiyakuYakusokuFuriko"
+											styleClass="ui-grid-col-push-0-25 ui-grid-col-0-25"
+											label="#{label['MG3001002.saiKeiyakuYakusoku']}"
+											value="#{MG3001002_00_000Controller.model.saiKeiyakuYakusokuFuriko}"
+											tabindex="92">
+											<p:ajax event="change" global="false" delay="1"
+												listener="#{MG3001002_00_000Controller.chkSaiKeiyakuYakusokuFurikoChanged}" />
+										</p:selectBooleanCheckbox>
+										<p:outputLabel value="不履行" for="chkSaiKeiyakuYakusokuFuriko"
+											styleClass="ui-grid-col-1-5"></p:outputLabel>
+
+
+
+									</p:column>
+									<p:column />
+								</p:row>
+
+							</p:panelGrid>
+						</p:panel>
+						<!-- 入金約束 -->
+						<p:panel id="PANEL-LEFT-TAB-3-PANEL-4"
+							header="#{label['MG3001002.tap3Panel4Title']}"
+							styleClass="ui-grid-responsive panel-left-tab-3-panel-4 #{!MG3001002_00_000Controller.model.nyukinYakusokuOJokenNiFukumu? 'lbPanelDisabled':''}">
+							<p:focus
+								context="#{MG3001002_00_000Controller.model.controlFocusClientId}"
+								rendered="requiredFocus" />
+							<p:panelGrid styleClass="ui-grid">
+								<p:row styleClass="ui-grid-row">
+									<p:column id="paymentPromiseCheckBox">
+										<!-- 105. 約束状態 -->
+										<p:outputLabel styleClass="ui-grid-col-1-75 padding-left-15px"
+											for="chkYakusokuJotai" value="#{label['MG3001002.yakusoku']}" />
+										<p:selectBooleanCheckbox id="chkYakusokuJotai"
+											styleClass="ui-grid-col-0-25 ui-chkbox-box-readOnly"
+											label="#{label['MG3001002.yakusoku']}"
+											disabled="#{!MG3001002_00_000Controller.model.nyukinYakusokuOJokenNiFukumu}"
+											value="#{MG3001002_00_000Controller.model.yakusokuJotai}"
+											tabindex="#{!MG3001002_00_000Controller.model.nyukinYakusokuOJokenNiFukumu ? '-1' : '97'}">
+											<p:ajax event="change" global="false"
+												listener="#{MG3001002_00_000Controller.chkYakusokuJotaiChanged}"/>
+										</p:selectBooleanCheckbox>
+										<p:outputLabel value="約束なし" for="chkYakusokuJotai"
+											styleClass="ui-grid-col-1-5"></p:outputLabel>
+
+										<p:selectBooleanCheckbox id="chkYakusokuJotaiRiko"
+											styleClass="ui-grid-col-push-0-25 ui-grid-col-0-25 ui-chkbox-box-readOnly"
+											label="#{label['MG3001002.yakusoku']}"
+											disabled="#{!MG3001002_00_000Controller.model.nyukinYakusokuOJokenNiFukumu}"
+											value="#{MG3001002_00_000Controller.model.yakusokuJotaiRiko}"
+											tabindex="#{!MG3001002_00_000Controller.model.nyukinYakusokuOJokenNiFukumu ? '-1' : '98'}">
+											<p:ajax event="change" global="false"
+												listener="#{MG3001002_00_000Controller.chkYakusokuJotaiRikoChanged}"  update="@(.yakusokuNichiFrom)" />
+										</p:selectBooleanCheckbox>
+										<p:outputLabel value="履行" for="chkYakusokuJotaiRiko"
+											styleClass="ui-grid-col-1-5"></p:outputLabel>
+
+										<p:selectBooleanCheckbox id="chkYakusokuJotaiFuriko"
+											styleClass="ui-grid-col-push-0-25 ui-grid-col-0-25 ui-chkbox-box-readOnly"
+											label="#{label['MG3001002.yakusoku']}"
+											disabled="#{!MG3001002_00_000Controller.model.nyukinYakusokuOJokenNiFukumu}"
+											value="#{MG3001002_00_000Controller.model.yakusokuJotaiFuriko}"
+											tabindex="#{!MG3001002_00_000Controller.model.nyukinYakusokuOJokenNiFukumu ? '-1' : '99'}">
+											<p:ajax event="change" global="false"
+												listener="#{MG3001002_00_000Controller.chkYakusokuJotaiFurikoChanged}"  update="@(.yakusokuNichiFrom)" />
+										</p:selectBooleanCheckbox>
+										<p:outputLabel value="不履行" for="chkYakusokuJotaiFuriko"
+											styleClass="ui-grid-col-1-5"></p:outputLabel>
+									</p:column>
+									<p:column />
+								</p:row>
+								<p:row styleClass="ui-grid-row">
+									<p:column id="yakusoku-layer">
+										<!-- 106. 約束日From -->
+										<p:outputLabel value="#{label['MG3001002.yakusokuBiFrom']}"
+											styleClass="ui-grid-col-1-40 text-center"
+											for="txtYakusokuBiFrom" />
+										<p:calendar styleClass="ui-grid-col-1-75 text-center"
+											labelStyleClass="ui-grid-col-1-55  padding-left-15px yakusokuNichiFrom"
+											labelText="#{label['MG3001002.yakusokuBiFrom']}#{MG3001002_00_000Controller.model.yakusokuJotaiFuriko or  MG3001002_00_000Controller.model.yakusokuJotaiRiko ?  '&lt;span class=\'ui-outputlabel-rfi\'&gt;*&lt;/span&gt;' : ''}"
+											readonly="#{!MG3001002_00_000Controller.model.nyukinYakusokuOJokenNiFukumu}"
+											id="txtYakusokuBiFrom" maxlength="10" pattern="yyyy/MM/dd"
+											mask="true" locale="ja" converter="#{ACCDateConverter}"
+											value="#{MG3001002_00_000Controller.model.yakusokuBiFrom}"
+											tabindex="#{!MG3001002_00_000Controller.model.nyukinYakusokuOJokenNiFukumu ? '-1' : '100'}">
+										</p:calendar>
+										<p:inputText
+											label="#{label['MG3001002.yakusokuBiFrom']} || #{p:resolveFirstComponentWithId('txtYakusokuBiFrom', view).clientId}"
+											value="MG3001002_00_000Controller.model.hdfFieldTmp"
+											validator="ACCPromiseStateValidator" style="display:none" />
+										<p:outputLabel value="#{label['MG3001002.nenreiTo']}" styleClass = "ui-grid-col-0-30"/>	
+										<!-- 107. 約束日To -->
+										<p:calendar styleClass="ui-grid-col-1-75 text-center"
+											labelStyleClass="ui-grid-col-push-0-40 ui-grid-col-0-75 text-center"
+											labelText="#{label['MG3001002.nenreiTo']}"
+											id="txtYakusokuBiTo" pattern="yyyy/MM/dd" mask="true"
+											locale="ja" converter="#{ACCDateConverter}"
+											readonly="#{!MG3001002_00_000Controller.model.nyukinYakusokuOJokenNiFukumu}"
+											maxlength="10"
+											value="#{MG3001002_00_000Controller.model.yakusokuBiTo}"
+											tabindex="#{!MG3001002_00_000Controller.model.nyukinYakusokuOJokenNiFukumu ? '-1' : '101'}">
+										</p:calendar>
+										<p:inputText
+											label="#{label['MG3001002.yakusokuBiTo']} || #{p:resolveFirstComponentWithId('txtYakusokuBiTo', view).clientId}"
+											value="MG3001002_00_000Controller.model.hdfFieldTmp"
+											validator="ACCPromiseStateValidator" style="display:none" />
+										<!-- 108. 約束金額From -->
+										<acc:inputTextNumber styleClass="ui-grid-col-1-95"
+											readonly="#{!MG3001002_00_000Controller.model.nyukinYakusokuOJokenNiFukumu}"
+											id="txtYakusokuKingakuFrom" maxlength="12"
+											labelStyleClass="ui-grid-col-push-0-40 ui-grid-col-1-45"
+											value="#{MG3001002_00_000Controller.model.yakusokuKingakuFrom}"
+											label="#{label['MG3001002.yakusokuKingakuFrom']}From"
+											labelText="#{label['MG3001002.yakusokuKingakuFrom']}"
+											tabindex="#{!MG3001002_00_000Controller.model.nyukinYakusokuOJokenNiFukumu ? '-1' : '102'}">
+										</acc:inputTextNumber>
+										<!-- 109. 約束金額To -->
+										<acc:inputTextNumber styleClass="ui-grid-col-1-95"
+											readonly="#{!MG3001002_00_000Controller.model.nyukinYakusokuOJokenNiFukumu}"
+											labelText="#{label['MG3001002.nenreiTo']}"
+											id="txtYakusokuKingakuTo" maxlength="12"
+											labelStyleClass="ui-grid-col-0-45 no-padding-left text-center"
+											value="#{MG3001002_00_000Controller.model.yakusokuKingakuTo}"
+											label="#{label['MG3001002.yakusokuKingakuTo']}"
+											tabindex="#{!MG3001002_00_000Controller.model.nyukinYakusokuOJokenNiFukumu ? '-1' : '103'}">
+										</acc:inputTextNumber>
+									</p:column>
+									<p:column />
+								</p:row>
+
+							</p:panelGrid>
+						</p:panel>
+
+					</p:tab>
+				</p:tabView>
+			</p:panel>
+
+		</pe:layoutPane>
+
+		<pe:layoutPane position="center" styleClass="mg3001-style-tab" closable="false" resizable="false" id="mg3001RightPanel">
+			<p:panel id="RIGHT-PANEL"
+				header="#{label['CL4001002.BunruiSentaku']}"
+				styleClass="ui-grid-responsive ui-right-panel"
+				widgetVar="right-panel-table-1">
+
+				<p:panelGrid styleClass="ui-grid" id="right-panel-table-1">
+					<p:row styleClass="ui-grid-row">
+						<p:column>
+							<!-- 110. 分類コードフィルタ -->
+							<p:outputLabel styleClass="ui-grid-col-2"
+								for="txtBunruiKodofiruta"
+								value="#{label['MG3001002.bunruiKodofiruta']}" />
+							<acc:inputAlphaNumber styleClass="ui-grid-col-1-75"
+								id="txtBunruiKodofiruta" maxlength="8"
+								value="#{MG3001002_00_000Controller.model.bunruiKodofiruta}"
+								label="#{label['MG3001002.bunruiKodofiruta']}" labelText=""
+								lableStyleClass="no-padding-left" tabindex="104">
+								<p:ajax event="keyup" global="false" delay="1"
+									update=":#{p:resolveFirstComponentWithId('pickList2', view).clientId} :#{p:resolveFirstComponentWithId('txtGokei', view).clientId}"
+									listener="#{MG3001002_00_000Controller.txtBunruiKodofirutaChanged}" 
+									oncomplete="updatePickList2Tabindex();"/>
+							</acc:inputAlphaNumber>
+							<!-- 111. 合計 -->
+							<acc:inputTextNumber styleClass="ui-grid-col-1-40 text-right"
+								id="txtGokei" readonly="true" maxlength="12"
+								labelStyleClass="ui-grid-col-push-5-55 ui-grid-col-1"
+								value="#{MG3001002_00_000Controller.model.gokei}"
+								label="#{label['MG3001002.gokei']}" tabindex="-1">
+							</acc:inputTextNumber>
+						</p:column>
+						<p:column />
+					</p:row>
+					<p:row styleClass="ui-grid-row">
+						<p:column colspan="2" styleClass="ui-grid-col-12">
+							<p:pickList id="pickList2" class="pickList_#{accUserInfo.theme}"
+								label="#{label['CL4001002.BunruiSentaku']}"
+								value="#{MG3001002_00_000Controller.model.bunruiSentakuRecords}"
+								var="mg3001002_00_000Records"
+								itemValue="#{mg3001002_00_000Records}" showTargetControls="true"
+								converter="#{ACCPickListConverter}"
+								disabled="#{MG3001002_00_000Controller.authMap['pickList2']}">
+								<f:validator validatorId="ACCRequiredValidator" />
+								<p:ajax event="transfer" global="false" delay="1"
+									listener="#{MG3001002_00_000Controller.pickListTransfer}"
+									oncomplete="updatePickList2Tabindex();"/>
+								<f:facet name="sourceCaption">
+									<table>
+										<tr>
+											<td
+												class="ui-div-picklist-bunrui-col-1 ui-header-col-1-bunrui piclist-border_#{accUserInfo.theme}">#{label['MG3001002.bunruiKodoHidariBuZenBunruiIchiran']}</td>
+											<td
+												class="ui-div-picklist-bunrui-col-2 piclist-border_#{accUserInfo.theme}">#{label['MG3001002.bunruiHidariBuZenBunruiIchiran']}</td>
+											<td
+												class="ui-div-picklist-bunrui-col-3 piclist-border_#{accUserInfo.theme}">#{label['MG3001002.kensuHidariBuZenBunruiIchiran']}</td>
+										</tr>
+									</table>
+								</f:facet>
+								<f:facet name="targetCaption">
+									<table>
+										<tr>
+											<td
+												class="ui-div-picklist-bunrui-col-1 ui-header-col-1-bunrui piclist-border_#{accUserInfo.theme}">#{label['MG3001002.bunruiKodoHidariBuZenBunruiIchiran']}</td>
+											<td
+												class="ui-div-picklist-bunrui-col-2 piclist-border_#{accUserInfo.theme}">#{label['MG3001002.bunruiHidariBuZenBunruiIchiran']}</td>
+											<td
+												class="ui-div-picklist-bunrui-col-3 piclist-border_#{accUserInfo.theme}">#{label['MG3001002.kensuHidariBuZenBunruiIchiran']}</td>
+										</tr>
+									</table>
+								</f:facet>
+								<!-- 112 & 119. 分類コード(左部：全分類一覧)  /分類コード(右部：選択分類一覧) -->
+								<p:column
+									styleClass="ui-div-picklist-bunrui-col-1 ui-kodo-column"
+									resizable="true">
+									<h:outputText value="#{mg3001002_00_000Records.kodo}" />
+								</p:column>
+								<!-- 113 & 120. 分類(左部：全分類一覧)/分類(右部：選択分類一覧) -->
+								<p:column styleClass="ui-div-picklist-bunrui-col-2 text-cut-off"
+									resizable="true">
+									<h:outputText id="lblbunrui"
+										value="#{mg3001002_00_000Records.bunrui}"
+										title="#{mg3001002_00_000Records.bunrui}" />
+
+								</p:column>
+								<!-- 114 & 121. 件数(左部：全分類一覧)/件数(右部：選択分類一覧) -->
+								<p:column styleClass="ui-div-picklist-bunrui-col-3 text-right"
+									resizable="true">
+									<acc:outputLabelNumber value="#{mg3001002_00_000Records.kensu}" />
+								</p:column>
+							</p:pickList>
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+
+
+			</p:panel>
+			<p:panel id="RIGHT-PANEL-2" header="#{label['MG3001002.Rireki']}"
+				styleClass="ui-grid-responsive ui-right-child-panel-2">
+				<p:panelGrid styleClass="ui-grid">
+					<p:row styleClass="ui-grid-row">
+						<p:column>
+							<!-- 122. 当月架電回数From -->
+							<acc:inputTextNumber styleClass="ui-grid-col-2 text-right "
+								id="txtTogetsuKadenKaisuFrom" maxlength="8"
+								labelStyleClass="ui-grid-col-2 padding-left-15px"
+								value="#{MG3001002_00_000Controller.model.togetsuKadenKaisuFrom}"
+								label="#{label['MG3001002.togetsuKadenKaisuFrom']}From"
+								labelText="#{label['MG3001002.togetsuKadenKaisuFrom']}"
+								tabindex="110">
+							</acc:inputTextNumber>
+							<!-- 123. 当月架電回数To -->
+							<acc:inputTextNumber styleClass="ui-grid-col-2 text-right"
+								id="txtTogetsuKadenKaisuTo" maxlength="8"
+								labelStyleClass="ui-grid-col-0-75"
+								labelText="#{label['MG3001002.nenreiTo']}"
+								value="#{MG3001002_00_000Controller.model.togetsuKadenKaisuTo}"
+								label="#{label['MG3001002.togetsuKadenKaisuTo']}" tabindex="111">
+							</acc:inputTextNumber>
+
+							<!-- 134. 朝未架電 -->
+							<p:selectBooleanCheckbox
+								styleClass="ui-grid-col-push-1 ui-grid-col-0-25"
+								value="#{MG3001002_00_000Controller.model.asaMiKaden}"
+								id="chkAsaMiKaden" label="#{label['MG3001002.asaMiKaden']}"
+								tabindex="122">
+								<p:ajax event="change" delay="1" global="false" />
+							</p:selectBooleanCheckbox>
+							<p:outputLabel styleClass="ui-grid-col-1-75" for="chkAsaMiKaden"
+								value="#{label['MG3001002.asaMiKaden']}" />
+
+						</p:column>
+						<p:column />
+					</p:row>
+					<p:row styleClass="ui-grid-row">
+						<p:column>
+							<!-- 124. 当月接続回数From -->
+							<acc:inputTextNumber styleClass="ui-grid-col-2 text-right"
+								id="txtTogetsuSetsuzokuKaisuFrom" maxlength="8"
+								labelStyleClass="ui-grid-col-2 padding-left-15px"
+								value="#{MG3001002_00_000Controller.model.togetsuSetsuzokuKaisuFrom}"
+								label="#{label['MG3001002.togetsuSetsuzokuKaisuFrom']}From"
+								labelText="#{label['MG3001002.togetsuSetsuzokuKaisuFrom']}"
+								tabindex="112">
+							</acc:inputTextNumber>
+							<!-- 125. 当月接続回数To -->
+							<acc:inputTextNumber styleClass="ui-grid-col-2 text-right"
+								id="txtTogetsuSetsuzokuKaisuTo" maxlength="8"
+								labelStyleClass="ui-grid-col-0-75"
+								labelText="#{label['MG3001002.nenreiTo']}"
+								value="#{MG3001002_00_000Controller.model.togetsuSetsuzokuKaisuTo}"
+								label="#{label['MG3001002.togetsuSetsuzokuKaisuTo']}"
+								tabindex="113">
+							</acc:inputTextNumber>
+							<!-- 135. 昼未架電 -->
+							<p:selectBooleanCheckbox
+								styleClass="ui-grid-col-push-1 ui-grid-col-0-25"
+								value="#{MG3001002_00_000Controller.model.hiruMiKaden}"
+								id="chkHiruMiKaden" label="#{label['MG3001002.hiruMiKaden']}"
+								tabindex="123">
+								<p:ajax event="change" delay="1" global="false" />
+							</p:selectBooleanCheckbox>
+							<p:outputLabel styleClass="ui-grid-col-1-75" for="chkHiruMiKaden"
+								value="#{label['MG3001002.hiruMiKaden']}" />
+
+						</p:column>
+						<p:column />
+					</p:row>
+					<p:row styleClass="ui-grid-row">
+						<p:column>
+							<!-- 126. 当日架電回数From -->
+							<acc:inputTextNumber styleClass="ui-grid-col-2 text-right"
+								id="txtTojitsuKadenKaisuFrom" maxlength="8"
+								labelStyleClass="ui-grid-col-2 padding-left-15px"
+								value="#{MG3001002_00_000Controller.model.tojitsuKadenKaisuFrom}"
+								label="#{label['MG3001002.tojitsuKadenKaisuFrom']}From"
+								labelText="#{label['MG3001002.tojitsuKadenKaisuFrom']}"
+								tabindex="114">
+							</acc:inputTextNumber>
+							<!-- 127. 当日架電回数To -->
+							<acc:inputTextNumber styleClass="ui-grid-col-2 text-right"
+								id="txtTojitsuKadenKaisuTo" maxlength="8"
+								labelStyleClass="ui-grid-col-0-75"
+								labelText="#{label['MG3001002.nenreiTo']}"
+								value="#{MG3001002_00_000Controller.model.tojitsuKadenKaisuTo}"
+								label="#{label['MG3001002.tojitsuKadenKaisuTo']}" tabindex="115">
+							</acc:inputTextNumber>
+							<!-- 136. 夜未架電 -->
+							<p:selectBooleanCheckbox
+								styleClass="ui-grid-col-push-1 ui-grid-col-0-25 "
+								value="#{MG3001002_00_000Controller.model.yoruMiKaden}"
+								id="chkYoruMiKaden" label="#{label['MG3001002.yoruMiKaden']}"
+								tabindex="124">
+								<p:ajax event="change" delay="1" global="false" />
+							</p:selectBooleanCheckbox>
+							<p:outputLabel styleClass="ui-grid-col-1-75" for="chkYoruMiKaden"
+								value="#{label['MG3001002.yoruMiKaden']}" />
+
+						</p:column>
+						<p:column />
+					</p:row>
+					<p:row styleClass="ui-grid-row">
+						<p:column>
+							<!-- 128. 当日接続回数From -->
+							<acc:inputTextNumber styleClass="ui-grid-col-2 text-right"
+								id="txtTojitsuSetsuzokuKaisuFrom" maxlength="8"
+								labelStyleClass="ui-grid-col-2 padding-left-15px"
+								value="#{MG3001002_00_000Controller.model.tojitsuSetsuzokuKaisuFrom}"
+								label="#{label['MG3001002.tojitsuSetsuzokuKaisuFrom']}From"
+								labelText="#{label['MG3001002.tojitsuSetsuzokuKaisuFrom']}"
+								tabindex="116">
+							</acc:inputTextNumber>
+							<!-- 129. 当日接続回数To -->
+							<acc:inputTextNumber styleClass="ui-grid-col-2 text-right"
+								id="txtTojitsuSetsuzokuKaisuTo" maxlength="8"
+								labelStyleClass="ui-grid-col-0-75"
+								labelText="#{label['MG3001002.nenreiTo']}"
+								value="#{MG3001002_00_000Controller.model.tojitsuSetsuzokuKaisuTo}"
+								label="#{label['MG3001002.tojitsuSetsuzokuKaisuTo']}"
+								tabindex="117">
+							</acc:inputTextNumber>
+
+							<!-- 137. 朝昼夜架電済 -->
+							<p:selectBooleanCheckbox
+								styleClass="ui-grid-col-push-1 ui-grid-col-0-25"
+								id="chkAsahiyaKadenSumi"
+								value="#{MG3001002_00_000Controller.model.asahiyaKadenSumi}"
+								label="#{label['MG3001002.asahiyaKadenSumi']}" tabindex="125">
+								<p:ajax event="change" delay="1" global="false" />
+							</p:selectBooleanCheckbox>
+
+							<p:outputLabel styleClass="ui-grid-col-2"
+								for="chkAsahiyaKadenSumi"
+								value="#{label['MG3001002.asahiyaKadenSumi']}" />
+
+
+						</p:column>
+						<p:column />
+					</p:row>
+					<p:row styleClass="ui-grid-row">
+						<p:column>
+							<!-- 130. 最終交渉日From -->
+							<acc:inputTextDate styleClass="ui-grid-col-1-80 text-center"
+								id="txtSaishuKoshoBiFrom" maxlength="10"
+								labelStyleClass="ui-grid-col-2 padding-left-15px"
+								value="#{MG3001002_00_000Controller.model.saishuKoshoBiFrom}"
+								label="#{label['MG3001002.saishuKoshoBiFrom']}From"
+								labelText="#{label['MG3001002.saishuKoshoBiFrom']}"
+								tabindex="118">
+							</acc:inputTextDate>
+							<!-- 131. 最終交渉日To -->
+							<acc:inputTextDate styleClass="ui-grid-col-1-80 text-center"
+								id="txtSaishuKoshoBiTo" maxlength="10"
+								labelStyleClass="ui-grid-col-0-95 text-center"
+								labelText="#{label['MG3001002.nenreiTo']}"
+								value="#{MG3001002_00_000Controller.model.saishuKoshoBiTo}"
+								label="#{label['MG3001002.saishuKoshoBiTo']}" tabindex="119">
+							</acc:inputTextDate>
+						</p:column>
+						<p:column />
+					</p:row>
+					<p:row styleClass="ui-grid-row">
+						<p:column>
+							<!-- 132. 最多ヒット時間From -->
+							<acc:selectOneMenuCodeDefault id="selSaitaHittoJikanFrom"
+								styleClass="ui-grid-col-2"
+								labelStyleClass="ui-grid-col-2 padding-left-15px"
+								codeListName="ACC_CODE" selectKeyCode1="TBL_COMM_TBL"
+								selectKeyCode2="A00222"
+								value="#{MG3001002_00_000Controller.model.saitaHittoJikanFrom}"
+								labelText="#{label['MG3001002.saitaHittoJikanFrom']}"
+								label="#{label['MG3001002.saitaHittoJikanFrom']}From"
+								tabindex="120">
+
+							</acc:selectOneMenuCodeDefault>
+
+
+							<!-- 133. 最多ヒット時間To -->
+							<acc:selectOneMenuCodeDefault id="selSaitaHittoJikanTo"
+								styleClass="ui-grid-col-2" labelStyleClass="ui-grid-col-0-75"
+								codeListName="ACC_CODE"
+								labelText="#{label['MG3001002.nenreiTo']}"
+								selectKeyCode1="TBL_COMM_TBL" selectKeyCode2="A00223"
+								value="#{MG3001002_00_000Controller.model.saitaHittoJikanTo}"
+								label="#{label['MG3001002.saitaHittoJikanTo']}" tabindex="121">
+
+							</acc:selectOneMenuCodeDefault>
+
+						</p:column>
+						<p:column />
+					</p:row>
+				</p:panelGrid>
+
+			</p:panel>
+
+			<p:panel id="RIGHT-PANEL-3" header="#{label['MG3001002.kaiwaKodo']}"
+				styleClass="ui-grid-responsive ui-right-child-panel-3">
+				<p:panelGrid styleClass="ui-grid">
+					<p:row styleClass="ui-grid-row">
+						<p:column>
+							<!-- 138. 開始終了期間From -->
+							<acc:inputTextDate styleClass="ui-grid-col-1-80 text-center"
+								labelStyleClass="ui-grid-col-2 padding-left-15px"
+								labelText="#{label['MG3001002.kaishiShuryoKikanFrom']}"
+								id="txtKaishiShuryoKikanFrom" maxlength="10"
+								value="#{MG3001002_00_000Controller.model.kaishiShuryoKikanFrom}"
+								label="#{label['MG3001002.kaishiShuryoKikanFrom']}From"
+								tabindex="126">
+							</acc:inputTextDate>
+							<!-- 139. 開始終了期間To -->
+							<acc:inputTextDate styleClass="ui-grid-col-1-80 text-center"
+								labelStyleClass="ui-grid-col-0-95 text-center"
+								labelText="#{label['MG3001002.nenreiTo']}"
+								id="txtKaishiShuryoKikanTo" maxlength="10"
+								value="#{MG3001002_00_000Controller.model.kaishiShuryoKikanTo}"
+								label="#{label['MG3001002.kaishiShuryoKikanTo']}" tabindex="127">
+							</acc:inputTextDate>
+
+							<!-- 140. 未交渉 -->
+							<p:selectBooleanCheckbox
+								styleClass="ui-grid-col-push-1 ui-grid-col-0-25" id="chkMiKosho"
+								value="#{MG3001002_00_000Controller.model.miKosho}"
+								label="#{label['MG3001002.miKosho']}" tabindex="128">
+								<p:ajax event="change" delay="1" global="false" />
+							</p:selectBooleanCheckbox>
+							<p:outputLabel styleClass="ui-grid-col-2" for="chkMiKosho"
+								value="#{label['MG3001002.miKosho']}" />
+
+						</p:column>
+						<p:column />
+					</p:row>
+					<p:row styleClass="ui-grid-row">
+						<p:column>
+							<p:outputLabel styleClass="ui-grid-col-2 padding-left-15px"
+								value="#{label['MG3001002.kaiwaKodo']}" />
+							<!-- 141. 会話コード除外 -->
+							<p:selectBooleanCheckbox styleClass="ui-grid-col-0-25"
+								id="chkKaiwaKodoJogai"
+								value="#{MG3001002_00_000Controller.model.kaiwaKodoJogai}"
+								label="#{label['MG3001002.kaiwaKodoJogai']}" tabindex="129">
+								<p:ajax event="change" delay="1" global="false" />
+							</p:selectBooleanCheckbox>
+							<p:outputLabel styleClass="ui-grid-col-1" for="chkKaiwaKodoJogai"
+								value="#{label['MG3001002.kaiwaKodoJogai']}" />
+
+							<!-- 142. 会話コード１ -->
+							<p:inputText
+								styleClass="ui-grid-col-push-0-25 ui-grid-col-0-85"
+								id="txtKaiwaKodo1" maxlength="4"
+								value="#{MG3001002_00_000Controller.model.kaiwaKodo1}"
+								label="#{label['MG3001002.kaiwaKodo1']}" labelText=""
+								labelStyleClass="ui-grid-col-1" tabindex="130" >
+								<p:keyFilter preventPaste="false" regEx="/[0-9]/i" />
+							</p:inputText>
+
+							<!-- 143. 会話コード２ -->
+							<p:inputText
+								styleClass="ui-grid-col-push-0-25 ui-grid-col-0-85"
+								id="txtKaiwaKodo2" maxlength="4"
+								value="#{MG3001002_00_000Controller.model.kaiwaKodo2}"
+								label="#{label['MG3001002.kaiwaKodo2']}" labelText=""
+								labelStyleClass="ui-grid-col-1" tabindex="131">
+								<p:keyFilter preventPaste="false" regEx="/[0-9]/i" />
+							</p:inputText>
+
+							<!-- 144. 会話コード３ -->
+							<p:inputText
+								styleClass="ui-grid-col-push-0-25 ui-grid-col-0-85"
+								id="txtKaiwaKodo3" maxlength="4"
+								value="#{MG3001002_00_000Controller.model.kaiwaKodo3}"
+								label="#{label['MG3001002.kaiwaKodo3']}" labelText=""
+								labelStyleClass="ui-grid-col-1" tabindex="132" >
+								<p:keyFilter preventPaste="false" regEx="/[0-9]/i" />
+							</p:inputText>
+
+							<!-- 145. 会話コード４ -->
+							<p:inputText
+								styleClass="ui-grid-col-push-0-25 ui-grid-col-0-85"
+								id="txtKaiwaKodo4" maxlength="4"
+								value="#{MG3001002_00_000Controller.model.kaiwaKodo4}"
+								label="#{label['MG3001002.kaiwaKodo4']}" labelText=""
+								labelStyleClass="ui-grid-col-1" tabindex="133">
+								<p:keyFilter preventPaste="false" regEx="/[0-9]/i" />
+							</p:inputText>
+
+							<!-- 146. 会話コード５ -->
+							<p:inputText
+								styleClass="ui-grid-col-push-0-25 ui-grid-col-0-85"
+								id="txtKaiwaKodo5" maxlength="4"
+								value="#{MG3001002_00_000Controller.model.kaiwaKodo5}"
+								label="#{label['MG3001002.kaiwaKodo5']}" labelText=""
+								labelStyleClass="ui-grid-col-1" tabindex="134" >
+								<p:keyFilter preventPaste="false" regEx="/[0-9]/i" />
+							</p:inputText>
+
+							<!-- 147. 会話コード６ -->
+							<p:inputText
+								styleClass="ui-grid-col-push-0-25 ui-grid-col-0-85"
+								id="txtKaiwaKodo6" maxlength="4"
+								value="#{MG3001002_00_000Controller.model.kaiwaKodo6}"
+								label="#{label['MG3001002.kaiwaKodo6']}" labelText=""
+								labelStyleClass="ui-grid-col-1" tabindex="135">
+								<p:keyFilter preventPaste="false" regEx="/[0-9]/i" />
+							</p:inputText>
+
+							<!-- 148. 条件論理演算子 -->
+							<acc:selectOneMenuCode id="selJokenRonriEnzanshi"
+								styleClass="ui-grid-col-push-0-25 ui-grid-col-1-25"
+								codeListName="ACC_CODE" labelText=""
+								selectKeyCode1="TBL_COMM_TBL" selectKeyCode2="A00232"
+								value="#{MG3001002_00_000Controller.model.jokenRonriEnzanshi}"
+								label="#{label['MG3001002.jokenRonriEnzanshi']}" tabindex="136">
+							</acc:selectOneMenuCode>
+
+						</p:column>
+						<p:column />
+					</p:row>
+
+				</p:panelGrid>
+			</p:panel>
+			<p:tabView class="ui-right-child-panel-4" id="frameChild" tabindex="-1">
+				<p:tab title="#{label['MG3001003.tabTilte']}"
+					rendered="#{MG3001002_00_000Controller.model.exeMode eq 1}">
+					<ui:include src="MG3001003_00_000.xhtml"></ui:include>
+				</p:tab>
+				Todo default is not displayed.
+				<p:tab title="#{label['MG3001004.tapTitle']}"
+					rendered="#{MG3001002_00_000Controller.model.exeMode eq 2}">
+					<ui:include src="MG3001004_00_000.xhtml"></ui:include>
+				</p:tab>
+				Todo default is not displayed.
+				<p:tab title="#{label['MG3001005.tabTitle']}"
+					rendered="#{MG3001002_00_000Controller.model.exeMode eq 3}">
+					<ui:include src="MG3001005_00_000.xhtml"></ui:include>
+				</p:tab>
+				Todo default is not displayed.
+				<p:tab title="#{label['MG3001006.tabTitle']}"
+					rendered="#{MG3001002_00_000Controller.model.exeMode eq 4}">
+					<ui:include src="MG3001006_00_000.xhtml"></ui:include>
+				</p:tab>
+				Todo default is not displayed.
+				<p:tab title="#{label['MG3001007.tabTilte']}"
+					rendered="#{MG3001002_00_000Controller.model.exeMode eq 5}">
+					<ui:include src="MG3001007_00_000.xhtml"></ui:include>
+				</p:tab>
+				Todo default is not displayed.
+				<p:tab title="#{label['MG3001008.tabTilte']}" styleClass="paddingleft"
+					rendered="#{MG3001002_00_000Controller.model.exeMode eq 6}">
+					<ui:include src="MG3001008_00_000.xhtml"></ui:include>
+				</p:tab>
+
+
+			</p:tabView>
+			<div id="RIGHT-PANEL-5" class="ui-grid-row" style="width:660px;">
+				<!-- 149. クリア -->
+				<p:commandButton
+					styleClass="ui-grid-col-push-6-70 ui-grid-col-1-5 margin-top-3px"
+					id="btnKuria" value="#{label['MG3001002.kuria']}"
+					disabled="#{MG3001002_00_000Controller.authMap['btnKuria']}"
+					process="@this"
+					update="#{p:resolveFirstComponentWithId('validateMsgs', view).clientId} #{p:resolveFirstComponentWithId('LEFT-PANEL', view).clientId} #{p:resolveFirstComponentWithId('frameChild', view).clientId} #{p:resolveFirstComponentWithId('RIGHT-PANEL', view).clientId} 
+							#{p:resolveFirstComponentWithId('RIGHT-PANEL-2', view).clientId} #{p:resolveFirstComponentWithId('RIGHT-PANEL-3', view).clientId}"
+					resetValues="true"
+					actionListener="#{MG3001002_00_000Controller.btnKuriaClick}"
+					tabindex="300">
+				</p:commandButton>
+				<!-- 150. 更新 -->
+				<p:commandButton
+					styleClass="ui-grid-col-push-0-25 ui-grid-col-1-5  margin-top-3px"
+					id="btnKoshin" value="#{label['MG3001002.koshin']}"
+					disabled="#{MG3001002_00_000Controller.authMap['btnKoshin']}"
+					actionListener="#{MG3001002_00_000Controller.btnKoshinClick}"
+					update="@form validateMsgs" tabindex="301">
+					<p:ajax event="dialogReturn"
+						listener="#{MG3001002_00_000Controller.mg3003DailogReturn}" />
+				</p:commandButton>
+				<!-- 151. 閉じる -->
+				<p:commandButton
+					styleClass="ui-grid-col-push-0-25 ui-grid-col-1-5  margin-top-3px"
+					id="btnTojiru" value="#{label['MG3001002.tojiru']}"
+					disabled="#{MG3001002_00_000Controller.authMap['btnTojiru']}"
+					process="@this"
+					actionListener="#{MG3001002_00_000Controller.btnTojiruClick}"
+					tabindex="302">
+				</p:commandButton>
+
+			</div>
+		</pe:layoutPane>
+	</pe:layout>
+</ui:composition>

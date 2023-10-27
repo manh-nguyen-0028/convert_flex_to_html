@@ -1,0 +1,170 @@
+/*===MG1002001===*/
+.column1 {
+	width: 5%;
+}
+
+.column2 {
+	width: 5%;
+	text-align: right;
+}
+
+.column3 {
+	width: 15%;
+}
+
+.column4 {
+	width: 15%;
+}
+
+.column5 {
+	width: 15%;
+}
+
+.column6 {
+	width: 15%;
+}
+
+.user-row-style {
+	padding-bottom: 5px;
+}
+
+.list-row-even {
+	padding: 10px 15px;
+}
+
+.list-row-odd {
+	padding: 10px 15px;
+}
+
+.right-table-style {
+	margin: 0 auto;
+	margin-top: 20px;
+	float: left;
+	width: 22%;
+}
+
+.left-table-style {
+	margin: 0 auto;
+	margin-top: 20px;
+	float: left;
+	width: 75%
+}
+
+.portal-page-header {
+	text-decoration: underline;
+	font-size: 23px !important;
+	font-style: italic;
+	float: right;
+}
+
+.main-dashboard-parent-col-1 {
+	width: 40%;
+}
+
+.main-dashboard-parent-col-2 {
+	width: 20%;
+	padding-bottom: 25px;
+}
+
+.main-dashboard-parent-col-3 {
+	width: 40%;
+	padding-bottom: 15px;
+}
+
+.main-dashboard-parent-col-1 span {
+	font-size: 16px;
+	margin-right: 5px;
+}
+
+.right-arrow-child-talbe-expended span {
+	font-size: 16px;
+	margin-right: 5px;
+	padding-left: 20px;
+	float: left;
+	padding-top: 5px;
+}
+
+.right-table-col1 {
+	padding-bottom: 5px;
+	width: 25%;
+}
+
+.right-table-col-midle {
+	padding-bottom: 5px;
+	width: 7%;
+}
+
+.right-table-col2 {
+	padding-bottom: 5px;
+}
+
+.title-display-none {
+	display: block;
+	width: 100px;
+}
+
+.font-bold {
+	font-weight: bold;
+}
+
+.button-hidden {
+	display: none !important;
+}
+
+.push-right-20px {
+	margin-left: 20px;
+}
+
+/* acc-icon-folder class is setted at controller */
+.acc-icon-folder h3 a {
+	margin-left: 20px;
+}
+
+.vertical-menu .ui-panelmenu .ui-menuitem-link {
+	padding: 4px 0.3em 0.3em 2em !important;
+}
+
+#portal .ui-expanded-row-content table thead {
+	display: none;
+}
+
+#portal table tbody tr.ui-datatable-odd {
+	background-color: transparent;
+}
+
+#portal .ui-expanded-row-content table tbody tr .fa-long-arrow-right {
+	visibility: hidden;
+}
+
+#portal .ui-expanded-row-content table tbody tr:first-child .fa-long-arrow-right
+	{
+	visibility: visible;
+}
+
+div#portal\:tbInfo textarea.style-info {
+	width: 90%;
+	padding-left: 5px;
+	border: none;
+	overflow: hidden;
+	background: none;
+	box-shadow: none;
+	line-height: 20px;
+}
+
+#portal\:panel_message div.ui-layout-unit-content {
+	overflow-x: hidden;
+}
+
+
+.columnHeader {
+	padding-bottom: 15px !important;
+}
+
+div[id*='tbInfo'] table, div[id*='tbInfo'] table tr, div[id*='tbInfo'] .ui-datatable-tablewrapper
+	{
+	width: 960px !important;
+}
+
+.ui-layout-pane-center {
+	width: 965px !important;
+}

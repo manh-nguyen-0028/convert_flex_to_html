@@ -1,0 +1,324 @@
+[
+  {
+    "name": "id",
+    "convertTo": "id",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "id"
+  },
+  {
+    "name": "backgroundColor",
+    "convertTo": "background-color",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "width",
+    "convertTo": "width",
+    "endTag": "px",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "height",
+    "convertTo": "height",
+    "endTag": "px",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "color",
+    "convertTo": "color",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "fontStyle",
+    "convertTo": "font-style",
+    "endTag": "px",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "textDecoration",
+    "convertTo": "text-decoration",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "borderColor",
+    "convertTo": "border-color",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "borderStyle",
+    "convertTo": "border-style",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "verticalGap",
+    "convertTo": "margin-bottom",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "class",
+    "convertTo": "class",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "property"
+  },
+  {
+    "name": "tabOrder",
+    "convertTo": "tabindex",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "property"
+  },
+  {
+    "name": "required",
+    "convertTo": "required",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "property"
+  },
+  {
+    "name": "readOnly",
+    "convertTo": "readonly",
+    "endTag": "",
+    "valueCompareTrue": true,
+    "type": "property"
+  },
+  {
+    "name": "text",
+    "convertTo": "value",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "property"
+  },
+  {
+    "name": "title",
+    "convertTo": "title",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "property"
+  },
+  {
+    "name": "headerText",
+    "convertTo": "headerText",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "property"
+  },
+  {
+    "name": "rowCount",
+    "convertTo": "rows",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "property"
+  },
+  {
+    "name": "dropEnabled",
+    "convertTo": "droppable",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "property"
+  },
+  {
+    "name": "creationComplete",
+    "convertTo": "onTabShow",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "property"
+  },
+  {
+    "name": "allowMultipleSelection",
+    "convertTo": "selectionMode=\"multiple\"",
+    "endTag": "",
+    "valueCompareTrue": true,
+    "type": "property"
+  },
+  {
+    "name": "dragEnabled",
+    "convertTo": "draggable",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "property"
+  },
+  {
+    "name": "dragDrop",
+    "convertTo": "dragListener",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "property"
+  },
+  {
+    "name": "dataField",
+    "convertTo": "value",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "property"
+  },
+  {
+    "name": "groupName",
+    "convertTo": "groupName",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "property"
+  },
+  {
+    "name": "label",
+    "convertTo": "value",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "property"
+  },
+  {
+    "name": "minValue",
+    "convertTo": "minValue",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "property"
+  },
+  {
+    "name": "fillAlphas",
+    "convertTo": "fillAlphas",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "other"
+  },
+  {
+    "name": "fillColors",
+    "convertTo": "fillColors",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "other"
+  },
+  {
+    "name": "click",
+    "convertTo": "onclick",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "js"
+  },
+  {
+    "name": "change",
+    "convertTo": "onchange",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "js"
+  },
+  {
+    "name": "source",
+    "convertTo": "src",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "property"
+  },
+  {
+    "name": "maxByte",
+    "convertTo": "maxbytelength",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "property"
+  },
+  {
+    "name": "displayAsPassword",
+    "convertTo": "displayAsPassword",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "property"
+  },
+  {
+    "name": "x",
+    "convertTo": "position: absolute; left",
+    "endTag": "px",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "y",
+    "convertTo": "top",
+    "endTag": "px",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "fontSize",
+    "convertTo": "font-size",
+    "endTag": "px",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "fontWeight",
+    "convertTo": "font-weight",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "textAlign",
+    "convertTo": "text-align",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "backgroundAlpha",
+    "convertTo": "opacity",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "fontFamily",
+    "convertTo": "font-family",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "layout",
+    "convertTo": "position",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "borderThicknessBottom",
+    "convertTo": " border-bottom-width",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "borderThicknessLeft",
+    "convertTo": "border-left-width",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "borderThicknessRight",
+    "convertTo": "border-right-width",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "css"
+  },
+  {
+    "name": "borderThicknessTop",
+    "convertTo": "border-top-width",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "css"
+  }
+]

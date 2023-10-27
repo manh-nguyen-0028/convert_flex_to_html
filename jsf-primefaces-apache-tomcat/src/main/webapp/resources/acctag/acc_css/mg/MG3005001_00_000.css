@@ -1,0 +1,97 @@
+#MG3005001Form div[id^='MG3005001Form:MG3005002'].ui-panel-content.ui-widget-content
+	{
+	padding-top: 20px;
+	padding-bottom: 12px;
+}
+
+#MG3005001Form .panel-button-middle {
+	padding: 0 10px;
+	height: 700px;
+}
+
+#MG3005001Form .panel-button-middle button {
+	margin-bottom: 5px;
+}
+
+#MG3005001Form .panel-button-middle .vertical-middle {
+	padding: 320px 0;
+}
+
+#MG3005001Form .ui-tabs {
+	margin-bottom: 10px;
+}
+
+#MG3005001Form .tree-column-komoku {
+	width: 270px;
+}
+
+/* 2020/04/07 ThaoHTB Fix Kadai 671 START */
+#MG3005001Form .tree-column-enzanshi {
+	width: 42px;
+}
+/* 2020/04/07 ThaoHTB Fix Kadai 671 END */
+
+#MG3005001Form .tree-column-atai {
+	width: auto;
+}
+
+/* 2020/04/07 ThaoHTB Fix Kadai 671 START */
+/* Override icon of tree table */
+#MG3005001Form .tree-column-komoku .ui-icon-triangle-1-s {
+	margin-right: 5px;
+	background-position: -16px -96px;
+	visibility: visible !important;
+}
+
+#MG3005001Form .tree-column-komoku .ui-icon-triangle-1-e {
+	margin-right: 5px;
+	background-position: 0px -96px;
+	visibility: visible !important;
+}
+
+#MG3005001Form th .ui-icon-triangle-1-s {
+	background-position: -64px -16px !important;
+}
+/* 2020/04/07 ThaoHTB Fix Kadai 671 END */
+
+#MG3005001Form .ui-treetable-scrollable-body, #MG3005001Form .ui-datatable-scrollable-body
+	{
+	border-bottom: 1px solid #000;
+}
+
+#MG3005001Form table th {
+	border: solid 1px #D5D5D5 !important;
+}
+
+#MG3005001Form div[id$=datBunruiGurupuIchiran] td.tree-column-komoku span:nth-child(5),
+	#MG3005001Form div[id$=datJokenIchiran] td.tree-column-komoku span:nth-child(3)
+	{
+	background-position: -32px -96px;
+	visibility: visible !important;
+}
+
+/* #MG3005001Form th.tree-column-enzanshi {
+	padding-left: 0;
+	padding-right: 0;
+}
+ */
+#MG3005001Form thead.ui-datatable-scrollable-theadclone, #MG3005001Form thead.ui-treetable-scrollable-theadclone
+	{
+	display: none;
+}
+
+.datBunruiIchiranClass table {
+	table-layout:fixed;
+}
+
+.bunruiIchiran-bunruiCode {
+	width: 100px;
+}
+
+.bunruiIchiran-bunruimei {
+	width:250px;
+}
+
+.bunruiIchiran-bunruikensu {
+	width:auto;
+}

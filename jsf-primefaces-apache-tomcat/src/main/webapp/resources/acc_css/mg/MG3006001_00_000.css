@@ -1,0 +1,31 @@
+body {
+	width: 100% !important;
+	margin: 0 auto;
+}
+
+#MG3006001 {
+	width: 400px;
+	margin:0 auto;
+	margin-top:10px;
+}
+
+#content .ui-messages {
+	width: 350px;
+	margin: auto;
+	height: 55px;
+	overflow: hidden !important; /*dissappear scroll*/
+}
+
+
+#MG3006001 table.ui-panelgrid {
+	margin-left: 30px;
+}
+
+#MG3006001 .button-panel {
+	margin: 20px 30px 0 0;
+}
+
+#MG3006001 table.ui-panelgrid tr.ui-grid-row:last-child {
+   margin-top: 10px;
+ }
+ 

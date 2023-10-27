@@ -11,6 +11,7 @@ public class ASMember {
     private String encapsulation;
     private boolean isStatic;
     private String comment;
+    private boolean isConst;
     public ASMember() {
         name = null;
         type = "*";
@@ -28,6 +29,7 @@ public class ASMember {
         obj.setValue(value);
         obj.setEncapsulation(encapsulation);
         obj.setStatic(isStatic);
+        obj.setConst(isConst);
         obj.setComment(comment);
         return obj;
     }
@@ -97,5 +99,13 @@ public class ASMember {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public boolean isConst() {
+        return isConst;
+    }
+
+    public void setConst(boolean aConst) {
+        isConst = aConst;
     }
 }

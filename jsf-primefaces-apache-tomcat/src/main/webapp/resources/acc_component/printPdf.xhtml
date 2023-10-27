@@ -1,0 +1,33 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite">
+<!-- コンポーネントの属性で外から指定できるようにするものを定義する -->
+<composite:interface>
+</composite:interface>
+
+<!-- 複合コンポーネントに含むコンポーネントを定義する -->
+<composite:implementation>
+	<script>
+	    var count = 0;
+		function printDocument() {
+			//Wait until PDF is ready to print
+			if (typeof document.getElementById("pdf").print == 'undefined') {
+				setTimeout(function() {
+					count++;
+					if (count >= 2)  {
+						alert ("Adobe PDF Reader Plugin が無効です");
+					} else {
+						printDocument();	
+					}
+				}, 1000);
+			} else {
+				var x = document.getElementById("pdf");
+				x.printWithDialog();
+			}
+		}
+	</script>
+	<object id="pdf"
+		data="#{accBaseInfoModel.printFileUrl}#toolbar=0&amp;navpanes=0&amp;scrollbar=0"
+		type="application/pdf" width="0" height="0"> </object>
+</composite:implementation>
+</html>

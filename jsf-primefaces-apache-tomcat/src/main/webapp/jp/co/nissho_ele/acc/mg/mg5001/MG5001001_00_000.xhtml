@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<ui:composition
+	template="/jp/co/nissho_ele/acc/common/commonLayout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:pacc="http://xmlns.jcp.org/jsf/acctag"
+	xmlns:acc="http://xmlns.jcp.org/jsf/composite/acc_component">
+	<ui:define name="title">#{label['MG5001001.Title']}</ui:define>
+	<ui:define name="stylesheet">
+		<pacc:outputStylesheet library="acc_css" name="mg/MG5001001_00_000.css" />
+	</ui:define>
+	<ui:define name="content">
+		<div class="title-panel margin-left">
+			<p:outputLabel value="#{label['MG5001001.Title']}" />
+		</div>
+		<h:form id="MG5001001Form">
+			<ui:include src="MG5001002_00_000.xhtml" />
+			<ui:include src="MG5001003_00_000.xhtml" />
+
+		</h:form>
+		<div class="button-panel ui-grid-row last-button-style ">
+			<!-- 項目1: 閉じる -->
+			<!-- 2020/02/17 NEV-KienNT Fix [v2.21] Kadai 17 START -->
+			<p:commandButton value="#{label['Base.btnClose']}" id="btnTojiru"
+				action="#{MG5001001_00_000Controller.btnTojiruClick}"
+				immediate="true"
+				disabled="#{MG5001001_00_000Controller.authMap['btnTojiru']}"
+				tabindex="8" />
+			<!-- 2020/02/17 NEV-KienNT Fix [v2.21] Kadai 17 END -->
+
+		</div>
+	</ui:define>
+</ui:composition>

@@ -20,9 +20,9 @@ public class HtmlElementParser {
     private String endStartTag;
     private String text;
     private String endTag;
-    private List<AttributeParser> attributeParsers = new ArrayList<>();
-    private List<AttributeParser> attributeForChild = new ArrayList<>();
-    private Map<String, AttributeParser> mapAttributeParser = new HashMap<>();
+    private List<PropertyParser> propertyParsers = new ArrayList<>();
+    private List<PropertyParser> propertyForChild = new ArrayList<>();
+    private Map<String, PropertyParser> mapPropertyParser = new HashMap<>();
     private List<CssParser> cssParsers = new ArrayList<>();
     private boolean isHadAttribute;
     private boolean isHadCss;
@@ -37,10 +37,10 @@ public class HtmlElementParser {
         this.isGenerateHtml = isGenerateHtml;
     }
 
-    public Map<String, AttributeParser> getMapAttributeParser() {
-        if (CollectionUtils.isNotEmpty(this.attributeParsers)) {
-            this.mapAttributeParser = this.attributeParsers.stream().collect(Collectors.toMap(AttributeParser::getKey, attribute -> attribute));
+    public Map<String, PropertyParser> getMapPropertyParser() {
+        if (CollectionUtils.isNotEmpty(this.propertyParsers)) {
+            this.mapPropertyParser = this.propertyParsers.stream().collect(Collectors.toMap(PropertyParser::getKey, attribute -> attribute));
         }
-        return mapAttributeParser;
+        return mapPropertyParser;
     }
 }

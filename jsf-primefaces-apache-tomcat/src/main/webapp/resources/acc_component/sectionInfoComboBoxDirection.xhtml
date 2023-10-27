@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite">
+<!-- コンポーネントの属性で外から指定できるようにするものを定義する -->
+<composite:interface>
+	<composite:attribute name="id" />
+	<composite:attribute name="value" />
+	<composite:attribute name="listener" />
+	<composite:attribute name="style" />
+	<composite:attribute name="disabledBu" />
+	<composite:attribute name="disabledKa" />
+	<composite:attribute name="disabledKakari" />
+	<composite:attribute name="styleClass" default="acc-section-combo" />
+	<composite:attribute name="labelStyleClass"
+		default="acc-section-combo-label" />
+	<composite:attribute name="selectStyleClass"
+		default="acc-section-combo-select" />
+	<composite:attribute name="direction" default="horizontal" />
+	<composite:attribute name="displayLabel" default="true" />
+	<composite:attribute name="tabindex" />
+	<composite:attribute name="required" default="true" />
+</composite:interface>
+
+<!-- 複合コンポーネントに含むコンポーネントを定義する -->
+<composite:implementation>
+	<p:panelGrid
+		styleClass="#{cc.attrs.styleClass} commonSectionInfo #{cc.attrs.direction}"
+		columns="#{cc.attrs.direction == 'horizontal' ? (cc.attrs.displayLabel ? 6: 3) : (cc.attrs.displayLabel ? 2: 1)}"
+		layout="grid">
+		<!-- 1. 部 -->
+		<p:outputLabel styleClass="#{cc.attrs.labelStyleClass}" for="selBuHorizontal"
+			value="#{label['Base.bu']}" rendered="#{cc.attrs.displayLabel}" />
+		<p:selectOneMenu styleClass="#{cc.attrs.selectStyleClass}"
+			id="selBuHorizontal"
+			value="#{accSectionInfoComboBoxHorizontal.selectedSection.bu}"
+			required="#{cc.attrs.required}" label="#{label['Base.bu']}"
+			disabled="#{cc.attrs.disabledBu}" tabindex="#{cc.attrs.tabindex}">
+			<f:selectItem itemLabel="" itemValue="" />
+			<f:selectItems value="#{accSectionInfoComboBoxHorizontal.buList}"
+				var="codeList" itemLabel="#{codeList.name1}"
+				itemValue="#{codeList.keyInfo3}" />
+			<f:ajax event="change"
+				listener="#{accSectionInfoComboBoxHorizontal.selBuOnValueChange}"
+				render="selKaHorizontal selKakariHorizontal" />
+		</p:selectOneMenu>
+
+		<!-- 2. 課 -->
+		<p:outputLabel styleClass="#{cc.attrs.labelStyleClass}" for="selKaHorizontal"
+			value="#{label['Base.ka']}" rendered="#{cc.attrs.displayLabel}" />
+		<p:selectOneMenu styleClass="#{cc.attrs.selectStyleClass}"
+			id="selKaHorizontal"
+			value="#{accSectionInfoComboBoxHorizontal.selectedSection.ka}"
+			disabled="#{cc.attrs.disabledKa}" label="#{label['Base.ka']}"
+			tabindex="#{cc.attrs.tabindex}">
+			<f:selectItem itemLabel="" itemValue="0" />
+			<f:selectItems value="#{accSectionInfoComboBoxHorizontal.kaList}"
+				var="codeList" itemLabel="#{codeList.name1}"
+				itemValue="#{codeList.keyInfo3}" />
+			<f:ajax event="change"
+				listener="#{accSectionInfoComboBoxHorizontal.selKaOnValueChange}"
+				render="selKakariHorizontal"/>
+		</p:selectOneMenu>
+
+		<!-- 3. 係 -->
+		<p:outputLabel styleClass="#{cc.attrs.labelStyleClass}"
+			for="selKakariHorizontal" value="#{label['Base.kakari']}"
+			rendered="#{cc.attrs.displayLabel}" />
+		<p:selectOneMenu styleClass="#{cc.attrs.selectStyleClass}"
+			id="selKakariHorizontal" disabled="#{cc.attrs.disabledKakari}"
+			value="#{accSectionInfoComboBoxHorizontal.selectedSection.kakari}"
+			label="#{label['Base.kakari']}" tabindex="#{cc.attrs.tabindex}">
+			<f:selectItem itemLabel="" itemValue="0" />
+			<f:selectItems value="#{accSectionInfoComboBoxHorizontal.kakariList}"
+				var="codeList" itemLabel="#{codeList.name1}"
+				itemValue="#{codeList.keyInfo3}" />
+			<f:ajax event="change" />
+		</p:selectOneMenu>
+	</p:panelGrid>
+</composite:implementation>
+</html>

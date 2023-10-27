@@ -1,0 +1,81 @@
+<!-- 債権譲渡フレーム(MG3001008_00_000) -->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pacc="http://xmlns.jcp.org/jsf/acctag"
+	xmlns:acc="http://xmlns.jcp.org/jsf/composite/acc_component">
+	<ui:define name="stylesheet">
+		<pacc:outputStylesheet library="acc_css" name="mg/MG3001008_00_000.css" />
+	</ui:define>
+	<p:panel styleClass="mg3001008-panel" id="mg3001008-top-panel"
+		header="#{label['MG3001008.header1']}">
+		<p:panelGrid styleClass="ui-grid " id="form8">
+			<p:row styleClass="ui-grid-row">
+				<p:column styleClass="ui-grid-col">
+					<p:outputLabel styleClass="ui-grid-col-4-25 padding-left-15px"
+						value="#{label['MG3001008.chushutsuKensu']}" />
+					<!-- 1. 抽出件数（債権） -->
+					<acc:inputTextNumber styleClass="ui-grid-col-1-75 text-right "
+						id="txtChushutsukensu" maxlength="7"
+						labelStyleClass="ui-grid-col-3-65 padding-left-15px"
+						value="#{MG3001008_00_000Controller.model.chushutsuKensu}"
+						converter="#{ACCNumberConverter}"
+						readonly="true" tabindex="-1" />
+					<p:outputLabel styleClass="ui-grid-col-1 paddingLeft"
+						value="#{label['MG3001008.kudan']}" />
+					<!-- 2. 抽出 -->
+					<p:commandButton
+						styleClass="ui-grid-col-push-0-25 ui-grid-col-2-5  "
+						id="btnKensuShutoku1008" value="#{label['MG3001008.chushutsu']}"
+						actionListener="#{MG3001008_00_000Controller.btnKensuShutoku1008Click}"
+						disabled="#{MG3001008_00_000Controller.authMap['btnKensuShutoku1008']}"
+						process=":#{p:resolveFirstComponentWithId('LEFT-PANEL', view).clientId}, :#{p:resolveFirstComponentWithId('RIGHT-PANEL', view).clientId}, :#{p:resolveFirstComponentWithId('RIGHT-PANEL-2', view).clientId},
+							:#{p:resolveFirstComponentWithId('RIGHT-PANEL-3', view).clientId}, :#{p:resolveFirstComponentWithId('mg3001008-top-panel', view).clientId}"
+						update=":#{p:resolveFirstComponentWithId('LEFT-PANEL', view).clientId}, :#{p:resolveFirstComponentWithId('RIGHT-PANEL', view).clientId}, :#{p:resolveFirstComponentWithId('RIGHT-PANEL-2', view).clientId},
+							:#{p:resolveFirstComponentWithId('RIGHT-PANEL-3', view).clientId}, :#{p:resolveFirstComponentWithId('mg3001008-top-panel', view).clientId}, :#{p:resolveFirstComponentWithId('validateMsgs', view).clientId}" 
+						tabindex="166" />
+				</p:column>
+			</p:row>
+		</p:panelGrid>
+	</p:panel>
+	<p:panel styleClass="mg3001008-panel" id="mg3001008-bottom-panel" style="height: 162px"
+		header="#{label['MG3001008.header2']}">
+		<p:panelGrid styleClass="ui-grid" id="form9">
+			<p:row styleClass="ui-grid-row" id="first-row-30108">
+				<p:column styleClass="ui-grid-col">
+					<!-- 1. コード -->
+					<acc:inputAlphaNumber label="#{label['MG3001008.kodo']}"
+						styleClass="ui-grid-col-4-20 mg3001008-margin-left text-left"
+						id="txtKodo" maxlength="10"
+						labelStyleClass="ui-grid-col-3-25 padding-left-15px"
+						disabled="#{MG3001008_00_000Controller.controlStatus}"
+						value="#{MG3001008_00_000Controller.model.kodo}" tabindex="-1" required = "true" />
+				</p:column>
+				<p:row></p:row>
+			</p:row>
+			<p:row styleClass="ui-grid-row" id="second-row-30108">
+				<p:column styleClass="mg3001008-column">
+					<!-- 2. 名称 -->
+					<acc:inputTextZenkaku styleClass="ui-grid-col-8-40 mg3001008-margin-left text-left "
+						id="txtMesho" maxlength="30"
+						label="#{label['MG3001008.mesho']}"
+						labelStyleClass="ui-grid-col-1-10 padding-left-15px"
+						value="#{MG3001008_00_000Controller.model.mesho}" 
+						disabled="#{MG3001008_00_000Controller.controlStatus}" tabindex="" required = "true" />
+					<!-- 3. 確定-->
+					<p:commandButton
+						styleClass="ui-grid-col-push-0-25 ui-grid-col-1-20"
+						id="btnKakutei1008" value="#{label['MG3001008.kakutei']}"
+						actionListener="#{MG3001008_00_000Controller.btnKakutei1008Click}"
+						disabled="#{MG3001008_00_000Controller.authMap['btnKakutei1008']}"
+						process=":#{p:resolveFirstComponentWithId('mg3001008-bottom-panel', view).clientId}" update="@form" tabindex="167" />
+				</p:column>
+			</p:row>
+			<p:row></p:row>
+		</p:panelGrid>
+	</p:panel>
+</ui:composition>

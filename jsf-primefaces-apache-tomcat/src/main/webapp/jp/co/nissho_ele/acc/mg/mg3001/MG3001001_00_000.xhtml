@@ -1,0 +1,31 @@
+<!-- 画面設計書（統合抽出画面）(MG3001001_00_000) -->
+<!DOCTYPE html>
+<ui:composition
+	template="/jp/co/nissho_ele/acc/common/commonLayout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pacc="http://xmlns.jcp.org/jsf/acctag"
+	xmlns:acc="http://xmlns.jcp.org/jsf/composite/acc_component">
+	<ui:define name="title">#{MG3001002_00_000Controller.executeMode == '1' ? label['MG3001002.header'] :  MG3001002_00_000Controller.executeMode == '2' ? label['MG3001002.header2'] : MG3001002_00_000Controller.executeMode == '3' ? label['MG3001002.header3'] : MG3001002_00_000Controller.executeMode == '4' ? label['MG3001002.header4'] : MG3001002_00_000Controller.executeMode == '6' ? label['MG3001002.header6'] : label['MG3001002.header5']}</ui:define>
+	<ui:define name="stylesheet">
+		<pacc:outputScript library="acc_js" name="mg/MG3001001_00_000.js" />
+		<pacc:outputStylesheet library="acc_css" name="mg/MG3001001_00_000.css" />
+	</ui:define>
+	<ui:define name="content">
+		<h:form id="frmMg3001">
+			<p:focus context="frmMg3001"
+				rendered="#{facesContext.validationFailed}" />
+			<div class="title-panel2">
+				<p:outputLabel
+					value="#{MG3001002_00_000Controller.executeMode == '1' ? label['MG3001002.title'] :  MG3001002_00_000Controller.executeMode == '2' ? label['MG3001002.title2'] : MG3001002_00_000Controller.executeMode == '3' ? label['MG3001002.title3'] : MG3001002_00_000Controller.executeMode == '4' ? label['MG3001002.title4'] : MG3001002_00_000Controller.executeMode == '5' ? label['MG3001002.title5'] : label['MG3001002.title6']}" />
+				<p:outputLabel value="" />
+			</div>
+			<ui:include src="MG3001002_00_000.xhtml" />
+		</h:form>
+	</ui:define>
+</ui:composition>
+

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<ui:composition
+	template="/jp/co/nissho_ele/acc/common/commonLayout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pacc="http://xmlns.jcp.org/jsf/acctag"
+	xmlns:acc="http://xmlns.jcp.org/jsf/composite/acc_component">
+	<ui:define name="title">#{label['MG1002001.Title']}</ui:define>
+	<ui:define name="stylesheet">
+		<pacc:outputStylesheet library="acc_css" name="mg/MG1002001_00_000.css" />
+	</ui:define>
+	<ui:define name="script">
+		<pacc:outputScript library="acc_js" name="cl/socket.io-1.4.5.js" />
+		<pacc:outputScript library="acc_js" name="cl/operation.js" />
+		<pacc:outputScript library="acc_js" name="mg/MG1002001_00_000.js" />
+		<pacc:outputScript library="acc_js" name="mg/MG1003001_00_000.js" />
+	</ui:define>
+	<ui:define name="content">
+		<h:form id="portal">
+			<pe:layout fullPage="false" style="width:1280px; height:1005px;margin-top:-10px;">
+				<pe:layoutPane position="north" closable="false" resizable="false" size="105">
+					<h:panelGrid columns="3" cellpadding="0"
+						styleClass="left-table-style">
+						<p:outputLabel value="#{MG1002001_00_000Controller.model.title}"
+							styleClass="portal-page-header" />
+						<p:outputLabel value="" styleClass="title-display-none" />
+					</h:panelGrid>
+					<h:panelGrid columns="3" cellpadding="0" cellspacing="0"
+						rowClasses="list-row-even, list-row-odd"
+						styleClass="right-table-style"
+						columnClasses="right-table-col1,right-table-col-midle,right-table-col2">
+
+						<p:outputLabel value="#{label['MG1002001.lblHizuke']}"
+							styleClass="font-bold"></p:outputLabel>
+						<p:outputLabel value=":" />
+						<p:outputLabel value="#{MG1002001_00_000Controller.model.hizuke}" />
+
+						<p:outputLabel value="#{label['MG1002001.lblHoujin']}"
+							styleClass="font-bold" />
+						<p:outputLabel value=":" />
+						<p:outputLabel value="#{MG1002001_00_000Controller.model.houjin}" />
+
+						<p:outputLabel value="#{label['MG1002001.lblUsername']}"
+							styleClass="font-bold"></p:outputLabel>
+						<p:outputLabel value=":" />
+						<p:outputLabel
+							value=" #{MG1002001_00_000Controller.model.username}"></p:outputLabel>
+
+						<p:outputLabel value="#{label['MG1002001.lblBusho']}"
+							styleClass="font-bold"></p:outputLabel>
+						<p:outputLabel value=":" />
+						<p:outputLabel value="#{MG1002001_00_000Controller.model.busho}"></p:outputLabel>
+					</h:panelGrid>
+					<p:selectOneRadio id="phoneMode"
+						rendered="#{MG1002001_00_000Controller.displayPhoneMode}"
+						value="#{MG1002001_00_000Controller.phoneMode}"
+						style="width: 25%;position: absolute;top: 60px;left: 10px;"
+						layout="responsive" columns="2"
+						tabindex="1">
+						<f:selectItem itemLabel="CTI-Genesys" itemValue="0" />
+						<f:selectItem itemLabel="ZiPhone" itemValue="1" />
+						<p:ajax event="click"
+							listener="#{MG1002001_00_000Controller.changePhoneMode}"
+							update="portal:panel_menu" />
+					</p:selectOneRadio>
+				</pe:layoutPane>
+				<pe:layoutPane position="west" size="295" styleClass="vertical-menu" closable="false" resizable="false">
+					<p:panelMenu model="#{MG1002001_00_000Controller.menuModel}" widgetVar="panelMenu"
+						id="panel_menu">
+					</p:panelMenu>
+				</pe:layoutPane>
+
+				<pe:layoutPane position="center" id="panel_message" closable="false" resizable="false" styleContent="overflow-x: hidden;">
+					<p:dataTable var="modelVal" id="tbInfo" rowKey="#{modelVal.rowKeyDef}"
+						value="#{MG1002001_00_000Controller.model.lsrecord1}"
+						expandedRow="true" styleClass="borderless"
+						emptyMessage="#{label['Base.noRecordsFound']}">
+						<p:column styleClass="main-dashboard-parent-col-1">
+							<span class="pi pi-envelope"></span>
+							<p:outputLabel escape="false" value="#{modelVal.bbTitle}"></p:outputLabel>
+							<p:rowToggler />
+						</p:column>
+						<p:column styleClass="main-dashboard-parent-col-2 columnHeader">
+							<p:outputLabel escape="false" value="#{modelVal.createDate}"></p:outputLabel>
+						</p:column>
+						<p:column styleClass="main-dashboard-parent-col-3 columnHeader">
+							<p:outputLabel escape="false" value="#{modelVal.ttNameSeiMei}"></p:outputLabel>
+						</p:column>
+						<p:rowExpansion>
+							<p:dataTable value="#{modelVal.lsbbMessage}" var="rowExpan" 
+								emptyMessage="#{label['Base.noRecordsFound']}">
+								<p:column>
+									<p:outputLabel styleClass="right-arrow-child-talbe-expended">
+										<span class="pi pi-arrow-right"></span>
+									</p:outputLabel>
+									<p:inputTextarea value="#{rowExpan}" autoResize="true"
+										readonly="true" styleClass="style-info" />
+								</p:column>
+							</p:dataTable>
+						</p:rowExpansion>
+					</p:dataTable>
+
+				</pe:layoutPane>
+
+				<pe:layoutPane position="south" size="103" closable="false" resizable="false">
+					<div class="button-panel">
+
+						<!--  this link for develope layout -->
+						<p:commandButton id="btnRefresh"
+							disabled="#{MG1002001_00_000Controller.authMap['btnRefresh']}"
+							value="#{label['MG1002001.refresh']}" styleClass="long-width"
+							tabindex="2"
+							actionListener="#{MG1002001_00_000Controller.btnRefresh}">
+						</p:commandButton>
+						<p:commandButton id="btnChangePass"
+							disabled="#{MG1002001_00_000Controller.authMap['btnChangePass']}"
+							value="#{label['MG1002001.changePass']}"
+							action="#{MG1002001_00_000Controller.btnChangePassClick}"
+							styleClass="long-width" tabindex="3">
+						</p:commandButton>
+						<p:commandButton id="btnEnd"
+							disabled="#{MG1002001_00_000Controller.authMap['btnEnd']}"
+							value="#{label['Base.btnEnd']}" styleClass="long-width"
+							onclick="ctiClose()"
+							action="#{MG1002001_00_000Controller.btnEndClick}" tabindex="4">
+						</p:commandButton>
+					</div>
+				</pe:layoutPane>
+			</pe:layout>
+			<p:commandButton value="#{label['MG1002001.changePass']}"
+				styleClass="button-hidden"
+				action="#{MG1002001_00_000Controller.changePassGo}" id="changePass" />
+		</h:form>
+	</ui:define>
+</ui:composition>
