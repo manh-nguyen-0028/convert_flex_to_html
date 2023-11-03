@@ -1,19 +1,22 @@
 package main;
 
 import constants.Constants;
+import mxml.config.XhtmlConfig;
+import mxml.dto.modify.AjaxEvent;
 import mxml.dto.modify.ElementReplace;
-import mxml.dto.modify.RadioGroupReplace;
 import mxml.dto.parser.HtmlElementParser;
+import mxml.enums.TemplatePlaceholder;
 import mxml.service.ConvertMxmlService;
 import mxml.service.CssService;
 import mxml.service.JsoupService;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.*;
+import utils.CommonUtils;
 import utils.FileUtils;
-import utils.StringUtils;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
@@ -38,13 +41,13 @@ public class MxmlConvert {
      * @param inputPath
      * @param outputPath
      */
-    public void convert(String inputPath, String outputPath) {
+    public void convert(String inputPath, String outputPath, Map<String, XhtmlConfig> xhtmlConfigMap) {
 
         String cssPath = Paths.get(outputPath, "css").toString();
         //Create if folder not exist
         FileUtils.createIfNotExistFolder(cssPath);
         Path inputFilePath = Paths.get(inputPath);
-        String xmlFileName = inputFilePath.getFileName().toString().split(Constants.MXML_EXT)[0];
+        String xmlFileName = FileUtils.getFileNameMxml(inputPath);
 
         ElementReplace elementReplace = new ElementReplace();
         elementReplace.setFormName(xmlFileName.replace("_", ""));
@@ -80,49 +83,54 @@ public class MxmlConvert {
                 setXmlObjectInline(getXmlObjectProperties(xmlNodes));
             }
 
-            HtmlElementParser elementRootParser = new HtmlElementParser("First Node", null, null, null, true);
+            HtmlElementParser elementRootParser = new HtmlElementParser(Constants.MXML_ROOT_NODE, null, null, null, null, true, false);
 
             // Get mapping config
             if (doc.hasChildNodes()) {
                 new ConvertMxmlService(xmlFileName, elementReplace)
-                        .parser(elementRootParser, true, doc.getChildNodes(), baseHtml, html);
+                        .parser(elementRootParser, doc.getChildNodes(), baseHtml, html, xhtmlConfigMap);
             }
 
-            StringBuilder htmlContent = new StringBuilder();
-            List<HtmlElementParser> elementList = elementRootParser.getChildList();
+            writeHtml(htmlWriter, xmlFileName, baseHtml, elementRootParser, elementReplace, xhtmlConfigMap);
 
-            processGenerateHtmlContent(htmlContent, elementList);
+            writeCss(cssWriter, cssInFile);
 
-            handleElementReplace(baseHtml, htmlContent, elementReplace, xmlFileName);
-
-            String jsoupDocument = JsoupService.createJsoupDocument(baseHtml, elementReplace);
-
-            baseHtml = new StringBuilder(jsoupDocument);
-
-            xmlnsReplace(baseHtml);
-
-            StringUtils.replaceInStringBuilder(baseHtml, "{form_content}", htmlContent.toString());
-
-            htmlWriter.write(baseHtml.toString());
-
-            logger.info("Html file created successfully.");
-
-            cssWriter.write(cssInFile.toString());
-            logger.info("CSS file created successfully.");
         } catch (FileNotFoundException e) {
             logger.info("File not found: " + inputFilePath);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
+    private void writeHtml(BufferedWriter htmlWriter, String xmlFileName, StringBuilder baseHtml, HtmlElementParser elementRootParser, ElementReplace elementReplace, Map<String, XhtmlConfig> xhtmlConfigMap) throws IOException {
+        StringBuilder htmlContent = new StringBuilder();
+        List<HtmlElementParser> elementList = elementRootParser.getChildList();
+
+        processGenerateHtmlContent(htmlContent, elementList);
+
+        handleElementReplace(baseHtml, htmlContent, elementReplace, xmlFileName, xhtmlConfigMap);
+
+        String jsoupDocument = JsoupService.createJsoupDocument(baseHtml, elementReplace);
+
+        baseHtml = new StringBuilder(jsoupDocument);
+
+        xmlnsReplace(baseHtml);
+
+        CommonUtils.replaceInStringBuilder(baseHtml, TemplatePlaceholder.FORM_CONTENT.getPlaceholder(), htmlContent.toString());
+
+        htmlWriter.write(baseHtml.toString());
+
+        logger.info("Html file created successfully.");
+    }
+
+    private void writeCss(BufferedWriter cssWriter, StringBuilder cssInFile) throws IOException {
+        cssWriter.write(cssInFile.toString());
+
+        logger.info("CSS file created successfully.");
     }
 
     private void processGenerateHtmlContent(StringBuilder html, List<HtmlElementParser> elementParserList) {
-        for (HtmlElementParser elementParser : elementParserList) {
-            generateHtmlContent(html, elementParser);
-            logger.debug(html);
-        }
-
+        elementParserList.stream().forEach(item -> generateHtmlContent(html, item));
     }
 
     private void generateHtmlContent(StringBuilder html, HtmlElementParser elementParser) {
@@ -138,30 +146,30 @@ public class MxmlConvert {
 
             html.append(attributeElement);
 
-            if (org.apache.commons.lang3.StringUtils.isNotEmpty(cssElement)) {
+            if (StringUtils.isNotEmpty(cssElement)) {
                 StringBuilder cssElementInline = CssService.createSyntaxCssInline(cssElement);
                 html.append(cssElementInline);
             }
 
             html.append(elementParser.getEndStartTag());
 
-            if (CollectionUtils.isNotEmpty(elementParser.getChildList())) {
-                for (HtmlElementParser item : elementParser.getChildList()) {
-                    generateHtmlContent(html, item);
-                }
+            List<HtmlElementParser> childList = elementParser.getChildList();
+            if (CollectionUtils.isNotEmpty(childList)) {
+                childList.forEach(item -> generateHtmlContent(html, item));
             }
+
             html.append(elementParser.getEndTag());
         } else {
-            if (CollectionUtils.isNotEmpty(elementParser.getChildList())) {
-                for (HtmlElementParser item : elementParser.getChildList()) {
-                    generateHtmlContent(html, item);
-                }
+            List<HtmlElementParser> childList = elementParser.getChildList();
+            if (CollectionUtils.isNotEmpty(childList)) {
+                childList.forEach(item -> generateHtmlContent(html, item));
             }
         }
 
         logger.debug("cssElement: " + CssService.createCssElement(elementParser.getCssParsers()));
         logger.debug("attributeElement: " + ConvertMxmlService.createSyntaxAttributeHtml(elementParser));
     }
+
 
     private static StringBuilder createHtmlBase() {
         StringBuilder baseHtml = new StringBuilder();
@@ -182,28 +190,43 @@ public class MxmlConvert {
         return baseHtml;
     }
 
-    private static void handleElementReplace(StringBuilder baseHtml, StringBuilder htmlContent, ElementReplace elementReplace, String xmlFileName) {
-        StringUtils.replaceInStringBuilder(baseHtml, "{form_content}", htmlContent.toString());
-        StringUtils.replaceInStringBuilder(baseHtml, "{css_file_name}", xmlFileName);
-        StringUtils.replaceInStringBuilder(baseHtml, "{title_form_content}", "<ui:define name=\"title\">" + elementReplace.getTitle() + "</ui:define>");
-        StringUtils.replaceInStringBuilder(baseHtml, "{css_include_content}", "<h:outputStylesheet library=\"acc_css\" name=\"" + elementReplace.getFormName() + ".css\" />");
-        StringUtils.replaceInStringBuilder(baseHtml, "{js_include_content}", "<h:outputScript library=\"acc_js\" name=\"" + elementReplace.getFormName() + ".js\" />");
-        StringUtils.replaceInStringBuilder(baseHtml, "{form_id_content}", elementReplace.getFormName() + "Form");
+    private static void handleElementReplace(StringBuilder baseHtml, StringBuilder htmlContent, ElementReplace elementReplace, String xmlFileName, Map<String, XhtmlConfig> xhtmlConfigMap) {
+        XhtmlConfig xhtmlConfig = xhtmlConfigMap.get(xmlFileName);
+        String formGenerateSyntaxStart = String.format("<h:form id=\"%sForm\">", elementReplace.getFormName());
+        String formGenerateSyntaxEnd = "</h:form>";
+
+        boolean generateForm = xhtmlConfig.isGenerateForm();
+        String formContent = generateForm ? formGenerateSyntaxStart + htmlContent.toString() + formGenerateSyntaxEnd : htmlContent.toString();
+
+        CommonUtils.replaceInStringBuilder(baseHtml, TemplatePlaceholder.FORM_CONTENT.getPlaceholder(), formContent);
+        CommonUtils.replaceInStringBuilder(baseHtml, TemplatePlaceholder.CSS_FILE_NAME.getPlaceholder(), xmlFileName);
+
+        String title = elementReplace.getTitle();
+        String titleSyntax = StringUtils.isNotEmpty(title) ? String.format("<ui:define name=\"title\">%s</ui:define>", title) : StringUtils.EMPTY;
+        CommonUtils.replaceInStringBuilder(baseHtml, TemplatePlaceholder.TITLE_FORM_CONTENT.getPlaceholder(), titleSyntax);
+
         if (CollectionUtils.isNotEmpty(elementReplace.getCssCompositionFirstList())) {
             StringBuilder styleFirstComposition = CssService.createSyntaxCssInline(elementReplace.getCssCompositionFirstList());
-            StringUtils.replaceInStringBuilder(baseHtml, "{style_composition_first}", styleFirstComposition.toString());
+            CommonUtils.replaceInStringBuilder(baseHtml, TemplatePlaceholder.STYLE_COMPOSITION_FIRST.getPlaceholder(), styleFirstComposition.toString());
         }
+
         // Handle radio group
-        for (RadioGroupReplace item : elementReplace.getRadioGroupReplaces()) {
+        elementReplace.getRadioGroupReplaces().forEach(item -> {
             String groupId = item.getGroupId();
-            for (String radioItem : item.getSelectItemList()) {
-                StringUtils.replaceInStringBuilder(baseHtml, "id=\"" + groupId + "\">", "id=\"" + groupId + "\">" + radioItem);
+            for (int i = 0; i < item.getSelectItemList().size(); i++) {
+                if (i == 0 && item.getAjaxEvent() != null) {
+                    AjaxEvent ajaxEvent = item.getAjaxEvent();
+                    String ajaxSyntax = String.format("<p:ajax event=\"%s\" listener=\"%s\"/>", ajaxEvent.getEvent(), ajaxEvent.getListener());
+                    CommonUtils.replaceInStringBuilder(baseHtml, "id=\"" + groupId + "\">", "id=\"" + groupId + "\">" + item.getSelectItemList().get(i) + ajaxSyntax);
+                } else {
+                    CommonUtils.replaceInStringBuilder(baseHtml, "id=\"" + groupId + "\">", "id=\"" + groupId + "\">" + item.getSelectItemList().get(i));
+                }
             }
-        }
+        });
     }
 
     private static void xmlnsReplace(StringBuilder baseHtml) {
-        StringUtils.replaceInStringBuilder(baseHtml, "{xmlns_lib_define}=\"\"", "\n    template=\"/jp/co/nissho_ele/acc/common/commonLayout.xhtml\"\n" +
+        CommonUtils.replaceInStringBuilder(baseHtml, "{xmlns_lib_define}=\"\"", "\n    template=\"/jp/co/nissho_ele/acc/common/commonLayout.xhtml\"\n" +
                 "    xmlns=\"http://www.w3.org/1999/xhtml\"\n" +
                 "    xmlns:f=\"http://xmlns.jcp.org/jsf/core\"\n" +
                 "    xmlns:h=\"http://xmlns.jcp.org/jsf/html\"\n" +

@@ -4,23 +4,23 @@ public class Constants {
     public static String TYPE_MODIFY_ADD = "add";
     public static String ATTRIBUTE_CLASS = "class";
     public static String ATTRIBUTE_STYLE = "style";
-    public static final String EMPTY_STRING = "";
     public static final String ELLIPSIS_POINTS_STRING = "...";
     public static final String COMMA_STRING = ",";
-    public static final String DOCUMENT_VAR = "document";
-    public static final String DOCUMENT_VIEW = "document";
     public static final String EQUAL_OPERATOR = "=";
+    public static final String BINDABLE_TEXT = "[Bindable]";
     public static final char COLON_CHAR = ':';
     public static final char DOT_CHAR = '.';
     public static final char CURLY_BRACE = '{';
     public static final char SEMICOLON_CHAR = ';';
+    public static final char BINDABLE_CHAR_OPEN = '[';
+    public static final char BINDABLE_CHAR_CLOSE = ']';
     //Match with string: 'var variable_name:types
     public static final String VARIABLE_PATTERN = "(var|,)(.*?)([a-zA-Z_$][0-9a-zA-Z_$]*):([a-zA-Z_$][0-9a-zA-Z_$]*)";
     public static final String MODEL_VARIABLE_PATTERN = ".*\\s*as\\s*.*";
     public static final String FUNC_VARIABLE_PATTERN = "((var|const)((\\s*[a-zA-Z_$*][0-9a-zA-Z_$.<>]*)\\s*)(:)(\\s*([a-zA-Z_$*][0-9a-zA-Z_$.<>]*)))";
-    public static final String CATCH_PATTERN = "((catch\\()(\\w*)(:)(\\w*)(\\).*))";
+    public static final String CATCH_PATTERN = "((catch\\s*\\()(\\w*)(:)(\\w*)(\\).*))";
     public static final String TRACE_INFO_PATTERN = "((trace)(\\(.*)(\\)))";
-    public static final String TRACE_ERROR_PATTERN = "((trace|ACCLog.errorLog)(\\((\\\"Error|\\\"\\[Exception|error))(.*)(\\)))";
+    public static final String TRACE_ERROR_PATTERN = "((trace|ACCLog.errorLog)(\\((\\\"Error|\\\"stack|\\\"<< 例外発生|\\\"\\[Exception|error))(.*)(\\)))";
     public static final String ACC_LOG_ERROR_PATTERN = "((ACCLog.errorLog)(\\())";
     public static final String SERVICE_URI_PATTERN = ".?\\/acc_web\\/services\\/.*";
     public static final String SET_CLEAR_FORM_PATTERN = "clearFrame|setFrame|clearForm|setForm";
@@ -33,6 +33,8 @@ public class Constants {
     public static final String STATEMENT_END_PATTERN = "[;\\r\\n]";
     public static final String NEW_DATETIME_PATTERN = "((new\\s+)(DateFormatter)(\\(\\)))";
     public static final String CLASS_NAME_PATTERN = "(MG\\d{7}_\\d{2}_\\d{3})";
+    public static final String BOOLEAN_TYPE_PATTERN = "(([\\t\\s])(Boolean)(\\s?))";
+    public static final String FOR_INIT_PATTERN = "((for\\()(byte|short|int|long)(\\s+)([a-zA-Z_$<>.*][0-9a-zA-Z_$<>.]*)(;))";
 
     public static final String SCRIPT_TAG = "mx:Script";
     public static final String XML_TAG = "mx:XML";
@@ -59,6 +61,13 @@ public class Constants {
     public static final String MXML_MX_HEADER_RENDERER = "mx:headerRenderer";
     public static final String MXML_MX_COMPONENT = "mx:Component";
     public static final String MXML_CONTROLS_ACC_RADIO_BUTTON = "Controls:ACCRadioButton";
+    public static final String MXML_CONTROLS_ACC_RADIO_BUTTON_GROUP = "Controls:ACCRadioButtonGroup";
+    public static final String MXML_CONTAINERS_ACC_TAB_NAVIGATOR = "Containers:ACCTabNavigator";
+    public static final String MXML_ROOT_NODE = "RootNode";
+
+    // xhtml tag
+    public static final String XHTML_P_TAB = "p:tab";
+    public static final String XHTML_H_OUTPUT_TEXT = "h:outputText";
 
     // java type
     public static final String CLASS_CONTROLLER = "Controller";

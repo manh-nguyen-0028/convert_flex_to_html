@@ -14,4 +14,5 @@ public class TransformerSpecialElement {
     private String htmlTagStart2;
     private String htmlTagStart3;
     private String htmlTagEnd;
+    private boolean isUseAjaxTag;
 }

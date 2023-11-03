@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config version="2.2" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
+
+	<component>
+		<component-type>jp.co.nissho_ele.acc.framework.tag.ACCFocus</component-type>
+		<component-class>jp.co.nissho_ele.acc.framework.tag.ACCFocus</component-class>
+	</component>
+
+	<render-kit>
+		<renderer>
+			<component-family>jp.co.nissho_ele.acc.framework.tag</component-family>
+			<renderer-type>jp.co.nissho_ele.acc.framework.tag.ACCFocusRenderer</renderer-type>
+			<renderer-class>jp.co.nissho_ele.acc.framework.tag.ACCFocusRenderer</renderer-class>
+		</renderer>
+		<renderer>
+			<component-family>org.primefaces.component</component-family>
+			<renderer-type>org.primefaces.component.InputTextRenderer</renderer-type>
+			<renderer-class>jp.co.nissho_ele.acc.framework.tag.ACCInputTextRenderer</renderer-class>
+		</renderer>
+		<renderer>
+			<description><![CDATA[<script type="text/javascript" src="/acc_web/javax.faces.resource/xxx/xxx.js.xhtml?ln=acc_js&v=xxx"></script>]]></description>
+			<component-family>javax.faces.Output</component-family>
+			<renderer-type>javax.faces.resource.Script</renderer-type>
+			<renderer-class>jp.co.nissho_ele.acc.framework.tag.ACCScriptRenderer</renderer-class>
+			<attribute>
+				<description></description>
+				<display-name>Library Name</display-name>
+				<icon/>
+				<attribute-name>library</attribute-name>
+				<attribute-class>java.lang.String</attribute-class>
+				<attribute-extension>
+					<required>false</required>
+					<tag-attribute>true</tag-attribute>
+				</attribute-extension>
+			</attribute>
+			<attribute>
+				<description></description>
+				<display-name>Resource Name</display-name>
+				<icon/>
+				<attribute-name>name</attribute-name>
+				<attribute-class>java.lang.String</attribute-class>
+				<attribute-extension>
+					<required>true</required>
+					<tag-attribute>true</tag-attribute>
+				</attribute-extension>
+			</attribute>
+			<attribute>
+				<description></description>
+				<display-name>Target</display-name>
+				<icon/>
+				<attribute-name>target</attribute-name>
+				<attribute-class>java.lang.String</attribute-class>
+				<attribute-extension>
+					<required>false</required>
+					<tag-attribute>true</tag-attribute>
+				</attribute-extension>
+			</attribute>
+			<renderer-extension>
+				<jsp-ignore>true</jsp-ignore>
+				<renders-children>true</renders-children>
+			</renderer-extension>
+		</renderer>
+		<renderer>
+			<description><![CDATA[<link type="text/css" rel="stylesheet" href="/acc_web/javax.faces.resource/xxx/xxx.css.xhtml?ln=acc_css&v=xxx"/>]]></description>
+			<component-family>javax.faces.Output</component-family>
+			<renderer-type>javax.faces.resource.Stylesheet</renderer-type>
+			<renderer-class>jp.co.nissho_ele.acc.framework.tag.ACCStylesheetRenderer</renderer-class>
+			<attribute>
+				<description></description>
+				<display-name>Library Name</display-name>
+				<icon/>
+				<attribute-name>library</attribute-name>
+				<attribute-class>java.lang.String</attribute-class>
+				<attribute-extension>
+				<required>false</required>
+				<tag-attribute>true</tag-attribute>
+				</attribute-extension>		
+			</attribute>
+			<attribute>
+				<description></description>
+				<display-name>Resource Name</display-name>
+				<icon/>
+				<attribute-name>name</attribute-name>
+				<attribute-class>java.lang.String</attribute-class>
+				<attribute-extension>
+				<required>true</required>
+				<tag-attribute>true</tag-attribute>
+				</attribute-extension>
+			</attribute>
+			<attribute>
+				<description></description>
+				<display-name>Media</display-name>
+				<icon/>
+				<attribute-name>media</attribute-name>
+				<attribute-class>java.lang.String</attribute-class>
+				<attribute-extension>
+				<required>false</required>
+				<tag-attribute>true</tag-attribute>
+				</attribute-extension>
+			</attribute>
+			<renderer-extension>
+				<jsp-ignore>true</jsp-ignore>
+				<renders-children>true</renders-children>
+			</renderer-extension>
+		</renderer>
+
+	</render-kit>
+</faces-config>

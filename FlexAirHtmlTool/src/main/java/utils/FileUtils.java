@@ -1,7 +1,10 @@
 package utils;
 
+import constants.Constants;
+
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +40,7 @@ public class FileUtils {
             if (!directory.exists()) {
                 Files.createDirectories(Paths.get(folder));
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -47,7 +50,7 @@ public class FileUtils {
      */
     private static void readDirectory(String currentFolder, String parentFolder, Map<String, List<String>> pkList) {
         File directory = new File(currentFolder);
-        String pkStr = StringUtils.isNullOrEmpty(parentFolder) ? directory.getName() : parentFolder + File.separator + directory.getName();
+        String pkStr = CommonUtils.isNullOrEmpty(parentFolder) ? directory.getName() : parentFolder + File.separator + directory.getName();
         List<String> filePaths = new ArrayList<>();
         File[] files = directory.listFiles();
         for (File file : files) {
@@ -106,5 +109,14 @@ public class FileUtils {
             ex.printStackTrace();
         }
         return result;
+    }
+
+    public static String getFileNameMxml(String filePath) {
+        return getFileName(filePath, Constants.MXML_EXT);
+    }
+
+    public static String getFileName(String filePath, String suffixFile) {
+        Path inputFilePath = Paths.get(filePath);
+        return inputFilePath.getFileName().toString().split(suffixFile)[0];
     }
 }

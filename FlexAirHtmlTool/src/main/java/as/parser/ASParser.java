@@ -9,7 +9,7 @@ import constants.Constants;
 import constants.ReservedWords;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import utils.StringUtils;
+import utils.CommonUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,6 @@ public class ASParser {
     private Stack<String> stack;
     private String src;
     private String classPath;
-    private ParserOptions parserOptions;
 
     public ASParser() {
     }
@@ -36,10 +35,9 @@ public class ASParser {
     /**
      * Parse content
      */
-    public ASClass parse(ParserOptions options, Stack<String> stack) {
+    public ASClass parse(Stack<String> stack) {
         logger.info("Starting parser class....................");
-        parserOptions = options == null ? new ParserOptions() : options;
-        ASClass classDefinition = new ASClass(parserOptions);
+        ASClass classDefinition = new ASClass();
         this.stack = stack;
         //
         parseHelper(classDefinition, getSrc());
@@ -58,8 +56,6 @@ public class ASParser {
         String[] tmpArr;
         ASMember currMember = null;
         int index;
-        // Replace [Bindable] annotation
-        src = src.replaceAll("\\[Bindable\\]", "");
         for (index = 0; index < src.length(); index++) {
             if (ASParseState.START.equals(getState())) {
                 //String together letters only until we reach a non-letter
@@ -83,7 +79,6 @@ public class ASParser {
                         cls.setPackageName(currToken.getToken()); //Just grab the package name
                     }
                     logger.debug("Found package: " + cls.getPackageName());
-                    cls.getImportWildcards().add(fixClassPath(cls.getPackageName() + ".*")); //Add wild card for its own folder
                     stack.add(ASParseState.PACKAGE);
                     logger.info("Parsing package end.................");
                     logger.debug("Attempting to parse package...");
@@ -111,16 +106,12 @@ public class ASParser {
                     throw new Error("Error parsing import.");
                 } else {
                     logger.debug("Parsed import name: " + currToken.getToken());
-                    if (currToken.getToken().contains("*")) {
-                        cls.getImportWildcards().add(currToken.getToken()); //To be resolved later
-                    } else {
-                        // Remove CURLY_BRACE
-                        String prevExtra = removeCurlyBrace(prevTokenImport.getExtra());
-                        // Import token contains special characters as \n \r \t to format data
-                        String importToken = prevExtra + prevTokenImport.getToken() + currToken.getExtra() + currToken.getToken();
-                        importToken = importToken.replaceAll("\\t", "");
-                        cls.getImports().add(importToken); //No need to resolve
-                    }
+                    // Remove CURLY_BRACE
+                    String prevExtra = removeCurlyBrace(prevTokenImport.getExtra());
+                    // Import token contains special characters as \n \r \t to format data
+                    String importToken = prevExtra + prevTokenImport.getToken() + currToken.getExtra() + currToken.getToken();
+                    importToken = importToken.replaceAll("\\t", "");
+                    cls.getImports().add(importToken); //No need to resolve
                     stack.add(ASParseState.PACKAGE);
                 }
             } else if (ASParseState.CLASS_NAME.equals(getState())) {
@@ -175,11 +166,11 @@ public class ASParser {
                 if (currToken.getToken() == null) continue;
                 //------------------------------------------------------
                 //For generate model class
+                if (CommonUtils.isNullOrEmpty(cls.getClassName())) {
+                    cls.setClassName(getClassPath() + ReservedWords.MODEL);
+                    cls.setOrgClassName(getClassPath());
+                }
                 if (currToken.getToken().equals(ASKeyword.IMPORT)) {
-                    if (StringUtils.isNullOrEmpty(cls.getClassName())) {
-                        cls.setClassName(getClassPath() + ReservedWords.MODEL);
-                        cls.setOrgClassName(getClassPath());
-                    }
                     prevTokenImport = currToken;
                     logger.debug("Found import keyword...");
                     //The current token is a class import
@@ -189,17 +180,13 @@ public class ASParser {
                         throw new Error("Error parsing import.");
                     } else {
                         logger.debug("Parsed import name: " + currToken.getToken());
-                        if (currToken.getToken().contains("*")) {
-                            cls.getImportWildcards().add(currToken.getToken()); //To be resolved later
-                        } else {
-                            // cls.getImports().add(currToken.getToken()); //No need to resolve
-                            // Remove CURLY_BRACE
-                            String prevExtra = removeCurlyBrace(prevTokenImport.getExtra());
-                            // Import token contains special characters as \n \r \t to format data
-                            String importToken = prevExtra + prevTokenImport.getToken() + currToken.getExtra() + currToken.getToken();
-                            importToken = importToken.replaceAll("\\t", "");
-                            cls.getImports().add(importToken); //No need to resolve
-                        }
+                        // cls.getImports().add(currToken.getToken()); //No need to resolve
+                        // Remove CURLY_BRACE
+                        String prevExtra = removeCurlyBrace(prevTokenImport.getExtra());
+                        // Import token contains special characters as \n \r \t to format data
+                        String importToken = prevExtra + prevTokenImport.getToken() + currToken.getExtra() + currToken.getToken();
+                        importToken = importToken.replaceAll("\\t", "");
+                        cls.getImports().add(importToken); //No need to resolve
                     }
                 }
                 //------------------------------------------------------
@@ -209,10 +196,17 @@ public class ASParser {
                             || currToken.getToken().equals(ASEncapsulation.PRIVATE)
                             || currToken.getToken().equals(ASEncapsulation.PROTECTED))) {
                         currMember.setEncapsulation(currToken.getToken());
-                        currMember.setComment(removeCurlyBrace(currToken.getExtra()));
+                        currMember.setBindable(currToken.isBindable());
+                        if (CommonUtils.isNullOrEmpty(currMember.getComment())) {
+                            // Replace [Bindable] annotation
+                            currMember.setComment(removeCurlyBrace(currToken.getExtra().replaceAll("\\[Bindable\\]", "")));
+                        }
                         logger.debug("->Member encapsulation set to " + currMember.getEncapsulation());
                     } else if (currToken.getToken() != null && currToken.getToken().equals(ASKeyword.STATIC)) {
                         currMember.setStatic(true);
+                        if (CommonUtils.isNullOrEmpty(currMember.getEncapsulation())) {
+                            currMember.setComment(removeCurlyBrace(currToken.getExtra()));
+                        }
                         logger.debug("-->Static flag set");
                     } else if (currToken.getToken() != null && (currToken.getToken().equals(ASMemberType.VAR)
                             || currToken.getToken().equals(ASMemberType.CONST))) {
@@ -266,7 +260,7 @@ public class ASParser {
                         currMember.setValue(tmpArr[0].trim());
                         index = Integer.parseInt(tmpArr[1]) - 1;
                         // Check initialize model variable
-                        if (StringUtils.isMatched(Constants.MODEL_VARIABLE_PATTERN, currMember.getValue())) {
+                        if (CommonUtils.isMatched(Constants.MODEL_VARIABLE_PATTERN, currMember.getValue())) {
                             currMember.setValue(" new " + currMember.getType() + "()");
                         }
                         cls.getMembersWithAssignments().add(currMember);
@@ -298,7 +292,7 @@ public class ASParser {
                 tmpArr = null; //Trash this
                 tmpArr = tmpStr.split(Constants.COMMA_STRING); //Split args by commas
                 //Don't bother if there are no arguments
-                if (tmpArr.length > 0 && !StringUtils.isNullOrEmpty(tmpArr[0])) {
+                if (tmpArr.length > 0 && !CommonUtils.isNullOrEmpty(tmpArr[0])) {
                     //Truncate spaces and assign values to arguments as needed
                     for (String s : tmpArr) {
                         tmpStr = s;
@@ -320,7 +314,7 @@ public class ASParser {
                             //If a colon was next, we'll assume it was typed and grab it
                             if (tmpToken.getIndex() < tmpStr.length() && tmpStr.charAt(tmpToken.getIndex()) == ':') {
                                 tmpToken = nextWord(tmpStr, tmpToken.getIndex(), ASPattern.VARIABLE_TYPE[0], ASPattern.VARIABLE_TYPE[1]); //Parse out the argument type
-                                tmpFunction.getArgList().get(tmpFunction.getArgList().size() - 1).setType(tmpToken.getToken()); //Set the argument type
+                                tmpFunction.getArgList().get(tmpFunction.getArgList().size() - 1).setType(CommonUtils.convertType(tmpToken.getToken())); //Set the argument type
                                 logger.debug("----->Function argument typed to: " + tmpToken.getToken());
                             }
                             tmpToken = nextWord(tmpStr, tmpToken.getIndex(), ASPattern.ASSIGN_START[0], ASPattern.ASSIGN_START[1]);
@@ -337,68 +331,26 @@ public class ASParser {
                         }
                     }
                 }
-                logger.debug("------>Completed paring args: " + ((ASFunction) currMember).getArgList().toString());
+                logger.debug("------>Completed paring args: " + ((ASFunction) currMember).getArgList().size() + " args");
                 //Type the function if needed
                 if (src.charAt(index + 1) == Constants.COLON_CHAR) {
                     tmpToken = nextWord(src, index + 1, ASPattern.VARIABLE_TYPE[0], ASPattern.VARIABLE_TYPE[1]); //Parse out the function type if needed
                     index = tmpToken.getIndex();
-                    currMember.setType(tmpToken.getToken());
+                    currMember.setType(CommonUtils.convertType(tmpToken.getToken()));
                     logger.debug("------>Typed the function to: " + currMember.getType());
                 }
-                if (cls.isInterface()) {
-                    //Store and delete current member and exit
-                    currMember.setValue("{}");
-                    if (currMember.getSubType().equals(ASKeyword.GET)) {
-                        if ((currMember.isStatic())) {
-                            cls.getStaticGetters().add(currMember);
-                        } else {
-                            cls.getGetters().add(currMember);
-                        }
-                    } else if (currMember.getSubType().equals(ASKeyword.SET)) {
-                        if ((currMember.isStatic())) {
-                            cls.getStaticSetters().add(currMember);
-                        } else {
-                            cls.getSetters().add(currMember);
-                        }
-                    } else if (currMember.isStatic()) {
-                        cls.getStaticMembers().add(currMember);
-                    } else {
-                        cls.getMembers().add(currMember);
-                    }
-                    cls.registerField(currMember.getName(), currMember);
-                    //Done parsing function
-                    currMember = null;
-                    stack.pop();
-                } else {
-                    //Save the function body
-                    PREVIOUS_BLOCK = currMember.getName() + ":Function";
-                    tmpArr = extractBlock(src, index, null, null);
-                    index = Integer.parseInt(tmpArr[1]);
-                    currMember.setValue(tmpArr[0]);
+                //Save the function body
+                PREVIOUS_BLOCK = currMember.getName() + ":Function";
+                tmpArr = extractBlock(src, index, null, null);
+                index = Integer.parseInt(tmpArr[1]);
+                currMember.setValue(tmpArr[0]);
 
-                    //Store and delete current member and exit
-                    if (currMember.getSubType() != null && currMember.getSubType().equals(ASKeyword.GET)) {
-                        if ((currMember.isStatic())) {
-                            cls.getStaticGetters().add(currMember);
-                        } else {
-                            cls.getGetters().add(currMember);
-                        }
-                    } else if (currMember.getSubType() != null && currMember.getSubType().equals(ASKeyword.SET)) {
-                        if ((currMember.isStatic())) {
-                            cls.getStaticSetters().add(currMember);
-                        } else {
-                            cls.getSetters().add(currMember);
-                        }
-                    } else if (currMember.isStatic()) {
-                        cls.getStaticMembers().add(currMember);
-                    } else {
-                        cls.getMembers().add(currMember);
-                    }
-                    cls.registerField(currMember.getName(), currMember);
+                //Store and delete current member and exit
+                cls.getMembers().add(currMember);
+                cls.registerField(currMember.getName(), currMember);
 
-                    currMember = null;
-                    stack.pop();
-                }
+                currMember = null;
+                stack.pop();
             }
         }
         logger.info("Parsing class end.................");
@@ -415,15 +367,27 @@ public class ASParser {
         String tokenBuffer = null;
         String extraBuffer = ""; // Contains characters that were missed
         boolean escapeToggle = false;
+        boolean isBindable = false;
         String innerState = null;
         for (; index < src.length(); index++) {
             char c = src.charAt(index);
+            // Check isBindable properties
+            if (c == Constants.BINDABLE_CHAR_OPEN) {
+                String[] bindableStr = extractBlock(src, index, String.valueOf(Constants.BINDABLE_CHAR_OPEN)
+                        , String.valueOf(Constants.BINDABLE_CHAR_CLOSE));
+                if (bindableStr != null && bindableStr.length > 0 && Constants.BINDABLE_TEXT.equals(bindableStr[0])) {
+                    isBindable = true;
+                    index = Integer.parseInt(bindableStr[1]);
+                    c = src.charAt(index);
+                    extraBuffer += bindableStr[0];
+                }
+            }
             String tmpStrComment = "";
             if (src.length() > index + 2) { // && (c == '*' || c == '/')
                 tmpStrComment = src.substring(index, index + 2);
             }
             if (String.valueOf(c).matches(characters) || ((tokenBuffer + c).matches(characters))) {
-                tokenBuffer = !StringUtils.isNullOrEmpty(tokenBuffer) ? tokenBuffer + c : String.valueOf(c); // Create new token buffer if
+                tokenBuffer = !CommonUtils.isNullOrEmpty(tokenBuffer) ? tokenBuffer + c : String.valueOf(c); // Create new token buffer if
                 // needed, otherwise append
             } else if (innerState == null && ASParser.checkForCommentOpen(tmpStrComment) != null
                     && tokenBuffer == null) {
@@ -471,8 +435,8 @@ public class ASParser {
                     }
                     escapeToggle = false;
                 }
-            } else if (!StringUtils.isNullOrEmpty(tokenBuffer) && StringUtils.isMatched(pattern, tokenBuffer)) {
-                return new ASToken(tokenBuffer, index, extraBuffer); // [Token, Index]
+            } else if (!CommonUtils.isNullOrEmpty(tokenBuffer) && CommonUtils.isMatched(pattern, tokenBuffer)) {
+                return new ASToken(tokenBuffer, index, extraBuffer, isBindable); // [Token, Index]
             } else {
                 if (tokenBuffer != null) {
                     extraBuffer += tokenBuffer + c;
@@ -482,7 +446,7 @@ public class ASParser {
                 tokenBuffer = null;
             }
         }
-        return new ASToken(tokenBuffer, index, extraBuffer); // Return an ASToken object instead of an array of mixed
+        return new ASToken(tokenBuffer, index, extraBuffer, isBindable); // Return an ASToken object instead of an array of mixed
         // types
     }
 
@@ -490,8 +454,8 @@ public class ASParser {
      * Extract block code start with open and close brace
      */
     private String[] extractBlock(String text, int start, String opening, String closing) {
-        opening = StringUtils.getDefaultValueString(opening, "{");
-        closing = StringUtils.getDefaultValueString(closing, "}");
+        opening = CommonUtils.getDefaultValueString(opening, "{");
+        closing = CommonUtils.getDefaultValueString(closing, "}");
         String buffer = "";
         int i = start;
         int count = 0;
@@ -627,7 +591,7 @@ public class ASParser {
             result += currToken.getExtra(); //<-Puts all other non-identifier characters into the buffer first
             tmpMember = ASParser.checkStack(stack, currToken.getToken()); //<-Check the stack for a member with this identifier already
             index = currToken.getIndex();
-            if (!StringUtils.isNullOrEmpty(currToken.getToken())) {
+            if (!CommonUtils.isNullOrEmpty(currToken.getToken())) {
                 if (currToken.getToken().equals("this")) {
                     //No need to perform any extra checks on the subsequent token
                     tmpStatic = false;
@@ -652,13 +616,15 @@ public class ASParser {
                             && prevToken.getToken().equals(ReservedWords.VAR))) {
                         tmpMember = cls.retrieveField(currToken.getToken(), tmpStatic); //<-Reconciles the type of the current variable
                         {
-                            if (tmpStatic) {
-                                objBuffer += (cls.getClassName().equals(currToken.getToken())) ? currToken.getToken() : cls.getClassName() + "." + currToken.getToken();
-                                result += (cls.getClassName().equals(currToken.getToken())) ? currToken.getToken() : cls.getClassName() + "." + currToken.getToken();
-                            } else {
-                                objBuffer += currToken.getToken();
-                                result += currToken.getToken();
-                            }
+//                            if (tmpStatic) {
+//                                objBuffer += (cls.getClassName().equals(currToken.getToken())) ? currToken.getToken() : cls.getClassName() + "." + currToken.getToken();
+//                                result += (cls.getClassName().equals(currToken.getToken())) ? currToken.getToken() : cls.getClassName() + "." + currToken.getToken();
+//                            } else {
+//                                objBuffer += currToken.getToken();
+//                                result += currToken.getToken();
+//                            }
+                            objBuffer += currToken.getToken();
+                            result += currToken.getToken();
                         }
                     } else {
                         //TODO
@@ -677,12 +643,18 @@ public class ASParser {
                                 && ReservedWords.NEW.equals(prevToken.getToken())
                                 && fnText.charAt(index) == Constants.SEMICOLON_CHAR) {
                             result += currToken.getToken() + "()";
-                        } else if (StringUtils.isMatched(Constants.CLASS_NAME_PATTERN, currToken.getToken())
-                                && currToken.getExtra().trim().contains(Constants.EQUAL_OPERATOR))
-                        {
-                            result += ReservedWords.NEW + " " + currToken.getToken();
-                        }
-                        else {
+                        } else if (CommonUtils.isMatched(Constants.CLASS_NAME_PATTERN, currToken.getToken())
+                                && currToken.getExtra().trim().equals(Constants.EQUAL_OPERATOR)
+                                && fnText.charAt(index) == '(') {
+                            //Extract param
+                            String[] paramBlock = extractBlock(fnText, index, "(", ")");
+                            int lastBlockIndex = Integer.parseInt(paramBlock[1]);
+                            if (fnText.charAt(lastBlockIndex) == Constants.SEMICOLON_CHAR) {
+                                result += ReservedWords.NEW + " " + currToken.getToken();
+                            } else {
+                                result += currToken.getToken();
+                            }
+                        } else {
                             result += currToken.getToken();
                         }
                     }
@@ -709,7 +681,9 @@ public class ASParser {
                 for (; index < fnText.length(); index++) {
                     //Loop until we stop parsing a variable declaration
                     if (fnText.charAt(index) == '.') {
-                        boolean parsingVector = (prevToken != null && prevToken.getToken().equals("new") && currToken.getToken().equals("Vector"));
+                        boolean parsingVector = (prevToken != null
+                                && prevToken.getToken().equals(ReservedWords.NEW)
+                                && currToken.getToken().equals("Vector"));
                         prevToken = currToken;
                         if (parsingVector) {
                             //We need to allow asterisk
@@ -728,10 +702,10 @@ public class ASParser {
                                 index = currToken.getIndex();
                                 // Convert datetime
                                 if (fnText.charAt(index) == '"') {
-                                    result += " = new SimpleDateFormat(\"" + currToken.getToken() + "\")";
+                                    result += " = " + ReservedWords.NEW + " " + ReservedWords.SIMPLEDATEFORMAT + "(\"" + currToken.getToken() + "\")";
                                     index++;
                                 } else {
-                                    result += " = new SimpleDateFormat(" + currToken.getExtra() + ")";
+                                    result += " = " + ReservedWords.NEW + " " + ReservedWords.SIMPLEDATEFORMAT + "(" + currToken.getExtra() + ")";
                                 }
                                 index--;
                                 break;
@@ -845,6 +819,11 @@ public class ASParser {
         result = result.replaceAll(Constants.INIT_FOR_PATTERN, "$2$3 = $3$4");
         // convert variable
         result = result.replaceAll(Constants.FUNC_VARIABLE_PATTERN, "$6$3");
+        // Convert variable type
+        result = result.replaceAll(Constants.BOOLEAN_TYPE_PATTERN, "$2" + ReservedWords.BOOLEAN + "$4");
+        // Convert init for statement:
+        // for(int i;i<this.codeMaster.length;i++) => for(int i = 0;i<this.codeMaster.length;i++)
+        result = result.replaceAll(Constants.FOR_INIT_PATTERN, "$2$3$4$5 = 0$6");
         return new String[]{result, String.valueOf(index)};
     }
 
@@ -934,7 +913,7 @@ public class ASParser {
         tmpArr = null; // Trash this
         tmpArr = tmpStr.split(Constants.COMMA_STRING); // Split args by commas
         // Don't bother if there are no arguments
-        if (tmpArr.length > 0 && !StringUtils.isNullOrEmpty(tmpArr[0])) {
+        if (tmpArr.length > 0 && !CommonUtils.isNullOrEmpty(tmpArr[0])) {
             // Truncate spaces and assign values to arguments as needed
             for (int i = 0; i < tmpArr.length; i++) {
                 tmpStr = tmpArr[i].trim();
@@ -1050,7 +1029,7 @@ public class ASParser {
      * Remove curly brace '{'
      */
     private String removeCurlyBrace(String value) {
-        if (StringUtils.isNullOrEmpty(value)) return "";
+        if (CommonUtils.isNullOrEmpty(value)) return "";
         int braceIndex = value.indexOf(Constants.CURLY_BRACE);
         if (braceIndex != -1) {
             return value.substring(braceIndex + 1);
@@ -1076,7 +1055,7 @@ public class ASParser {
      * ex: MG1001001_01_000_AS => MG1001001_01_000
      */
     private String removeSuffixAS(String value) {
-        if (StringUtils.isNullOrEmpty(value)) {
+        if (CommonUtils.isNullOrEmpty(value)) {
             return value;
         }
         if (value.length() > 3 && value.endsWith(ASKeyword.ASSUFFIX)) {
@@ -1088,14 +1067,6 @@ public class ASParser {
     //----------------------------------------------
     // getterとsetter生成
     //----------------------------------------------
-    public ParserOptions getParserOptions() {
-        return parserOptions;
-    }
-
-    public void setParserOptions(ParserOptions parserOptions) {
-        this.parserOptions = parserOptions;
-    }
-
     public Stack<String> getStack() {
         return stack;
     }

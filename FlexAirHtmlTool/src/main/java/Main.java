@@ -1,7 +1,10 @@
 import constants.Constants;
 import main.ASConvert;
 import main.MxmlConvert;
+import mxml.config.XhtmlConfig;
 import org.apache.commons.cli.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import utils.FileUtils;
 
 import java.io.File;
@@ -11,6 +14,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Main {
+    private static final Logger logger = LogManager.getLogger(ASConvert.class);
+
     public static void main(String[] args) {
         ASConvert asConvert;
         MxmlConvert mxmlConvert;
@@ -32,39 +37,47 @@ public class Main {
         } catch (org.apache.commons.cli.ParseException e) {
             e.printStackTrace();
             formatter.printHelp("Parameters", options);
+            logger.error(e);
             System.exit(1);
         }
         // Get params argument
         String outputPath = cmd.getOptionValue("output");
         String inputPath = cmd.getOptionValue("input");
         // Get all files from input folder
-        Map<String, List<String>> files = FileUtils.getAllFiles(inputPath);
-        Map<String, String> pkgFileMapping = new HashMap<>();
-        // parse all files
-        for (String pk : files.keySet()) {
-            List<String> filePath = files.get(pk);
-            String savePath = outputPath + File.separator + pk;
-            // Create if output folder is not exist
-            FileUtils.createIfNotExistFolder(savePath);
-            // mxml files
-            List<String> mxmlFiles = filePath.stream().filter(f -> f.endsWith(Constants.MXML_EXT)).collect(Collectors.toList());
-            // Convert action script files
-            List<String> asFiles = filePath.stream().filter(f -> f.endsWith(Constants.AS_EXT)).collect(Collectors.toList());
-            for (String file : asFiles) {
-                asConvert = new ASConvert();
-                // Action script convert
-                asConvert.convert(file, savePath);
-                pkgFileMapping.put(asConvert.getClassName(), asConvert.getPackageName());
+        try {
+            Map<String, List<String>> files = FileUtils.getAllFiles(inputPath);
+            Map<String, String> pkgFileMapping = new HashMap<>();
+            // parse all files
+            for (String pk : files.keySet()) {
+                List<String> filePath = files.get(pk);
+                String savePath = outputPath + File.separator + pk;
+                // Create if output folder is not exist
+                FileUtils.createIfNotExistFolder(savePath);
+                // mxml files
+                List<String> mxmlFiles = filePath.stream().filter(f -> f.endsWith(Constants.MXML_EXT)).collect(Collectors.toList());
+                // Convert action script files
+                List<String> asFiles = filePath.stream().filter(f -> f.endsWith(Constants.AS_EXT)).collect(Collectors.toList());
+                for (String file : asFiles) {
+                    asConvert = new ASConvert();
+                    // Action script convert
+//                    asConvert.convert(file, savePath);
+//                    pkgFileMapping.put(asConvert.getClassName(), asConvert.getPackageName());
+                }
+                // Convert mxml files
+                List<XhtmlConfig> xhtmlConfigs = mxmlFiles.stream().map(item -> new XhtmlConfig(item, FileUtils.getFileNameMxml(item))).collect(Collectors.toList());
+                Map<String, XhtmlConfig> xhtmlConfigMap = xhtmlConfigs.stream().collect(Collectors.toMap(item -> item.getFileName(), item -> item));
+                // Convert mxml files
+                for (String file : mxmlFiles) {
+                    // Mxml convert
+                    mxmlConvert = new MxmlConvert();
+                    mxmlConvert.convert(file, savePath, xhtmlConfigMap);
+                    // Script inline convert
+//                    ASConvert asConvertInline = new ASConvert();
+//                    asConvertInline.convertScriptInline(mxmlConvert.getScriptInline(), mxmlConvert.getXmlObjectInline(), savePath, file, pkgFileMapping);
+                }
             }
-            // Convert mxml files
-            for (String file : mxmlFiles) {
-                // Mxml convert
-                mxmlConvert = new MxmlConvert();
-                mxmlConvert.convert(file, savePath);
-                // Script inline convert
-                ASConvert asConvertInline = new ASConvert();
-                asConvertInline.convertScriptInline(mxmlConvert.getScriptInline(), mxmlConvert.getXmlObjectInline(), savePath, file, pkgFileMapping);
-            }
+        } catch (Exception ex) {
+            logger.error(ex);
         }
     }
 }

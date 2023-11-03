@@ -92,7 +92,7 @@
   },
   {
     "name": "readOnly",
-    "convertTo": "readonly",
+    "convertTo": "readOnly",
     "endTag": "",
     "valueCompareTrue": true,
     "type": "property"
@@ -141,14 +141,20 @@
   },
   {
     "name": "allowMultipleSelection",
-    "convertTo": "selectionMode=\"multiple\"",
+    "convertTo": "selectionMode",
     "endTag": "",
     "valueCompareTrue": true,
     "type": "property"
   },
   {
     "name": "dragEnabled",
-    "convertTo": "draggable",
+    "convertTo": "draggableColumns",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "property"
+  },{
+    "name": "dragMoveEnabled",
+    "convertTo": "resizableColumns",
     "endTag": "",
     "valueCompareTrue": false,
     "type": "property"
@@ -156,6 +162,12 @@
   {
     "name": "dragDrop",
     "convertTo": "dragListener",
+    "endTag": "",
+    "valueCompareTrue": false,
+    "type": "property"
+  },{
+    "name": "verticalScrollPolicy",
+    "convertTo": "scrollable",
     "endTag": "",
     "valueCompareTrue": false,
     "type": "property"
@@ -211,7 +223,7 @@
   },
   {
     "name": "change",
-    "convertTo": "onchange",
+    "convertTo": "change",
     "endTag": "",
     "valueCompareTrue": false,
     "type": "js"

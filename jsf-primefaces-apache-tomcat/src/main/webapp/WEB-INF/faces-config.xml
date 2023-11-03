@@ -1,0 +1,24 @@
+<faces-config version="2.2"
+              xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
+    <managed-bean>
+        <managed-bean-name>user</managed-bean-name>
+        <managed-bean-class>com.codenotfound.primefaces.model.User</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+
+<!--    <navigation-rule>-->
+<!--        <from-view-id>/login.xhtml</from-view-id>-->
+<!--        <navigation-case>-->
+<!--            <from-outcome>success</from-outcome>-->
+<!--            <to-view-id>/userDetail.xhtml</to-view-id> &lt;!&ndash; Đặt tên trang chi tiết của người dùng &ndash;&gt;-->
+<!--            <redirect/>-->
+<!--        </navigation-case>-->
+<!--        <navigation-case>-->
+<!--            <from-outcome>failure</from-outcome>-->
+<!--            <to-view-id>/failure.xhtml</to-view-id>-->
+<!--        </navigation-case>-->
+<!--    </navigation-rule>-->
+
+</faces-config>

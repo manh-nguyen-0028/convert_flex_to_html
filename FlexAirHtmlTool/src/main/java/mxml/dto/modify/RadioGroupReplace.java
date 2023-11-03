@@ -14,5 +14,6 @@ public class RadioGroupReplace {
     }
 
     private String groupId;
+    private AjaxEvent ajaxEvent;
     List<String> selectItemList = new ArrayList<>();
 }

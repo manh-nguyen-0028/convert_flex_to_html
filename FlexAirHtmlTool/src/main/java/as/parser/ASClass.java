@@ -8,7 +8,7 @@ import as.types.ASVariable;
 import constants.Constants;
 import constants.ReservedWords;
 import constants.Templates;
-import utils.StringUtils;
+import utils.CommonUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,18 +20,9 @@ public class ASClass {
     private String className;
     private String orgClassName;
     private List<String> imports;
-    private List<String> requires;
-    private List<String> importWildcards;
-    private List<String> importExtras;
-    private List<String> interfaces;
     private String parent;
     private ASClass parentDefinition;
     private List<ASMember> members;
-    private List<ASMember> staticMembers;
-    private List<ASMember> getters;
-    private List<ASMember> setters;
-    private List<ASMember> staticGetters;
-    private List<ASMember> staticSetters;
     private List<ASMember> importsPkg;
     private boolean isInterface;
     private List<ASMember> membersWithAssignments;
@@ -41,35 +32,13 @@ public class ASClass {
     private Map<String, ASClass> classMapFiltered;
     private Map<String, ASClass> packageMap;
 
-    // Options
-    private boolean safeRequire;
-    private boolean ignoreFlash;
-    public ASClass(ParserOptions options) {
-        options = options != null ? options : new ParserOptions();
-        safeRequire = false;
-
-        if (options.isSafeRequire()) {
-            safeRequire = options.isSafeRequire();
-        }
-        if (options.isIgnoreFlash()) {
-            ignoreFlash = options.isIgnoreFlash();
-        }
-
+    public ASClass() {
         packageName = null;
         className = null;
         imports = new ArrayList<>();
-        requires = new ArrayList<>();
-        importWildcards = new ArrayList<>();
-        importExtras = new ArrayList<>();
-        interfaces = new ArrayList<>();
         parent = null;
         parentDefinition = null;
         members = new ArrayList<>();
-        staticMembers = new ArrayList<>();
-        getters = new ArrayList<>();
-        setters = new ArrayList<>();
-        staticGetters = new ArrayList<>();
-        staticSetters = new ArrayList<>();
         membersWithAssignments = new ArrayList<>();
         isInterface = false;
         fieldMap = new HashMap<>();
@@ -96,8 +65,10 @@ public class ASClass {
             fieldMap.put(name, fieldMap.getOrDefault(name, value));
         }
     }
+
     public String generateModelString(Map<String, List<String>> xmlObjectInline) {
         StringBuilder buffer = new StringBuilder();
+        List<ASVariable> lstProperties = new ArrayList<>();
         //Process require package
         // Deal with static member assignments
         if (this.members.size() > 0) {
@@ -105,35 +76,21 @@ public class ASClass {
             for (ASMember m : this.members) {
                 if (m instanceof ASFunction) {
                     //Ignore setForm/clearForm
-                    if (StringUtils.isMatched(Constants.SET_CLEAR_FORM_PATTERN, m.getName())) continue;
-                    buffer.append(stringifyFunc(m, true));
+                    //if (StringUtils.isMatched(Constants.SET_CLEAR_FORM_PATTERN, m.getName())) continue;
+                    // buffer.append(stringifyFunc(m, true));
                 } else {
                     ASVariable currentVar = (ASVariable) m;
                     String type;
                     String value = m.getValue();
                     //Ignore service uri string
-                    if (StringUtils.isMatched(Constants.SERVICE_URI_PATTERN, value)) {
+                    if (CommonUtils.isMatched(Constants.SERVICE_URI_PATTERN, value)) {
                         continue;
                     }
-                    if (ASKeyword.NUMBER.equals(currentVar.getType())
-                            || ASKeyword.INT.equals(currentVar.getType())
-                            || ASKeyword.UINT.equals(currentVar.getType())) {
-                        type = ReservedWords.INT;
-                        if (!StringUtils.isNumeric(currentVar.getValue())) {
+                    type = CommonUtils.convertType(currentVar.getType());
+                    if (ReservedWords.INT.equals(type)) {
+                        if (!CommonUtils.isNumeric(currentVar.getValue())) {
                             value = "0";
                         }
-                    } else if (ASKeyword.BOOLEAN.equals(currentVar.getType())) {
-                        type = ReservedWords.BOOLEAN;
-                    } else if (ASKeyword.STRING.equals(currentVar.getType())) {
-                        type = ReservedWords.STRING;
-                    } else if (ASKeyword.DATEFORMATTER.equals(currentVar.getType())) {
-                        type = ReservedWords.SIMPLEDATEFORMAT;
-                    }
-//                    else if (getClassName().equals(currentVar.getType())) {
-//                        type = getClassName() + ReservedWords.MODEL;
-//                    }
-                    else {
-                        type = currentVar.getType();
                     }
                     // Remove call service variable
 
@@ -145,7 +102,7 @@ public class ASClass {
                                 .replace("{name}", m.getName())
                                 .replace("{value}", value);
                     } else {
-                        if (m.getValue() == null){
+                        if (m.getValue() == null) {
                             tmpVar = Templates.VARIABLE;
                             tmpVar = tmpVar.replace("{type}", type)
                                     .replace("{name}", m.getName());
@@ -155,34 +112,51 @@ public class ASClass {
                                     .replace("{name}", m.getName())
                                     .replace("{value}", value);
                         }
-                        tmpVar = tmpVar.replace("{const}", m.isConst() ? " final" : "");
-                        tmpVar = tmpVar.replace("{encap}", m.getEncapsulation());
                     }
+                    tmpVar = tmpVar.replace("{const}", m.isConst() ? " final" : "");
+                    tmpVar = tmpVar.replace("{encap}", m.getEncapsulation());
+
                     buffer.append(tmpVar);
                     buffer.append(";");
+                    //Add getter/setter for bindable property
+                    if (currentVar.isBindable()) {
+                        lstProperties.add(currentVar);
+                    }
                 }
                 buffer.append("\n");
             }
+
+            // getterとsetterの生成
+            StringBuilder propBuilder = new StringBuilder();
+            StringBuilder propGetSetBuilder = new StringBuilder();
+            StringBuilder[] getSetPPs;
+            //XML object
             if (xmlObjectInline != null && xmlObjectInline.size() > 0) {
                 for (String key : xmlObjectInline.keySet()) {
-                    buffer.append("\n");
                     List<String> properties = xmlObjectInline.get(key);
-                    StringBuilder propBuilder = new StringBuilder();
-                    StringBuilder propGetSetBuilder = new StringBuilder();
-                    String getSetStr = "";
                     for (String pp : properties) {
-                        propBuilder.append(Templates.VARIABLE_GET_SET.replace("{name}", pp));
-                        propBuilder.append("\n");
-                        //getterとsetterの生成
-                        getSetStr = Templates.FUNCTION_GET.replace("{pp}", pp).replace("{Pp}", StringUtils.capitalize(pp));
-                        propGetSetBuilder.append(getSetStr);
-                        getSetStr = Templates.FUNCTION_SET.replace("{pp}", pp).replace("{Pp}", StringUtils.capitalize(pp));
-                        propGetSetBuilder.append(getSetStr);
+                        getSetPPs = generateProperty(pp, ReservedWords.STRING);
+                        if (getSetPPs != null && getSetPPs.length > 0) {
+                            propBuilder.append(getSetPPs[0]);
+                            propGetSetBuilder.append(getSetPPs[1]);
+                        }
                     }
-                    buffer.append(propBuilder);
-                    buffer.append("\n");
-                    buffer.append(propGetSetBuilder);
                 }
+            }
+            //[Bindable] properties
+            for (ASVariable var : lstProperties) {
+                getSetPPs = generateProperty(var.getName(), CommonUtils.convertType(var.getType()));
+                if (getSetPPs != null && getSetPPs.length > 0) {
+                    //propBuilder.append(getSetPPs[0]);
+                    propGetSetBuilder.append(getSetPPs[1]);
+                }
+            }
+            if (propBuilder != null && propBuilder.length() > 0) {
+                buffer.append(propBuilder);
+                buffer.append("\n");
+            }
+            if (propGetSetBuilder != null && propGetSetBuilder.length() > 0) {
+                buffer.append(propGetSetBuilder);
             }
         }
         String result = buffer.toString();
@@ -195,6 +169,7 @@ public class ASClass {
         result = result.replaceAll("\n\t\t\t", "\n\t");
         return result;
     }
+
     public String generateString() {
         StringBuilder buffer = new StringBuilder();
         //Process require package
@@ -213,50 +188,36 @@ public class ASClass {
                 if (m instanceof ASFunction) {
                     buffer.append(stringifyFunc(m, false));
                 } else {
-                    ASVariable currentVar = (ASVariable)m;
+                    ASVariable currentVar = (ASVariable) m;
                     String type;
                     String value = currentVar.getValue();
-                    if (ASKeyword.NUMBER.equals(currentVar.getType())
-                            || ASKeyword.INT.equals(currentVar.getType())
-                            || ASKeyword.UINT.equals(currentVar.getType())) {
-                        type = ReservedWords.INT;
-                        if (!StringUtils.isNumeric(currentVar.getValue())) {
+                    type = CommonUtils.convertType(currentVar.getType());
+                    if (ReservedWords.INT.equals(type)) {
+                        if (!CommonUtils.isNumeric(currentVar.getValue())) {
                             value = "0";
                         }
-                    } else if (ASKeyword.BOOLEAN.equals(currentVar.getType())) {
-                        type = ReservedWords.BOOLEAN;
-                    } else if (ASKeyword.STRING.equals(currentVar.getType())) {
-                        type = ReservedWords.STRING;
-                    }
-                    else if (ASKeyword.DATEFORMATTER.equals(currentVar.getType())) {
-                        type = ReservedWords.SIMPLEDATEFORMAT;
-                        if (!StringUtils.isNullOrEmpty(value)) {
+                    } else if (ReservedWords.SIMPLEDATEFORMAT.equals(type)) {
+                        if (!CommonUtils.isNullOrEmpty(value)) {
                             value = value.replaceAll(Constants.NEW_DATETIME_PATTERN, "$2" + ReservedWords.SIMPLEDATEFORMAT + "$4");
                         }
                     }
-//                    else if (getClassName().equals(currentVar.getType())) {
-//                        type = getClassName() + ReservedWords.MODEL;
-//                    }
-                    else {
-                        type = currentVar.getType();
-                    }
                     buffer.append(currentVar.getComment());
                     String tmpVar = "";
-                   if (currentVar.isStatic()) {
-                       tmpVar = Templates.VARIABLE_STATIC;
-                       tmpVar = tmpVar.replace("{type}", type)
-                               .replace("{name}", m.getName())
-                               .replace("{value}", value);
-                   } else if (m.getValue() == null){
-                       tmpVar = Templates.VARIABLE;
-                       tmpVar = tmpVar.replace("{type}", type)
-                               .replace("{name}", m.getName());
-                   } else {
-                       tmpVar = Templates.VARIABLE_ASSIGN;
-                       tmpVar = tmpVar.replace("{type}", type)
-                               .replace("{name}", m.getName())
-                               .replace("{value}", value);
-                   }
+                    if (currentVar.isStatic()) {
+                        tmpVar = Templates.VARIABLE_STATIC;
+                        tmpVar = tmpVar.replace("{type}", type)
+                                .replace("{name}", m.getName())
+                                .replace("{value}", value);
+                    } else if (m.getValue() == null) {
+                        tmpVar = Templates.VARIABLE;
+                        tmpVar = tmpVar.replace("{type}", type)
+                                .replace("{name}", m.getName());
+                    } else {
+                        tmpVar = Templates.VARIABLE_ASSIGN;
+                        tmpVar = tmpVar.replace("{type}", type)
+                                .replace("{name}", m.getName())
+                                .replace("{value}", value);
+                    }
                     tmpVar = tmpVar.replace("{const}", m.isConst() ? " final" : "");
                     tmpVar = tmpVar.replace("{encap}", m.getEncapsulation());
                     buffer.append(tmpVar);
@@ -268,21 +229,29 @@ public class ASClass {
         result = result.replaceAll("\n\t\t", "\n\t");
         return result;
     }
+
     public String stringifyFunc(ASMember fn, boolean isModel) {
         StringBuilder buffer = new StringBuilder();
-        boolean isConstructor = false;
         if (fn instanceof ASFunction) {
-            ASFunction function = (ASFunction)fn;
+            ASFunction function = (ASFunction) fn;
             String fncStr = function.getComment();
+            String fncName = function.getName();
             if (function.isStatic()) {
                 // Static functions
                 fncStr += Templates.FUNCTION_STATIC;
             } else if (getOrgClassName().equals(function.getName())) {
                 // Constructor
                 fncStr += Templates.FUNCTION_CTOR;
-                isConstructor = true;
-            }
-            else {
+                fncName = getClassName() + (isModel ? ReservedWords.MODEL : ReservedWords.CONTROLLER);
+            } else if (ASKeyword.SET.equals(function.getSubType())) {
+                fncName = ASKeyword.SET + CommonUtils.capitalize(fncName);
+                // Set functions
+                fncStr += Templates.FUNCTION;
+            } else if (ASKeyword.GET.equals(function.getSubType())) {
+                fncName = ASKeyword.GET + CommonUtils.capitalize(fncName);
+                // Set functions
+                fncStr += Templates.FUNCTION;
+            } else {
                 // Normal functions
                 fncStr += Templates.FUNCTION;
             }
@@ -291,18 +260,14 @@ public class ASClass {
             // Type
             fncStr = fncStr.replace("{type}", function.getType());
             // Name
-            if (isConstructor) {
-                fncStr = fncStr.replace("{name}", getClassName() + (isModel? ReservedWords.MODEL : ReservedWords.CONTROLLER) );
-            } else  {
-                fncStr = fncStr.replace("{name}", function.getName());
-            }
+            fncStr = fncStr.replace("{name}", fncName);
             // Params
             List<String> tmpArr = new ArrayList<>();
-            for (ASVariable arg : ((ASFunction)fn).getArgList()) {
-                if (!((ASArgument)arg).isRestParam()) {
+            for (ASVariable arg : ((ASFunction) fn).getArgList()) {
+                if (!((ASArgument) arg).isRestParam()) {
                     String paramVar = "";
                     paramVar = Templates.VARIABLE_PARAM.replace("{type}", arg.getType())
-                                                        .replace("{name}", arg.getName());
+                            .replace("{name}", arg.getName());
                     tmpArr.add(paramVar);
                 }
             }
@@ -337,6 +302,27 @@ public class ASClass {
         }
     }
 
+    public void modelProcess() {
+        ASClass self = this;
+        ASParser parser = new ASParser();
+        int i;
+
+        for (i = 0; i < members.size(); i++) {
+//            if (members.get(i) instanceof ASFunction) {
+//                //Parse function
+//                ASFunction func = (ASFunction)members.get(i);
+//                func.setValue(parser.parseFunc(self, func.getValue(), func.buildLocalVariableStack())[0]);
+//            }
+            if (members.get(i) instanceof ASVariable) {
+                ASVariable tmpVar = (ASVariable) members.get(i);
+                if (tmpVar.getValue() != null
+                        && retrieveField(tmpVar.getValue().replaceFirst("^([a-zA-Z_$][0-9a-zA-Z_$]*)(.*?)$", "$1"), true) != null) {
+                    tmpVar.setValue(className + '.' + members.get(i).getValue());
+                }
+            }
+        }
+    }
+
     public void process() {
         ASClass self = this;
         ASParser parser = new ASParser();
@@ -345,7 +331,7 @@ public class ASClass {
         for (i = 0; i < members.size(); i++) {
             if (members.get(i) instanceof ASFunction) {
                 //Parse function
-                ASFunction func = (ASFunction)members.get(i);
+                ASFunction func = (ASFunction) members.get(i);
                 func.setValue(parser.parseFunc(self, func.getValue(), func.buildLocalVariableStack())[0]);
             }
             if (members.get(i) instanceof ASVariable) {
@@ -356,6 +342,32 @@ public class ASClass {
                 }
             }
         }
+    }
+
+    private StringBuilder[] generateProperty(String ppName, String ppType) {
+        StringBuilder propBuilder = new StringBuilder();
+        StringBuilder propGetSetBuilder = new StringBuilder();
+        String getSetStr;
+        propBuilder.append(Templates.VARIABLE_GET_SET
+                .replace("{type}", ppType)
+                .replace("{name}", ppName));
+        propBuilder.append("\n");
+
+        if (ReservedWords.BOOLEAN.equals(ppType)) {
+            getSetStr = Templates.FUNCTION_GET_BOOLEAN.replace("{type}", ppType)
+                    .replace("{pp}", ppName).replace("{Pp}", CommonUtils.capitalize(ppName));
+        } else {
+            getSetStr = Templates.FUNCTION_GET.replace("{type}", ppType)
+                    .replace("{pp}", ppName).replace("{Pp}", CommonUtils.capitalize(ppName));
+        }
+
+        propGetSetBuilder.append("\n");
+        propGetSetBuilder.append(getSetStr);
+        getSetStr = Templates.FUNCTION_SET.replace("{type}", ppType)
+                .replace("{pp}", ppName).replace("{Pp}", CommonUtils.capitalize(ppName));
+        propGetSetBuilder.append(getSetStr);
+        propGetSetBuilder.append("\n");
+        return new StringBuilder[]{propBuilder, propGetSetBuilder};
     }
     //----------------------------------------------
     // getterとsetter生成
@@ -402,38 +414,6 @@ public class ASClass {
         this.imports = imports;
     }
 
-    public List<String> getRequires() {
-        return requires;
-    }
-
-    public void setRequires(List<String> requires) {
-        this.requires = requires;
-    }
-
-    public List<String> getImportWildcards() {
-        return importWildcards;
-    }
-
-    public void setImportWildcards(List<String> importWildcards) {
-        this.importWildcards = importWildcards;
-    }
-
-    public List<String> getImportExtras() {
-        return importExtras;
-    }
-
-    public void setImportExtras(List<String> importExtras) {
-        this.importExtras = importExtras;
-    }
-
-    public List<String> getInterfaces() {
-        return interfaces;
-    }
-
-    public void setInterfaces(List<String> interfaces) {
-        this.interfaces = interfaces;
-    }
-
     public String getParent() {
         return parent;
     }
@@ -456,46 +436,6 @@ public class ASClass {
 
     public void setMembers(List<ASMember> members) {
         this.members = members;
-    }
-
-    public List<ASMember> getStaticMembers() {
-        return staticMembers;
-    }
-
-    public void setStaticMembers(List<ASMember> staticMembers) {
-        this.staticMembers = staticMembers;
-    }
-
-    public List<ASMember> getGetters() {
-        return getters;
-    }
-
-    public void setGetters(List<ASMember> getters) {
-        this.getters = getters;
-    }
-
-    public List<ASMember> getSetters() {
-        return setters;
-    }
-
-    public void setSetters(List<ASMember> setters) {
-        this.setters = setters;
-    }
-
-    public List<ASMember> getStaticGetters() {
-        return staticGetters;
-    }
-
-    public void setStaticGetters(List<ASMember> staticGetters) {
-        this.staticGetters = staticGetters;
-    }
-
-    public List<ASMember> getStaticSetters() {
-        return staticSetters;
-    }
-
-    public void setStaticSetters(List<ASMember> staticSetters) {
-        this.staticSetters = staticSetters;
     }
 
     public boolean isInterface() {
@@ -552,22 +492,6 @@ public class ASClass {
 
     public void setPackageMap(Map<String, ASClass> packageMap) {
         this.packageMap = packageMap;
-    }
-
-    public boolean isSafeRequire() {
-        return safeRequire;
-    }
-
-    public void setSafeRequire(boolean safeRequire) {
-        this.safeRequire = safeRequire;
-    }
-
-    public boolean isIgnoreFlash() {
-        return ignoreFlash;
-    }
-
-    public void setIgnoreFlash(boolean ignoreFlash) {
-        this.ignoreFlash = ignoreFlash;
     }
 
 }

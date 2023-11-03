@@ -1,20 +1,23 @@
 package utils;
 
+import as.enums.ASKeyword;
+import constants.ReservedWords;
+
 import java.security.SecureRandom;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class StringUtils {
+public class CommonUtils {
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private static final SecureRandom random = new SecureRandom();
     private static Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
     private static final String YYYYMMDD_FORMAT = "yyyy/MM/dd";
+    public static final String EMPTY = "";
 
     public static String generateRandomText(int length) {
         StringBuilder sb = new StringBuilder(length);
@@ -73,6 +76,7 @@ public class StringUtils {
     public static String getDefaultValueString(String value, String fallback) {
         return value == null ? fallback : value;
     }
+
     public static String getDateYYYYMMDD() {
         DateFormat df = new SimpleDateFormat(YYYYMMDD_FORMAT);
         return df.format(new Date());
@@ -92,5 +96,32 @@ public class StringUtils {
      */
     public static String capitalize(final String line) {
         return Character.toUpperCase(line.charAt(0)) + line.substring(1);
+    }
+
+    /**
+     * Convert Actionscript type to Java type
+     *
+     * @param asType Actionscript type
+     * @return Java type
+     */
+    public static String convertType(String asType) {
+        String javaType = asType;
+        switch (asType) {
+            case ASKeyword.BOOLEAN:
+                javaType = ReservedWords.BOOLEAN;
+                break;
+            case ASKeyword.DATEFORMATTER:
+                javaType = ReservedWords.SIMPLEDATEFORMAT;
+                break;
+            case ASKeyword.NUMBER:
+            case ASKeyword.INT:
+            case ASKeyword.UINT:
+                javaType = ReservedWords.INT;
+                break;
+            default:
+                javaType = asType;
+
+        }
+        return javaType;
     }
 }

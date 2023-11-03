@@ -1,205 +1,259 @@
 [
   {
-    "name": "mx:Image",
-    "htmlTagStart": "<p:panel",
-    "htmlEndStartTag": "/>",
-    "isGenerateHtml": true,
-    "htmlTagEnd": ""
+    "mxmlTag": "mx:Image",
+    "xhtmlTag": "p:panel",
+    "xhtmlTagStart": "<p:panel",
+    "xhtmlEndStartTag": "/>",
+    "isUseAjaxTag": false,
+    "isGenerateXHTML": true,
+    "xhtmlTagEnd": ""
   },
   {
-    "name": "Containers:ACCCanvas",
-    "htmlTagStart": "<p:outputPanel",
-    "htmlEndStartTag": ">",
-    "isGenerateHtml": true,
-    "htmlTagEnd": "</p:outputPanel>"
+    "mxmlTag": "Containers:ACCCanvas",
+    "xhtmlTag": "p:outputPanel",
+    "xhtmlTagStart": "<p:outputPanel",
+    "xhtmlEndStartTag": ">",
+    "isUseAjaxTag": false,
+    "isGenerateXHTML": true,
+    "xhtmlTagEnd": "</p:outputPanel>"
   },
   {
-    "name": "Containers:ACCTitleWindow",
-    "htmlTagStart": "<p:outputPanel",
-    "htmlEndStartTag": ">",
-    "isGenerateHtml": true,
-    "htmlTagEnd": "</p:outputPanel>"
+    "mxmlTag": "Containers:ACCTitleWindow",
+    "xhtmlTag": "p:outputPanel",
+    "xhtmlTagStart": "<p:outputPanel",
+    "xhtmlEndStartTag": ">",
+    "isUseAjaxTag": false,
+    "isGenerateXHTML": true,
+    "xhtmlTagEnd": "</p:outputPanel>"
   },
   {
-    "name": "Controls:ACCLabel",
-    "htmlTagStart": "<p:outputLabel",
-    "htmlEndStartTag": ">",
-    "isGenerateHtml": true,
-    "htmlTagEnd": "</p:outputLabel>"
+    "mxmlTag": "Controls:ACCLabel",
+    "xhtmlTag": "p:outputLabel",
+    "xhtmlTagStart": "<p:outputLabel",
+    "xhtmlEndStartTag": ">",
+    "isUseAjaxTag": false,
+    "isGenerateXHTML": true,
+    "xhtmlTagEnd": "</p:outputLabel>"
   },
   {
-    "name": "Controls:ACCTextInput",
-    "htmlTagStart": "<p:inputText",
-    "htmlEndStartTag": ">",
-    "isGenerateHtml": true,
-    "htmlTagEnd": "</p:inputText>"
+    "mxmlTag": "Controls:ACCTextInput",
+    "xhtmlTag": "p:inputText",
+    "xhtmlTagStart": "<p:inputText",
+    "xhtmlEndStartTag": ">",
+    "isUseAjaxTag": false,
+    "isGenerateXHTML": true,
+    "xhtmlTagEnd": "</p:inputText>"
   },
   {
-    "name": "Controls:ACCTextInputMaskNumberOnly",
-    "htmlTagStart": "<acc:inputTextNumber",
-    "htmlEndStartTag": "/>",
-    "isGenerateHtml": true,
-    "htmlTagEnd": ""
+    "mxmlTag": "Controls:ACCTextInputMaskNumberOnly",
+    "xhtmlTag": "acc:inputTextNumber",
+    "xhtmlTagStart": "<acc:inputTextNumber",
+    "xhtmlEndStartTag": "/>",
+    "isUseAjaxTag": false,
+    "isGenerateXHTML": true,
+    "xhtmlTagEnd": ""
   },
   {
-    "name": "Controls:ACCTextInputMaskZip",
-    "htmlTagStart": "<acc:inputTextZip",
-    "htmlEndStartTag": ">",
-    "isGenerateHtml": true,
-    "htmlTagEnd": "</acc:inputTextZip>"
+    "mxmlTag": "Controls:ACCTextInputMaskZip",
+    "xhtmlTag": "acc:inputTextZip",
+    "xhtmlTagStart": "<acc:inputTextZip",
+    "xhtmlEndStartTag": ">",
+    "isUseAjaxTag": false,
+    "isGenerateXHTML": true,
+    "xhtmlTagEnd": "</acc:inputTextZip>"
   },
   {
-    "name": "Controls:ACCTextInputMaskDate",
-    "htmlTagStart": "<p:calendar",
-    "htmlEndStartTag": ">",
-    "isGenerateHtml": true,
-    "htmlTagEnd": "</p:calendar>"
+    "mxmlTag": "Controls:ACCTextInputMaskDate",
+    "xhtmlTag": "p:calendar",
+    "xhtmlTagStart": "<p:calendar pattern=\"yyyy/MM/dd\"",
+    "xhtmlEndStartTag": ">",
+    "isUseAjaxTag": false,
+    "isGenerateXHTML": true,
+    "xhtmlTagEnd": "</p:calendar>"
   },
   {
-    "name": "Controls:ACCButton",
-    "htmlTagStart": "<p:commandButton",
-    "htmlEndStartTag": ">",
-    "isGenerateHtml": true,
-    "htmlTagEnd": "</p:commandButton>"
+    "mxmlTag": "Controls:ACCButton",
+    "xhtmlTag": "p:commandButton",
+    "xhtmlTagStart": "<p:commandButton",
+    "xhtmlEndStartTag": ">",
+    "isUseAjaxTag": false,
+    "isGenerateXHTML": true,
+    "xhtmlTagEnd": "</p:commandButton>"
   },
   {
-    "name": "Controls:ACCRadioButton",
-    "htmlTagStart": " <f:selectItem",
-    "htmlEndStartTag": "/>",
-    "isGenerateHtml": false,
-    "htmlTagEnd": "</f:selectItem>"
+    "mxmlTag": "Controls:ACCRadioButton",
+    "xhtmlTagStart": " <f:selectItem",
+    "xhtmlEndStartTag": "/>",
+    "isUseAjaxTag": true,
+    "isGenerateXHTML": true,
+    "xhtmlTagEnd": "</f:selectItem>"
   },
   {
-    "name": "Controls:ACCCheckBox",
-    "htmlTagStart": "<p:selectBooleanCheckbox",
-    "htmlEndStartTag": ">",
-    "isGenerateHtml": true,
-    "htmlTagEnd": "</p:selectBooleanCheckbox>"
+    "mxmlTag": "Controls:ACCCheckBox",
+    "xhtmlTag": "p:selectBooleanCheckbox",
+    "xhtmlTagStart": "<p:selectBooleanCheckbox",
+    "xhtmlEndStartTag": ">",
+    "isUseAjaxTag": true,
+    "isGenerateXHTML": true,
+    "xhtmlTagEnd": "</p:selectBooleanCheckbox>"
   },
   {
-    "name": "Containers:ACCVBox",
-    "htmlTagStart": "<p:panelGrid",
-    "htmlEndStartTag": ">",
-    "isGenerateHtml": true,
-    "htmlTagEnd": "</p:panelGrid>"
+    "mxmlTag": "Containers:ACCVBox",
+    "xhtmlTag": "p:panelGrid",
+    "xhtmlTagStart": "<p:panelGrid",
+    "xhtmlEndStartTag": ">",
+    "isUseAjaxTag": false,
+    "isGenerateXHTML": true,
+    "xhtmlTagEnd": "</p:panelGrid>"
   },
   {
-    "name": "Containers:ACCHBox",
-    "htmlTagStart": "<p:panelGrid",
-    "htmlEndStartTag": ">",
-    "isGenerateHtml": true,
-    "htmlTagEnd": "</p:panelGrid>"
+    "mxmlTag": "Containers:ACCHBox",
+    "xhtmlTag": "p:panelGrid",
+    "xhtmlTagStart": "<p:panelGrid",
+    "xhtmlEndStartTag": ">",
+    "isUseAjaxTag": false,
+    "isGenerateXHTML": true,
+    "xhtmlTagEnd": "</p:panelGrid>"
   },
   {
-    "name": "Containers:ACCTabNavigator",
-    "htmlTagStart": "<p:tabView",
-    "htmlEndStartTag": ">",
-    "isGenerateHtml": true,
-    "htmlTagEnd": "</p:tabView>"
+    "mxmlTag": "Containers:ACCTabNavigator",
+    "xhtmlTag": "p:tabView",
+    "xhtmlTagStart": "<p:tabView",
+    "xhtmlEndStartTag": ">",
+    "isUseAjaxTag": false,
+    "isGenerateXHTML": true,
+    "xhtmlTagEnd": "</p:tabView>"
   },
   {
-    "name": "Controls:ACCTree",
-    "htmlTagStart": "<p:panelMenu",
-    "htmlEndStartTag": ">",
-    "isGenerateHtml": true,
-    "htmlTagEnd": "</p:panelMenu>"
+    "mxmlTag": "Controls:ACCTree",
+    "xhtmlTag": "p:panelMenu",
+    "xhtmlTagStart": "<p:panelMenu",
+    "xhtmlEndStartTag": ">",
+    "isUseAjaxTag": false,
+    "isGenerateXHTML": true,
+    "xhtmlTagEnd": "</p:panelMenu>"
   },
   {
-    "name": "Controls:ACCAdvancedDataGrid",
-    "htmlTagStart": "<p:dataTable",
-    "htmlEndStartTag": ">",
-    "isGenerateHtml": true,
-    "htmlTagEnd": "</p:dataTable>"
+    "mxmlTag": "Controls:ACCAdvancedDataGrid",
+    "xhtmlTag": "p:dataTable",
+    "xhtmlTagStart": "<p:dataTable ",
+    "xhtmlEndStartTag": ">",
+    "isUseAjaxTag": false,
+    "isGenerateXHTML": true,
+    "xhtmlTagEnd": "</p:dataTable>"
   },
   {
-    "name": "mx:AdvancedDataGridColumn",
-    "htmlTagStart": "<p:column",
-    "htmlEndStartTag": ">",
-    "isGenerateHtml": true,
-    "htmlTagEnd": "</p:column>"
+    "mxmlTag": "mx:AdvancedDataGridColumn",
+    "xhtmlTag": "p:column",
+    "xhtmlTagStart": "<p:column",
+    "xhtmlEndStartTag": ">",
+    "isUseAjaxTag": false,
+    "isGenerateXHTML": true,
+    "xhtmlTagEnd": "</p:column>"
   },
   {
-    "name": "Controls:ACCComboBoxCode",
-    "htmlTagStart": "<p:selectOneMenu",
-    "htmlEndStartTag": " ><f:selectItem itemLabel=\"\" itemValue=\"\" /><f:selectItems value=\"\" itemLabel=\"\" itemValue=\"\"/>",
-    "isGenerateHtml": true,
-    "htmlTagEnd": "</p:selectOneMenu>"
+    "mxmlTag": "Controls:ACCComboBoxCode",
+    "xhtmlTag": "p:selectOneMenu",
+    "xhtmlTagStart": "<p:selectOneMenu",
+    "xhtmlEndStartTag": " ><f:selectItem itemLabel=\"\" itemValue=\"\" /><f:selectItems value=\"\" itemLabel=\"\" itemValue=\"\"/>",
+    "isUseAjaxTag": false,
+    "isGenerateXHTML": true,
+    "xhtmlTagEnd": "</p:selectOneMenu>"
   },
   {
-    "name": "Containers:ACCPanel",
-    "htmlTagStart": "<p:panel",
-    "htmlEndStartTag": ">",
-    "isGenerateHtml": true,
-    "htmlTagEnd": "</p:panel>"
+    "mxmlTag": "Containers:ACCPanel",
+    "xhtmlTag": "p:panel",
+    "xhtmlTagStart": "<p:panel",
+    "xhtmlEndStartTag": ">",
+    "isUseAjaxTag": false,
+    "isGenerateXHTML": true,
+    "xhtmlTagEnd": "</p:panel>"
   },
   {
-    "name": "Controls:ACCRadioButtonGroup",
-    "htmlTagStart": "<p:selectOneRadio",
-    "htmlEndStartTag": ">",
-    "isGenerateHtml": true,
-    "htmlTagEnd": "</p:selectOneRadio>"
+    "mxmlTag": "Controls:ACCRadioButtonGroup",
+    "xhtmlTag": "p:selectOneRadio",
+    "xhtmlTagStart": "<p:selectOneRadio",
+    "xhtmlEndStartTag": ">",
+    "isUseAjaxTag": false,
+    "isGenerateXHTML": true,
+    "xhtmlTagEnd": "</p:selectOneRadio>"
   },
   {
-    "name": "Controls:ACCDataGrid",
-    "htmlTagStart": "<p:dataTable style='border:1px solid #cccc'",
-    "htmlEndStartTag": ">",
-    "isGenerateHtml": true,
-    "htmlTagEnd": "</p:dataTable>"
+    "mxmlTag": "Controls:ACCDataGrid",
+    "xhtmlTag": "p:dataTable",
+    "xhtmlTagStart": "<p:dataTable var=\"record\" ",
+    "xhtmlEndStartTag": ">",
+    "isUseAjaxTag": false,
+    "isGenerateXHTML": true,
+    "xhtmlTagEnd": "</p:dataTable>"
   },
   {
-    "name": "mx:DataGridColumn",
-    "htmlTagStart": "<p:column",
-    "htmlEndStartTag": ">",
-    "isGenerateHtml": true,
-    "htmlTagEnd": "</p:column>"
+    "mxmlTag": "mx:DataGridColumn",
+    "xhtmlTag": "p:column",
+    "xhtmlTagStart": "<p:column",
+    "xhtmlEndStartTag": ">",
+    "isUseAjaxTag": false,
+    "isGenerateXHTML": true,
+    "xhtmlTagEnd": "</p:column>"
   },
   {
-    "name": "mx:itemEditor",
-    "htmlTagStart": "<p:cellEditor",
-    "htmlEndStartTag": ">",
-    "isGenerateHtml": true,
-    "htmlTagEnd": "</p:cellEditor>"
+    "mxmlTag": "mx:itemEditor",
+    "xhtmlTag": "p:cellEditor",
+    "xhtmlTagStart": "<p:cellEditor",
+    "xhtmlEndStartTag": ">",
+    "isUseAjaxTag": false,
+    "isGenerateXHTML": true,
+    "xhtmlTagEnd": "</p:cellEditor>"
   },
   {
-    "name": "mx:TextInput",
-    "htmlTagStart": "<p:inputText",
-    "htmlEndStartTag": ">",
-    "isGenerateHtml": true,
-    "htmlTagEnd": "</p:inputText>"
+    "mxmlTag": "mx:TextInput",
+    "xhtmlTag": "p:inputText",
+    "xhtmlTagStart": "<p:inputText",
+    "xhtmlEndStartTag": ">",
+    "isUseAjaxTag": false,
+    "isGenerateXHTML": true,
+    "xhtmlTagEnd": "</p:inputText>"
   },
   {
-    "name": "Controls:columns",
-    "htmlTagStart": "",
-    "htmlEndStartTag": "",
-    "isGenerateHtml": true,
-    "htmlTagEnd": ""
+    "mxmlTag": "Controls:columns",
+    "xhtmlTagStart": "",
+    "xhtmlEndStartTag": "",
+    "isUseAjaxTag": false,
+    "isGenerateXHTML": false,
+    "xhtmlTagEnd": ""
   },
   {
-    "name": "mx:headerRenderer",
-    "htmlTagStart": "",
-    "htmlEndStartTag": "",
-    "isGenerateHtml": false,
-    "htmlTagEnd": ""
+    "mxmlTag": "mx:headerRenderer",
+    "xhtmlTagStart": "",
+    "xhtmlEndStartTag": "",
+    "isUseAjaxTag": false,
+    "isGenerateXHTML": false,
+    "xhtmlTagEnd": ""
   },
   {
-    "name": "mx:Component",
-    "htmlTagStart": "",
-    "htmlEndStartTag": "",
-    "isGenerateHtml": false,
-    "htmlTagEnd": ""
+    "mxmlTag": "mx:Component",
+    "xhtmlTagStart": "",
+    "xhtmlEndStartTag": "",
+    "isUseAjaxTag": false,
+    "isGenerateXHTML": false,
+    "xhtmlTagEnd": ""
   },
   {
-    "name": "Controls:ACCSectionInfoComboBox",
-    "htmlTagStart": "<acc:sectionInfoComboBox style='border:1px solid #cccc'",
-    "htmlEndStartTag": ">",
-    "isGenerateHtml": true,
-    "htmlTagEnd": "</acc:sectionInfoComboBox>"
+    "mxmlTag": "Controls:ACCSectionInfoComboBox",
+    "xhtmlTag": "acc:sectionInfoComboBox style='border:1px solid #cccc'",
+    "xhtmlTagStart": "<acc:sectionInfoComboBox style='border:1px solid #cccc'",
+    "xhtmlEndStartTag": ">",
+    "isUseAjaxTag": false,
+    "isGenerateXHTML": true,
+    "xhtmlTagEnd": "</acc:sectionInfoComboBox>"
   },
   {
-    "name": "mx:Label",
-    "htmlTagStart": "<p:outputLabel style='border:1px solid #cccc'",
-    "htmlEndStartTag": ">",
-    "isGenerateHtml": true,
-    "htmlTagEnd": "</p:outputLabel>"
+    "mxmlTag": "mx:Label",
+    "xhtmlTag": "p:outputLabel style='border:1px solid #cccc'",
+    "xhtmlTagStart": "<p:outputLabel style='border:1px solid #cccc'",
+    "xhtmlEndStartTag": ">",
+    "isUseAjaxTag": false,
+    "isGenerateXHTML": true,
+    "xhtmlTagEnd": "</p:outputLabel>"
   }
 ]

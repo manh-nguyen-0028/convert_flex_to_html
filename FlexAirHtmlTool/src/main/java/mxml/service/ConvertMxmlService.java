@@ -1,8 +1,11 @@
 package mxml.service;
 
 import constants.Constants;
+import mxml.config.XhtmlConfig;
 import mxml.dto.mapping.ComponentMap;
+import mxml.dto.mapping.ComponentPropertyMap;
 import mxml.dto.mapping.TransformerSpecialElement;
+import mxml.dto.modify.AjaxEvent;
 import mxml.dto.modify.CheckBoxReplace;
 import mxml.dto.modify.ElementReplace;
 import mxml.dto.modify.RadioGroupReplace;
@@ -16,12 +19,12 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import utils.FileUtils;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class ConvertMxmlService {
     private static final Logger logger = LogManager.getLogger(ConvertMxmlService.class);
@@ -39,12 +42,11 @@ public class ConvertMxmlService {
      * Element parser
      *
      * @param elementParser
-     * @param isFirstCanvas
      * @param nodeList
      * @param baseHtml
      * @param html
      */
-    public void parser(HtmlElementParser elementParser, boolean isFirstCanvas, NodeList nodeList, StringBuilder baseHtml, StringBuilder html) {
+    public void parser(HtmlElementParser elementParser, NodeList nodeList, StringBuilder baseHtml, StringBuilder html, Map<String, XhtmlConfig> xhtmlConfigMap) {
         Map<String, ComponentMap> hmComponentMap = MappingService.getComponentMap();
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node nodeItem = nodeList.item(i);
@@ -55,16 +57,21 @@ public class ConvertMxmlService {
                 String regex = getRegexScreenInclude();
                 Matcher matcher = getMatchScreenInclude(regex, nodeName);
                 if (matcher.matches()) {
-                    String fileIncludeName = nodeName.replaceAll(regex, "$2" + ".xhtml");
-                    componentMap = new ComponentMap(nodeName, "<ui:include src=\"" + fileIncludeName + "\"", ">", "</ui:include>");
+                    String fileIncludeName = nodeName.replaceAll(regex, "$2");
+                    XhtmlConfig xhtmlConfig = xhtmlConfigMap.get(fileIncludeName);
+                    if (xhtmlConfig != null) {
+                        xhtmlConfig.setGenerateForm(false);
+                    }
+                    String fileIncludeNameXhtml = fileIncludeName + ".xhtml";
+                    componentMap = new ComponentMap(nodeName, "ui:include", "<ui:include src=\"" + fileIncludeNameXhtml + "\"", ">", "</ui:include>");
                 } else {
                     componentMap = hmComponentMap.get(nodeName);
                 }
                 if (componentMap != null) {
-                    componentParse(elementParser, componentMap, nodeItem, nodeName, baseHtml, isFirstCanvas, html);
+                    componentParse(elementParser, componentMap, nodeItem, nodeName, baseHtml, html, xhtmlConfigMap);
                 }
-            } else if (nodeItem.getNodeType() == Node.COMMENT_NODE && !"First Node".equals(elementParser.getParentNodeName())) {
-                HtmlElementParser currentElement = new HtmlElementParser(nodeName, "<!-- ", nodeItem.getNodeValue(), "-->", true);
+            } else if (nodeItem.getNodeType() == Node.COMMENT_NODE && !Constants.MXML_ROOT_NODE.equals(elementParser.getParentNodeName())) {
+                HtmlElementParser currentElement = new HtmlElementParser(nodeName, "", "<!-- ", nodeItem.getNodeValue(), "-->", true, false);
                 elementParser.getChildList().add(currentElement);
             }
         }
@@ -78,26 +85,32 @@ public class ConvertMxmlService {
      * @param nodeItem
      * @param currentNodeName
      * @param baseHtml
-     * @param isFirstCanvas
      * @param html
      */
-    private void componentParse(HtmlElementParser parentElement, ComponentMap componentMap, Node nodeItem, String currentNodeName, StringBuilder baseHtml, boolean isFirstCanvas, StringBuilder html) {
+    private void componentParse(HtmlElementParser parentElement, ComponentMap componentMap, Node nodeItem, String currentNodeName, StringBuilder baseHtml, StringBuilder html, Map<String, XhtmlConfig> xhtmlConfigMap) {
         String parentNodeName = parentElement.getNodeName();
-        HtmlElementParser currentElement = new HtmlElementParser(currentNodeName, componentMap.getHtmlTagStart(), componentMap.getHtmlEndStartTag(), componentMap.getHtmlTagEnd(), componentMap.getIsGenerateHtml());
+        HtmlElementParser currentElement = new HtmlElementParser(currentNodeName, componentMap.getXhtmlTag(),
+                componentMap.getXhtmlTagStart(), componentMap.getXhtmlEndStartTag(), componentMap.getXhtmlTagEnd(),
+                componentMap.getIsGenerateXHTML(), componentMap.isUseAjaxTag());
         currentElement.setParentNodeName(parentNodeName);
         // Convert attribute
         new AttributeService(this.xmlFileName).attributeParse(nodeItem, currentElement);
         // change component by property
         changeComponentByProperty(currentElement);
+
         // handle special component
         handleSpecialComponent(currentElement);
+
+        // change property by component
+        changePropertyByComponent(currentElement);
+
         // append property for child
-        appendPropertyFromParent(currentElement, parentElement);
+        addParentProperty(currentElement, parentElement);
 
         if (nodeItem.hasChildNodes()) {
             // Recursion if have child nodes
-            addPropertyForChild(currentElement);
-            parser(currentElement, isFirstCanvas, nodeItem.getChildNodes(), baseHtml, html);
+            addChildProperty(currentElement);
+            parser(currentElement, nodeItem.getChildNodes(), baseHtml, html, xhtmlConfigMap);
         }
         parentElement.getChildList().add(currentElement);
 
@@ -110,7 +123,7 @@ public class ConvertMxmlService {
      * @param currentElement
      * @param parentElement
      */
-    private void appendPropertyFromParent(HtmlElementParser currentElement, HtmlElementParser parentElement) {
+    private void addParentProperty(HtmlElementParser currentElement, HtmlElementParser parentElement) {
         if (CollectionUtils.isNotEmpty(parentElement.getPropertyForChild())) {
             currentElement.getPropertyParsers().addAll(parentElement.getPropertyForChild());
         }
@@ -121,13 +134,24 @@ public class ConvertMxmlService {
      *
      * @param elementParser
      */
-    private void addPropertyForChild(HtmlElementParser elementParser) {
+    private void addChildProperty(HtmlElementParser elementParser) {
         Map<String, PropertyParser> hmAttribute = elementParser.getMapPropertyParser();
         if (Constants.MXML_MX_DATA_GRID_COLUMN.equals(elementParser.getNodeName())
                 || Constants.MXML_MX_HEADER_RENDERER.equals(elementParser.getNodeName())
                 || Constants.MXML_MX_COMPONENT.equals(elementParser.getNodeName())) {
-            PropertyParser attributeForChild = hmAttribute.get("value");
-            elementParser.getPropertyForChild().add(attributeForChild);
+
+            if (hmAttribute.containsKey("value")) {
+                PropertyParser attributeForChild = hmAttribute.get("value");
+
+                if (Constants.MXML_MX_COMPONENT.equals(elementParser.getNodeName())) {
+                    attributeForChild.setValue("#{record." + attributeForChild.getValue() + "}");
+                }
+
+                // remove value in current element after append for child
+                elementParser.getPropertyParsers().removeIf(attribute -> attribute == attributeForChild);
+
+                elementParser.getPropertyForChild().add(attributeForChild);
+            }
         }
     }
 
@@ -137,37 +161,78 @@ public class ConvertMxmlService {
      * @param currentElement
      */
     private void handleSpecialComponent(HtmlElementParser currentElement) {
-        // Handle first canvas element
         handleFirstElement(currentElement);
 
-        // Handle special element
         StringBuilder attributeElement = createSyntaxAttributeHtml(currentElement);
         StringBuilder cssElement = CssService.createCssElement(currentElement.getCssParsers());
         StringBuilder elementParser = createHtmlElementParser(currentElement, attributeElement, cssElement);
         elementParser.append(currentElement.getEndTag());
-        String nodeName = currentElement.getNodeName();
-        if (Constants.MXML_CONTROLS_ACC_RADIO_BUTTON.equals(nodeName)) {
+
+        handleRadioButton(currentElement, elementParser);
+        handleRadioButtonGroup(currentElement);
+        handleParentNode(currentElement);
+
+        handleElementHaveAjax(currentElement);
+    }
+
+    private void handleRadioButton(HtmlElementParser currentElement, StringBuilder elementParser) {
+        if (Constants.MXML_CONTROLS_ACC_RADIO_BUTTON.equals(currentElement.getNodeName())) {
             Optional<PropertyParser> groupNameOptional = currentElement.getPropertyParsers().stream().filter(itemFilter -> "groupName".equals(itemFilter.getKey())).findFirst();
             if (groupNameOptional.isPresent()) {
                 String groupId = groupNameOptional.get().getValue();
-                Optional<RadioGroupReplace> radioGroupReplaceOptional = elementReplace.getRadioGroupReplaces()
-                        .stream()
-                        .filter(itemFilter -> groupId.equals(itemFilter.getGroupId())).findFirst();
+                Optional<RadioGroupReplace> radioGroupReplaceOptional = getRadioGroupReplace(groupId);
                 if (radioGroupReplaceOptional.isPresent()) {
-                    RadioGroupReplace radioGroupReplace = radioGroupReplaceOptional.get();
-                    List<String> selectItemList = radioGroupReplace.getSelectItemList();
-                    selectItemList.add(elementParser.toString());
-                    radioGroupReplace.setSelectItemList(selectItemList);
+                    radioGroupReplaceOptional.get().getSelectItemList().add(elementParser.toString());
                 } else {
-                    RadioGroupReplace radioGroupReplace = new RadioGroupReplace(groupNameOptional.get().getValue());
+                    RadioGroupReplace radioGroupReplace = new RadioGroupReplace(groupId);
                     radioGroupReplace.getSelectItemList().add(elementParser.toString());
                     elementReplace.getRadioGroupReplaces().add(radioGroupReplace);
                 }
             }
         }
+    }
 
-        // Handle element have ajax tag
-        handleElementHaveAjax(currentElement);
+    private void handleRadioButtonGroup(HtmlElementParser currentElement) {
+        if (Constants.MXML_CONTROLS_ACC_RADIO_BUTTON_GROUP.equals(currentElement.getNodeName())) {
+            Map<String, PropertyParser> propertyParserMap = currentElement.getMapPropertyParser();
+            PropertyParser groupIdProperty = propertyParserMap.get("id");
+            if (groupIdProperty != null) {
+                RadioGroupReplace radioGroupReplace = new RadioGroupReplace(groupIdProperty.getValue());
+                PropertyParser ajaxEventProperty = propertyParserMap.get("change");
+                if (ajaxEventProperty != null) {
+                    AjaxEvent ajaxEvent = new AjaxEvent(ajaxEventProperty.getKey(), ajaxEventProperty.getValue());
+                    radioGroupReplace.setAjaxEvent(ajaxEvent);
+                }
+                elementReplace.getRadioGroupReplaces().add(radioGroupReplace);
+            }
+        }
+    }
+
+    private void handleParentNode(HtmlElementParser currentElement) {
+        String parentNodeName = currentElement.getParentNodeName();
+        Map<String, String> nodeToXhtmlMap = getNodeToXhtmlMap();
+
+        if (nodeToXhtmlMap.containsKey(parentNodeName)) {
+            String xhtmlTag = nodeToXhtmlMap.get(parentNodeName);
+            currentElement.setXhtmlTag(xhtmlTag);
+            currentElement.setStartTag("<" + xhtmlTag);
+            currentElement.setEndTag("</" + xhtmlTag + ">");
+        }
+    }
+
+    private Optional<RadioGroupReplace> getRadioGroupReplace(String groupId) {
+        return elementReplace.getRadioGroupReplaces()
+                .stream()
+                .filter(itemFilter -> groupId.equals(itemFilter.getGroupId()))
+                .findFirst();
+    }
+
+    private Map<String, String> getNodeToXhtmlMap() {
+        Map<String, String> nodeToXhtmlMap = new HashMap<>();
+        nodeToXhtmlMap.put(Constants.MXML_CONTAINERS_ACC_TAB_NAVIGATOR, Constants.XHTML_P_TAB);
+        nodeToXhtmlMap.put(Constants.MXML_MX_COMPONENT, Constants.XHTML_H_OUTPUT_TEXT);
+        // Add other mappings as needed
+        return nodeToXhtmlMap;
     }
 
     /**
@@ -179,20 +244,42 @@ public class ConvertMxmlService {
     private static void changeComponentByProperty(HtmlElementParser htmlElementParser) {
         List<TransformerSpecialElement> specialElementList = MappingService.getListComponentByProperty();
         List<PropertyParser> attributeList = htmlElementParser.getPropertyParsers();
-        List<TransformerSpecialElement> specialElements = specialElementList.stream()
+
+        specialElementList.stream()
                 .filter(itemFilter -> htmlElementParser.getNodeName().equals(itemFilter.getElementFrom()))
-                .collect(Collectors.toList());
-        for (TransformerSpecialElement specialElement : specialElements) {
-            Optional<PropertyParser> parserOptional = attributeList.stream()
-                    .filter(itemFilter -> specialElement.getAttribute().equals(itemFilter.getKey()))
-                    .findFirst();
-            if (parserOptional.isPresent()) {
-                String value = specialElement.getValue();
-                if (StringUtils.isEmpty(value) || (StringUtils.isNotEmpty(value) && parserOptional.get().getValue().equals(value))) {
+                .filter(specialElement ->
+                        attributeList.stream()
+                                .anyMatch(parser -> specialElement.getAttribute().equals(parser.getKey())
+                                        && (StringUtils.isEmpty(specialElement.getValue())
+                                        || parser.getValue().equals(specialElement.getValue()))
+                                )
+                )
+                .findFirst()
+                .ifPresent(specialElement -> {
+                    htmlElementParser.setXhtmlTag(specialElement.getElementTo());
                     htmlElementParser.setStartTag(specialElement.getHtmlTagStart());
                     htmlElementParser.setEndTag(specialElement.getHtmlTagEnd());
+                    htmlElementParser.setUseAjaxTag(specialElement.isUseAjaxTag());
+                });
+    }
+
+    private static void changePropertyByComponent(HtmlElementParser htmlElementParser) {
+        List<ComponentPropertyMap> propertyByComponentList = MappingService.getPropertyByComponent();
+        List<PropertyParser> propertyParserList = htmlElementParser.getPropertyParsers();
+
+        if (CollectionUtils.isNotEmpty(propertyParserList)) {
+            String xhtmlTag = htmlElementParser.getXhtmlTag();
+
+            propertyParserList.stream().forEach(propertyParser -> {
+                Optional<ComponentPropertyMap> componentPropertyMapOptional = propertyByComponentList.stream()
+                        .filter(itemFilter -> itemFilter.getComponentName().equals(xhtmlTag) && itemFilter.getPropertyFrom().equals(propertyParser.getKey()))
+                        .findFirst();
+
+                if (componentPropertyMapOptional.isPresent()) {
+                    ComponentPropertyMap propertyMap = componentPropertyMapOptional.get();
+                    propertyParser.setKey(propertyMap.getPropertyTo());
                 }
-            }
+            });
         }
     }
 
@@ -203,7 +290,7 @@ public class ConvertMxmlService {
     public static StringBuilder createSyntaxAttributeHtml(HtmlElementParser elementParser) {
         StringBuilder attributeBuilder = new StringBuilder();
         // add attribute
-        for (PropertyParser attribute : elementParser.getPropertyParsers()) {
+        elementParser.getPropertyParsers().stream().forEach(attribute -> {
             if (attribute.isUse()) {
                 attributeBuilder
                         .append(Constants.SYNTAX_SPACE)
@@ -213,8 +300,7 @@ public class ConvertMxmlService {
                         .append(attribute.getValue())
                         .append(Constants.SYNTAX_DOUBLE_QUOTATION);
             }
-        }
-
+        });
         return attributeBuilder;
     }
 
@@ -238,7 +324,7 @@ public class ConvertMxmlService {
     private void handleFirstElement(HtmlElementParser currentElement) {
         String parentNodeName = currentElement.getParentNodeName();
         String currentNodeName = currentElement.getNodeName();
-        if ("First Node".equals(parentNodeName) && (currentNodeName.equals(Constants.MXML_CONTAINERS_ACC_CANVAS) || currentNodeName.equals(Constants.MXML_CONTAINERS_ACC_TITLE_WINDOW))) {
+        if (Constants.MXML_ROOT_NODE.equals(parentNodeName) && (currentNodeName.equals(Constants.MXML_CONTAINERS_ACC_CANVAS) || currentNodeName.equals(Constants.MXML_CONTAINERS_ACC_TITLE_WINDOW))) {
             currentElement.setGenerateHtml(false);
             Optional<PropertyParser> parserOptional = currentElement.getPropertyParsers().stream().filter(item -> "title".equals(item.getKey())).findFirst();
             if (parserOptional.isPresent()) {
@@ -255,14 +341,11 @@ public class ConvertMxmlService {
      *                      Example: checkbox, radio,...
      */
     private void handleElementHaveAjax(HtmlElementParser elementParser) {
-        PropertyParser propertyParser = elementParser.getMapPropertyParser().get("change");
-        if (propertyParser != null) {
-            if (Constants.MXML_CONTROLS_ACC_CHECK_BOX.equals(elementParser.getNodeName())) {
-                CheckBoxReplace checkBoxReplace = new CheckBoxReplace();
-                checkBoxReplace.setId(elementParser.getId());
-                checkBoxReplace.setEvent(propertyParser.getKey());
-                this.elementReplace.getCheckBoxReplaces().add(checkBoxReplace);
-            }
+        List<PropertyParser> propertyParserList = elementParser.getPropertyJsParser();
+        if (elementParser.isUseAjaxTag() && CollectionUtils.isNotEmpty(propertyParserList)) {
+            PropertyParser propertyParser = propertyParserList.get(0);
+            CheckBoxReplace checkBoxReplace = new CheckBoxReplace(elementParser.getId(), propertyParser.getKey());
+            this.elementReplace.getCheckBoxReplaces().add(checkBoxReplace);
         }
     }
 

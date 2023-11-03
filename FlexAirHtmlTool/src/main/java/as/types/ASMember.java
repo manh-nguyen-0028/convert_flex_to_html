@@ -12,6 +12,8 @@ public class ASMember {
     private boolean isStatic;
     private String comment;
     private boolean isConst;
+    private boolean isBindable;
+
     public ASMember() {
         name = null;
         type = "*";
@@ -19,6 +21,7 @@ public class ASMember {
         value = null;
         encapsulation = "public";
         isStatic = false;
+        isBindable = false;
     }
 
     public ASVariable createVariable() {
@@ -31,6 +34,7 @@ public class ASMember {
         obj.setStatic(isStatic);
         obj.setConst(isConst);
         obj.setComment(comment);
+        obj.setBindable(isBindable);
         return obj;
     }
 
@@ -43,8 +47,18 @@ public class ASMember {
         obj.setEncapsulation(encapsulation);
         obj.setStatic(isStatic);
         obj.setComment(comment);
+        obj.setBindable(isBindable);
         return obj;
     }
+
+    public boolean isBindable() {
+        return isBindable;
+    }
+
+    public void setBindable(boolean bindable) {
+        isBindable = bindable;
+    }
+
     public String getName() {
         return name;
     }

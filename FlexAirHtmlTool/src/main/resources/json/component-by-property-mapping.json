@@ -7,6 +7,7 @@
     "htmlTagStart": "<acc:inputTextMaxByte",
     "htmlTagStart2": ">",
     "htmlTagStart3": "",
+    "isUseAjaxTag": true,
     "isGenerateHtml": true,
     "htmlTagEnd": "</acc:inputTextMaxByte>"
   },
@@ -18,6 +19,7 @@
     "htmlTagStart": "<p:password",
     "htmlTagStart2": ">",
     "htmlTagStart3": "",
+    "isUseAjaxTag": false,
     "isGenerateHtml": true,
     "htmlTagEnd": "</p:password>"
   }

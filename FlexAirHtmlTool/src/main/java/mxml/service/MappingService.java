@@ -22,7 +22,7 @@ public class MappingService {
         List<ComponentMap> mxmlTags = new JsonUtils<ComponentMap>().readJsonFile(filePath, ComponentMap.class);
 
         for (ComponentMap mxmlTag : mxmlTags) {
-            hmXmlTag.put(mxmlTag.getName(), mxmlTag);
+            hmXmlTag.put(mxmlTag.getMxmlTag(), mxmlTag);
         }
 
         return hmXmlTag;
@@ -43,13 +43,10 @@ public class MappingService {
         return new JsonUtils<TransformerSpecialElement>().readJsonFile(filePath, TransformerSpecialElement.class);
     }
 
-    public static Map<String, ComponentPropertyMap> getMapPropertyByComponent() {
+    public static List<ComponentPropertyMap> getPropertyByComponent() {
         Map<String, ComponentPropertyMap> componentPropertyMap = new HashMap<>();
         String filePath = "json/property-by-component-mapping.json";
         List<ComponentPropertyMap> attributeTags = new JsonUtils<ComponentPropertyMap>().readJsonFile(filePath, ComponentPropertyMap.class);
-        if (CollectionUtils.isNotEmpty(attributeTags)) {
-            componentPropertyMap = attributeTags.stream().collect(Collectors.toMap(itemMap -> itemMap.getComponentName() + "@" + itemMap.getPropertyFrom(), itemMap -> itemMap));
-        }
-        return componentPropertyMap;
+        return attributeTags;
     }
 }

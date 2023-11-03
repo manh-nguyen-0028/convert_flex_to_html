@@ -3,5 +3,35 @@
     "componentName": "inputTextNumber",
     "propertyFrom": "maxByte",
     "propertyTo": "maxlength"
+  },
+  {
+    "componentName": "p:password",
+    "propertyFrom": "maxbytelength",
+    "propertyTo": "maxlength"
+  },
+  {
+    "componentName": "p:commandButton",
+    "propertyFrom": "onclick",
+    "propertyTo": "actionListener"
+  },
+  {
+    "componentName": "p:tab",
+    "propertyFrom": "value",
+    "propertyTo": "title"
+  },
+  {
+    "componentName": "p:selectBooleanCheckbox",
+    "propertyFrom": "value",
+    "propertyTo": "itemLabel"
+  },
+  {
+    "componentName": "acc:inputTextNumber",
+    "propertyFrom": "maxbytelength",
+    "propertyTo": "maxlength"
+  },
+  {
+    "componentName": "p:panel",
+    "propertyFrom": "title",
+    "propertyTo": "header"
   }
 ]

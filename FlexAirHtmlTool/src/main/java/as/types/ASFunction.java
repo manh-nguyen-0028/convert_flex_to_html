@@ -1,13 +1,15 @@
 package as.types;
 
 import constants.Constants;
-import utils.StringUtils;
+import utils.CommonUtils;
+
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * Wrapper class for functions
  */
-public class ASFunction extends ASMember{
+public class ASFunction extends ASMember {
     private List<ASVariable> argList;
 
     public ASFunction() {
@@ -18,8 +20,8 @@ public class ASFunction extends ASMember{
      * Check exist current variable in argument list
      */
     public boolean hasArgument() {
-        for(ASMember m : argList) {
-            if(m.getName().equals(getName())) {
+        for (ASMember m : argList) {
+            if (m.getName().equals(getName())) {
                 return true;
             }
         }
@@ -29,17 +31,18 @@ public class ASFunction extends ASMember{
     /**
      * Get local variable for function
      * Find all variable with format: 'var variable_name:types' and convert to ASVariable
+     *
      * @return Variable list
      */
     public List<ASVariable> buildLocalVariableStack() {
         int i;
         String text = getValue() != null ? getValue() : "";
-        String[] matches = StringUtils.matches(Constants.VARIABLE_PATTERN, text);
+        String[] matches = CommonUtils.matches(Constants.VARIABLE_PATTERN, text);
         List<ASVariable> locals = new ArrayList<>();
-        if(argList != null) {
+        if (argList != null) {
             locals.addAll(argList);
         }
-        for(i = 0; i < matches.length; i++) {
+        for (i = 0; i < matches.length; i++) {
             ASVariable tmpVar = new ASVariable();
             tmpVar.setName(matches[i].replaceAll(Constants.VARIABLE_PATTERN, "$3"));
             tmpVar.setType(matches[i].replaceAll(Constants.VARIABLE_PATTERN, "$4"));

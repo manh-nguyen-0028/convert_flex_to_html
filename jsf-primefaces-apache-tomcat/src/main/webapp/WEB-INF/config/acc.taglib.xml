@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<facelet-taglib xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facelettaglibrary_2_0.xsd"
+	version="2.0">
+	<namespace>http://xmlns.jcp.org/jsf/acctag</namespace>
+	<tag>
+		<tag-name>accFocus</tag-name>
+		<component>
+			<component-type>jp.co.nissho_ele.acc.framework.tag.ACCFocus</component-type>
+			<renderer-type>jp.co.nissho_ele.acc.framework.tag.ACCFocusRenderer</renderer-type>
+		</component>
+		<attribute>
+			<description>Button/Input/Select/Other</description>
+			<name>controlType</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+	</tag>
+	<tag>
+		<tag-name>
+            outputScript
+        </tag-name>
+        <component>
+            <component-type>javax.faces.Output</component-type>
+            <renderer-type>javax.faces.resource.Script</renderer-type>
+        </component>
+        <attribute>
+            <description>
+                <![CDATA[Converter instance registered with this component.]]>
+            </description>
+            <name>
+                converter
+            </name>
+            <required>
+                false
+            </required>
+            <type>
+                javax.faces.convert.Converter
+            </type>
+        </attribute>
+        <attribute>
+            <description>
+                <![CDATA[The component identifier for this component.  This value must be
+                unique within the closest parent component that is a naming
+                container.]]>
+            </description>
+            <name>
+                id
+            </name>
+            <required>
+                false
+            </required>
+            <type>
+                java.lang.String
+            </type>
+        </attribute>
+        <attribute>
+            <description>
+                <![CDATA[Flag indicating whether or not this component should be rendered
+                (during Render Response Phase), or processed on any subsequent
+                form submit.  The default value for this property is true.]]>
+            </description>
+            <name>
+                rendered
+            </name>
+            <required>
+                false
+            </required>
+            <type>
+                boolean
+            </type>
+        </attribute>
+        <attribute>
+            <description>
+                <![CDATA[The current value of this component.]]>
+            </description>
+            <name>
+                value
+            </name>
+            <required>
+                false
+            </required>
+            <type>
+                java.lang.Object
+            </type>
+        </attribute>
+        <attribute>
+            <description>
+                <![CDATA[<div class="changed_added_2_0"><p>The <em>libraryName</em> for this resource.</p></div>]]>
+            </description>
+            <name>
+                library
+            </name>
+            <required>
+                false
+            </required>
+            <type>
+                java.lang.String
+            </type>
+        </attribute>
+        <attribute>
+            <description>
+                <![CDATA[<div class="changed_added_2_0"><p>The <em>resourceName</em> for this resource.</p></div>
+                <div class="changed_modified_2_0_rev_a"><p>This attribute is required.</p></div>]]>
+            </description>
+            <name>
+                name
+            </name>
+            <required>
+                false
+            </required>
+            <type>
+                java.lang.String
+            </type>
+        </attribute>
+        <attribute>
+            <description>
+                <![CDATA[<div class="changed_added_2_0"><p>The <em>target</em> area for which this resource will 
+                be rendered.  For example, <em>target="head"</em> would cause the resource to be rendered within
+                the <em>head</em> element.</p></div>]]>
+            </description>
+            <name>
+                target
+            </name>
+            <required>
+                false
+            </required>
+            <type>
+                java.lang.String
+            </type>
+        </attribute>
+        <attribute>
+            <description>
+                The ValueExpression linking this component to a property in a
+                backing bean
+            </description>
+            <name>
+                binding
+            </name>
+            <required>
+                false
+            </required>
+            <type>
+                javax.faces.component.UIComponent
+            </type>
+        </attribute>
+        <attribute>
+            <description>
+                <![CDATA[<p class="changed_added_2_2">Per the WAI-ARIA spec and its
+                relationship to HTML5 (Section title ARIA Role Attriubute),
+                every HTML element may have a "role" attribute whose value
+                must be passed through unmodified on the element on which it
+                is declared in the final rendered markup.  The attribute, if
+                specified, must have a value that is a string literal that is,
+                or an EL Expression that evaluates to, a set of
+                space-separated tokens representing the various WAI-ARIA roles
+                that the element belongs to.
+                </p>
+                <p class="changed_added_2_2">It is the page author's
+                responsibility to ensure that the user agent is capable of
+                correctly interpreting the value of this attribute.</p>]]>
+            </description>
+            <name>role</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+	</tag>
+    <tag>
+        <tag-name>
+            outputStylesheet
+        </tag-name>
+        <component>
+            <component-type>javax.faces.Output</component-type>
+            <renderer-type>javax.faces.resource.Stylesheet</renderer-type>
+        </component>
+        <attribute>
+            <description>
+                <![CDATA[Converter instance registered with this component.]]>
+            </description>
+            <name>
+                converter
+            </name>
+            <required>
+                false
+            </required>
+            <type>
+                javax.faces.convert.Converter
+            </type>
+        </attribute>
+        <attribute>
+            <description>
+                <![CDATA[The component identifier for this component.  This value must be
+                unique within the closest parent component that is a naming
+                container.]]>
+            </description>
+            <name>
+                id
+            </name>
+            <required>
+                false
+            </required>
+            <type>
+                java.lang.String
+            </type>
+        </attribute>
+        <attribute>
+            <description>
+                <![CDATA[Flag indicating whether or not this component should be rendered
+                (during Render Response Phase), or processed on any subsequent
+                form submit.  The default value for this property is true.]]>
+            </description>
+            <name>
+                rendered
+            </name>
+            <required>
+                false
+            </required>
+            <type>
+                boolean
+            </type>
+        </attribute>
+        <attribute>
+            <description>
+                <![CDATA[The current value of this component.]]>
+            </description>
+            <name>
+                value
+            </name>
+            <required>
+                false
+            </required>
+            <type>
+                java.lang.Object
+            </type>
+        </attribute>
+        <attribute>
+            <description>
+                <![CDATA[<div class="changed_added_2_0"><p>The <em>libraryName</em> for this resource.</p></div>]]>
+            </description>
+            <name>
+                library
+            </name>
+            <required>
+                false
+            </required>
+            <type>
+                java.lang.String
+            </type>
+        </attribute>
+        <attribute>
+            <description>
+                <![CDATA[<div class="changed_added_2_0"><p>The <em>resourceName</em> for this resource.</p></div>
+                <div class="changed_modified_2_0_rev_a"><p>This attribute is required.</p></div>]]>
+            </description>
+            <name>
+                name
+            </name>
+            <required>
+                false
+            </required>
+            <type>
+                java.lang.String
+            </type>
+        </attribute>
+        <attribute>
+            <description>
+                The ValueExpression linking this component to a property in a
+                backing bean
+            </description>
+            <name>
+                binding
+            </name>
+            <required>
+                false
+            </required>
+            <type>
+                javax.faces.component.UIComponent
+            </type>
+        </attribute>
+        <attribute>
+            <description>
+                <![CDATA[<p class="changed_added_2_2">Per the WAI-ARIA spec and its
+                relationship to HTML5 (Section title ARIA Role Attriubute),
+                every HTML element may have a "role" attribute whose value
+                must be passed through unmodified on the element on which it
+                is declared in the final rendered markup.  The attribute, if
+                specified, must have a value that is a string literal that is,
+                or an EL Expression that evaluates to, a set of
+                space-separated tokens representing the various WAI-ARIA roles
+                that the element belongs to.
+                </p>
+                <p class="changed_added_2_2">It is the page author's
+                responsibility to ensure that the user agent is capable of
+                correctly interpreting the value of this attribute.</p>]]>
+            </description>
+            <name>role</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+</facelet-taglib>

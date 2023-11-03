@@ -73,10 +73,10 @@ public class AttributeService {
             cssParser = new CssParser(propertyMap.getConvertTo(), nodeValue + propertyMap.getEndTag());
 //            elementParser.getCssParsers().add(new CssParser(propertyMap.getConvertTo(), nodeValue + propertyMap.getEndTag()));
         }
-        if (cssParser!=null) {
+        if (cssParser != null) {
             String cssValue = cssParser.getValue();
             if (cssValue.contains("%px")) {
-                cssValue = cssValue.replace("%px","%");
+                cssValue = cssValue.replace("%px", "%");
                 cssParser.setValue(cssValue);
             }
             elementParser.getCssParsers().add(cssParser);
@@ -89,9 +89,9 @@ public class AttributeService {
         // handle when att = img
         String convertTo = propertyMap.getConvertTo();
         boolean compareTrueWithValue = propertyMap.isValueCompareTrue();
-        PropertyParser propertyParser = new PropertyParser(convertTo, nodeValue);
+        PropertyParser propertyParser = new PropertyParser(convertTo, nodeValue, propertyMap.getType());
         if ("src".equals(convertTo)) {
-            nodeValue = nodeValue.replace("@Embed('", "").replace("')", "").replace("/",":");
+            nodeValue = nodeValue.replace("@Embed('", "").replace("')", "").replace("/", ":");
             CssParser cssParser = new CssParser("background-image", "url(#{resource['" + nodeValue + "']})");
             elementParser.getCssParsers().add(cssParser);
             propertyParser.setUse(false);
@@ -107,7 +107,7 @@ public class AttributeService {
         if (nodeValue.contains("script.")) {
             nodeValue = nodeValue.replaceAll("script\\.(.*?)\\((.*?)\\)", "#{" + xmlFileName + Constants.CLASS_CONTROLLER + Constants.SYNTAX_DOT + "$1}");
         }
-        elementParser.getPropertyParsers().add(new PropertyParser(startTag, nodeValue));
+        elementParser.getPropertyParsers().add(new PropertyParser(startTag, nodeValue, propertyMap.getType()));
         return elementParser;
     }
 }
