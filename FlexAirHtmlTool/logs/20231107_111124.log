@@ -1,0 +1,29 @@
+[INFO ] 2023-11-07 11:11:24.618 [main] MxmlConvert - Root Element :Containers:ACCTitleWindow
+[INFO ] 2023-11-07 11:11:24.620 [main] MxmlConvert - ------
+[INFO ] 2023-11-07 11:11:24.624 [main] ConvertMxmlService - Node Name =#comment [OPEN]
+[INFO ] 2023-11-07 11:11:24.624 [main] ConvertMxmlService - Node Name =Containers:ACCTitleWindow [OPEN]
+[INFO ] 2023-11-07 11:11:24.636 [main] ConvertMxmlService - Node Name =#text [OPEN]
+[INFO ] 2023-11-07 11:11:24.637 [main] ConvertMxmlService - Node Name =mx:Script [OPEN]
+[INFO ] 2023-11-07 11:11:24.637 [main] ConvertMxmlService - Node Name =#text [OPEN]
+[INFO ] 2023-11-07 11:11:24.637 [main] ConvertMxmlService - Node Name =tougouchusyutsu:MG3001001_00_000_AS [OPEN]
+[INFO ] 2023-11-07 11:11:24.638 [main] ConvertMxmlService - Node Name =#text [OPEN]
+[INFO ] 2023-11-07 11:11:24.638 [main] ConvertMxmlService - Node Name =tougouchusyutsu:MG3001001_01_000 [OPEN]
+[INFO ] 2023-11-07 11:12:41.183 [main] ConvertMxmlService - Node Name =tougouchusyutsu:MG3001001_01_000 [CLOSE]
+[INFO ] 2023-11-07 11:12:41.183 [main] ConvertMxmlService - Node Name =#text [OPEN]
+[INFO ] 2023-11-07 11:12:41.183 [main] ConvertMxmlService - Node Name =Containers:ACCTitleWindow [CLOSE]
+[DEBUG] 2023-11-07 11:12:41.184 [main] MxmlConvert - parent name: null
+[DEBUG] 2023-11-07 11:12:41.184 [main] MxmlConvert - name: #comment
+[DEBUG] 2023-11-07 11:12:41.184 [main] MxmlConvert - cssElement: 
+[DEBUG] 2023-11-07 11:12:41.184 [main] MxmlConvert - attributeElement: 
+[DEBUG] 2023-11-07 11:12:41.184 [main] MxmlConvert - parent name: RootNode
+[DEBUG] 2023-11-07 11:12:41.184 [main] MxmlConvert - name: Containers:ACCTitleWindow
+[DEBUG] 2023-11-07 11:12:41.185 [main] MxmlConvert - parent name: Containers:ACCTitleWindow
+[DEBUG] 2023-11-07 11:12:41.185 [main] MxmlConvert - name: tougouchusyutsu:MG3001001_01_000
+[DEBUG] 2023-11-07 11:12:41.185 [main] MxmlConvert - cssElement: height:712px;width:1018px;position: absolute; left:-1px;top:-2px;
+[DEBUG] 2023-11-07 11:12:41.185 [main] MxmlConvert - attributeElement:  id="compCanvas1"
+[DEBUG] 2023-11-07 11:12:41.185 [main] MxmlConvert - cssElement: height:738px;position:absolute;width:1022px;
+[DEBUG] 2023-11-07 11:12:41.185 [main] MxmlConvert - attributeElement:  title="統合抽出画面"
+[INFO ] 2023-11-07 11:12:41.235 [main] MxmlConvert - Html file created successfully.
+[INFO ] 2023-11-07 11:12:41.235 [main] MxmlConvert - CSS file created successfully.
+[INFO ] 2023-11-07 11:12:41.253 [main] MxmlConvert - Root Element :Containers:ACCCanvas
+[INFO ] 2023-11-07 11:12:41.253 [main] MxmlConvert - ------

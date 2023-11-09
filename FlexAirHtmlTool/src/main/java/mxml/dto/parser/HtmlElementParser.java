@@ -1,5 +1,6 @@
 package mxml.dto.parser;
 
+import constants.Constants;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.collections4.CollectionUtils;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 @Getter
 public class HtmlElementParser {
     private String parentNodeName;
+    private HtmlElementParser parentNode;
     private String nodeName;
     private String xhtmlTag;
     private String id;
@@ -25,6 +27,7 @@ public class HtmlElementParser {
     private List<PropertyParser> propertyForChild = new ArrayList<>();
     private Map<String, PropertyParser> mapPropertyParser = new HashMap<>();
     private List<CssParser> cssParsers = new ArrayList<>();
+    private Map<String, CssParser> mapCssParser = new HashMap<>();
     private boolean isHadAttribute;
     private boolean isHadCss;
     private boolean isGenerateHtml;
@@ -41,18 +44,37 @@ public class HtmlElementParser {
         this.isUseAjaxTag = isUseAjaxTag;
     }
 
+    public HtmlElementParser(String nodeName) {
+        this.nodeName = nodeName;
+        this.isGenerateHtml = true;
+        this.isUseAjaxTag = false;
+    }
+
     public Map<String, PropertyParser> getMapPropertyParser() {
         List<PropertyParser> propertyParserList = getPropertyParsers();
         if (CollectionUtils.isNotEmpty(propertyParserList)) {
-            this.mapPropertyParser = propertyParserList.stream().collect(Collectors.toMap(PropertyParser::getKey, attribute -> attribute));
+            this.mapPropertyParser = propertyParserList.stream()
+                    .collect(Collectors.toMap(PropertyParser::getKey, attribute -> attribute));
         }
         return mapPropertyParser;
+    }
+
+    public Map<String, CssParser> getMapCssParser() {
+        List<CssParser> cssParserList = getCssParsers();
+        if (CollectionUtils.isNotEmpty(cssParserList)) {
+            this.mapCssParser = cssParserList.stream()
+                    .collect(Collectors.toMap(CssParser::getKey, attribute -> attribute));
+        }
+
+        return mapCssParser;
     }
 
     public List<PropertyParser> getPropertyJsParser() {
         List<PropertyParser> propertyParserList = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(this.propertyParsers)) {
-            propertyParserList = this.propertyParsers.stream().filter(itemFilter -> "js".equals(itemFilter.getType())).collect(Collectors.toList());
+            propertyParserList = this.propertyParsers.stream()
+                    .filter(itemFilter -> Constants.XHTML_ATTRIBUTE_JS.equals(itemFilter.getType()))
+                    .collect(Collectors.toList());
         }
         return propertyParserList;
     }

@@ -11,14 +11,16 @@ import org.w3c.dom.Node;
 import java.util.Map;
 
 public class AttributeService {
-    private static String xmlFileName;
+    private final String xmlFileName;
+    private final Map<String, Object> retrievedMap;
 
-    public AttributeService(String xmlFileName) {
+    public AttributeService(String xmlFileName, Map<String, Object> retrievedMap) {
         this.xmlFileName = xmlFileName;
+        this.retrievedMap = retrievedMap;
     }
 
     public void attributeParse(Node node, HtmlElementParser htmlElementParser) {
-        Map<String, PropertyMap> hmAttributeMap = MappingService.getAttributeMap();
+        Map<String, PropertyMap> hmAttributeMap = (Map<String, PropertyMap>) retrievedMap.get("attributeMap");
 
         if (node.hasAttributes()) {
             NamedNodeMap nodeAttMap = node.getAttributes();
@@ -32,7 +34,7 @@ public class AttributeService {
         }
     }
 
-    public static void attributeParseDetail(HtmlElementParser elementParser, PropertyMap propertyMap, Node nodeAtt) {
+    public void attributeParseDetail(HtmlElementParser elementParser, PropertyMap propertyMap, Node nodeAtt) {
         String nodeValue = nodeAtt.getNodeValue();
         String attType = propertyMap.getType();
 
@@ -67,11 +69,9 @@ public class AttributeService {
         if ("opacity".equals(startTag)) {
             if (Double.parseDouble(nodeValue) > 0) {
                 cssParser = new CssParser(propertyMap.getConvertTo(), nodeValue + propertyMap.getEndTag());
-//                elementParser.getCssParsers().add(new CssParser(propertyMap.getConvertTo(), nodeValue + propertyMap.getEndTag()));
             }
         } else {
             cssParser = new CssParser(propertyMap.getConvertTo(), nodeValue + propertyMap.getEndTag());
-//            elementParser.getCssParsers().add(new CssParser(propertyMap.getConvertTo(), nodeValue + propertyMap.getEndTag()));
         }
         if (cssParser != null) {
             String cssValue = cssParser.getValue();
@@ -89,12 +89,12 @@ public class AttributeService {
         // handle when att = img
         String convertTo = propertyMap.getConvertTo();
         boolean compareTrueWithValue = propertyMap.isValueCompareTrue();
-        PropertyParser propertyParser = new PropertyParser(convertTo, nodeValue, propertyMap.getType());
+        PropertyParser propertyParser = new PropertyParser(convertTo, nodeValue, propertyMap.getType(), propertyMap.isGenerateHtml());
         if ("src".equals(convertTo)) {
             nodeValue = nodeValue.replace("@Embed('", "").replace("')", "").replace("/", ":");
             CssParser cssParser = new CssParser("background-image", "url(#{resource['" + nodeValue + "']})");
             elementParser.getCssParsers().add(cssParser);
-            propertyParser.setUse(false);
+            propertyParser.setGenerateHtml(false);
         }
         if (!compareTrueWithValue || (compareTrueWithValue && "true".equals(nodeValue))) {
             elementParser.getPropertyParsers().add(propertyParser);
@@ -102,10 +102,10 @@ public class AttributeService {
         return elementParser;
     }
 
-    private static HtmlElementParser javascriptParser(HtmlElementParser elementParser, PropertyMap propertyMap, String nodeValue) {
+    private HtmlElementParser javascriptParser(HtmlElementParser elementParser, PropertyMap propertyMap, String nodeValue) {
         String startTag = propertyMap.getConvertTo();
         if (nodeValue.contains("script.")) {
-            nodeValue = nodeValue.replaceAll("script\\.(.*?)\\((.*?)\\)", "#{" + xmlFileName + Constants.CLASS_CONTROLLER + Constants.SYNTAX_DOT + "$1}");
+            nodeValue = nodeValue.replaceAll("script\\.(.*?)\\((.*?)\\)", "#{" + xmlFileName + Constants.CLASS_CONTROLLER + Constants.DOT_CHAR + "$1}");
         }
         elementParser.getPropertyParsers().add(new PropertyParser(startTag, nodeValue, propertyMap.getType()));
         return elementParser;

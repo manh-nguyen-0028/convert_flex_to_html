@@ -1,27 +1,58 @@
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RegexExample {
     public static void main(String[] args) {
-        String html = "<p:selectBooleanCheckbox change=\"#\\{MG3001001_01_000Controller.ckNyukinYakusokuJyokenChangeHandler};\" id=\"ckNyukinYakusokuJyoken\" itemLabel=\"入金約束を条件に含む\" tabIndex=\"3\" style=\"height:20;width:163;position: absolute; left:181;top:54;\"></p:selectBooleanCheckbox>";
+        StringBuilder baseHtml = new StringBuilder();
+        baseHtml.append("<div>");
+        baseHtml.append("<h:outputText id=\"ttNameId\" value=\"#{record.ttName}\" showDataTips=\"true\" style=\"text-align:center;\"></h:outputText>");
+        baseHtml.append("<p>This is some additional content.</p>");
+        baseHtml.append("</div>");
 
-        Document doc = Jsoup.parse(html, "text/xml");
+        // Regex pattern to match the specified format
+        String pattern = "<h:outputText(?:\\s+(id=\"(\\w+)\")?|\\s+(value=\"(#[^\"]+)\")?|\\s+(showDataTips=\"(true|false)\")?|\\s+(style=\"([^\"]*)\")?)*></h:outputText>";
 
-        // Lấy tất cả các thẻ <p:selectBooleanCheckbox>
-        for (Element checkbox : doc.select("[id=ckNyukinYakusokuJyoken]")) {
-            // Xóa thuộc tính change
-            checkbox.removeAttr("change");
+        // Create a pattern object
+        Pattern regex = Pattern.compile(pattern);
 
-            // Thêm thẻ <p:ajax> vào thẻ <p:selectBooleanCheckbox>
-            Element ajaxTag = new Element("p:ajax");
-            ajaxTag.attr("event", "change");
-            ajaxTag.attr("listener", "#{MG3001001_01_000Controller.ckNyukinYakusokuJyokenChangeHandler}");
+        // Create a matcher object
+        Matcher matcher = regex.matcher(baseHtml);
 
-            checkbox.appendChild(ajaxTag);
+        // Create a StringBuilder for the modified result
+        StringBuilder modifiedHtml = new StringBuilder();
+
+        // Variable to track the end of the last match
+        int lastMatchEnd = 0;
+
+        // Find and replace the pattern in the baseHtml
+        while (matcher.find()) {
+            // Extract values from the matched groups
+            String id = matcher.group(2);
+            String value = matcher.group(4);
+            String showDataTips = matcher.group(6);
+
+            // Append the content between the last match and the current match to the modified result
+            modifiedHtml.append(baseHtml.substring(lastMatchEnd, matcher.start()));
+
+            // Append the modified result to the StringBuilder
+            modifiedHtml.append(String.format("<h:outputText id=\"%s\" value=\"%s\"", id, value));
+
+            // Close the opening tag
+            modifiedHtml.append("></h:outputText>");
+
+            // Add <p:tooltip> if showDataTips was "true"
+            if (showDataTips != null && "true".equals(showDataTips)) {
+                modifiedHtml.append(String.format("\n<p:tooltip for=\"%s\" value=\"%s\" />", id, value));
+            }
+
+            // Update the last match end position
+            lastMatchEnd = matcher.end();
         }
 
-        // In HTML sau khi thay đổi
-        System.out.println(doc.html());
+        // Append the remaining content after the last match to the modified result
+        modifiedHtml.append(baseHtml.substring(lastMatchEnd));
+
+        baseHtml = modifiedHtml;
+        System.out.println(baseHtml.toString());
     }
 }

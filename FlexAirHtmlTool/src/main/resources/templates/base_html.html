@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<ui:composition {style_composition_first}
-                {xmlns_lib_define}>
+<ui:composition {xmlns_lib_define}>
 
     {title_form_content}
 
-    <ui:define name="content">
-        <div class="p-grid p-nogutter p-align-center p-justify-center" style="height:374px;width:517px;">
-            {form_content}
-        </div>
-    </ui:define>
+    {start_first_ui_detail}
+    <div {class_first_content} {style_composition_first}>
+        {form_content}
+    </div>
+    {end_first_ui_detail}
 </ui:composition>
 

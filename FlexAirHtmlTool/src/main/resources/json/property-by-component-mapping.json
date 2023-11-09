@@ -25,6 +25,11 @@
     "propertyTo": "itemLabel"
   },
   {
+    "componentName": "p:selectBooleanCheckbox",
+    "propertyFrom": "onclick",
+    "propertyTo": "change"
+  },
+  {
     "componentName": "acc:inputTextNumber",
     "propertyFrom": "maxbytelength",
     "propertyTo": "maxlength"

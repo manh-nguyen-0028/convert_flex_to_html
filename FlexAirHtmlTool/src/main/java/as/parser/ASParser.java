@@ -39,11 +39,14 @@ public class ASParser {
         logger.info("Starting parser class....................");
         ASClass classDefinition = new ASClass();
         this.stack = stack;
-        //
-        parseHelper(classDefinition, getSrc());
+        try {
+            parseHelper(classDefinition, getSrc());
 //        if (classDefinition.getClassName() == null) {
 //            throw new Error("Error, no class provided for package: " + classPath);
 //        }
+        }catch (Exception ex) {
+            logger.error("[Error]:", ex);
+        }
         logger.info("End parser class.................");
         return classDefinition;
     }
@@ -230,6 +233,14 @@ public class ASParser {
                         logger.info("Parsing class member variable end.................");
                         logger.info("Parsing class member function start.................");
                         logger.debug("---->Member type function set.");
+                    } else if (currToken.getToken() != null && currToken.getToken().equals(ReservedWords.OVERRIDE)) {
+                        // Add override annotation
+                        String extraComment = currToken.getExtra();
+                        int lastNewLine = extraComment.lastIndexOf('\n');
+                        String newLine = extraComment.substring(lastNewLine);
+                        extraComment += "@Override";
+                        extraComment += newLine;
+                        currMember.setComment(extraComment);
                     }
                 }
             } else if (ASParseState.MEMBER_VARIABLE.equals(getState())) {
@@ -637,7 +648,7 @@ public class ASParser {
                                 && ReservedWords.AS.equals(prevToken.getToken())
                                 && currToken.getToken().equals(cls.getClassName())) {
                             result = result.substring(0, result.indexOf(Constants.EQUAL_OPERATOR) + 1 + 1); //Extra space
-                            result += "new " + currToken.getToken() + ReservedWords.MODEL + "()";
+                            result += ReservedWords.NEW + " " + currToken.getToken() + ReservedWords.MODEL + "()";
                             index = currToken.getIndex();
                         } else if (prevToken != null
                                 && ReservedWords.NEW.equals(prevToken.getToken())
@@ -807,8 +818,8 @@ public class ASParser {
         // Convert log info method
         result = result.replaceAll(Constants.TRACE_INFO_PATTERN, ReservedWords.WRITEINFOLOG + "$3$4");
         // Convert 「.text」不要
-        result = result.replaceAll(Constants.TEXT_PROP_PATTERN, "$3$4");
         result = result.replaceAll(Constants.TEXT_PROP_END_PATTERN, "");
+        result = result.replaceAll(Constants.TEXT_PROP_PATTERN, "$3$4");
         // Narrow function
         result = result.replaceAll(Constants.NARROW_FUNCTION_PATTERN, "$3 ->");
         // Parse function
@@ -824,6 +835,8 @@ public class ASParser {
         // Convert init for statement:
         // for(int i;i<this.codeMaster.length;i++) => for(int i = 0;i<this.codeMaster.length;i++)
         result = result.replaceAll(Constants.FOR_INIT_PATTERN, "$2$3$4$5 = 0$6");
+        result = result.replaceAll(Constants.RETURN_PATTERN, "$2$3;$4");
+        result = result.replaceAll(Constants.NUMBER_VARIABLE_PATTERN, "int$3$4$5$6$7Integer.parseInt");
         return new String[]{result, String.valueOf(index)};
     }
 

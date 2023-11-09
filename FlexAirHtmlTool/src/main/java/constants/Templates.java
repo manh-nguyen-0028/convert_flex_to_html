@@ -28,4 +28,15 @@ public class Templates {
             + "\n\tpublic void set{Pp}({type} {pp}) {"
             + "\n\t\tthis.{pp} = {pp};"
             + "\n\t}";
+    public static final String[] ASInputControls = {
+            "Controls:ACCTextInput"
+            , "Controls:ACCKadenTextInput"
+            , "Controls:ACCTextArea"
+            , "Controls:ACCTextInputMask"
+            , "Controls:ACCTextInputMaskNumber"
+            , "Controls:ACCTextInputMaskTime"
+            , "Controls:ACCTextInputMaskZip"
+            , "Controls:ACCTextInputMaskDate"
+            , "Controls:ACCTextInputMaskNumberOnly"
+    };
 }

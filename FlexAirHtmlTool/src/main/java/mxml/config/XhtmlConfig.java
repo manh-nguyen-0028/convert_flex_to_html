@@ -8,6 +8,8 @@ import lombok.Setter;
 public class XhtmlConfig {
     private String filePath;
     private String fileName;
+    private String cssWith;
+    private String cssHeight;
     private boolean isGenerateForm;
 
     public XhtmlConfig(String filePath, String fileName) {

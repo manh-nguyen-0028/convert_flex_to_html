@@ -4,13 +4,11 @@ import mxml.dto.mapping.ComponentMap;
 import mxml.dto.mapping.ComponentPropertyMap;
 import mxml.dto.mapping.PropertyMap;
 import mxml.dto.mapping.TransformerSpecialElement;
-import org.apache.commons.collections4.CollectionUtils;
 import utils.JsonUtils;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class MappingService {
     private MappingService() {
@@ -44,9 +42,7 @@ public class MappingService {
     }
 
     public static List<ComponentPropertyMap> getPropertyByComponent() {
-        Map<String, ComponentPropertyMap> componentPropertyMap = new HashMap<>();
         String filePath = "json/property-by-component-mapping.json";
-        List<ComponentPropertyMap> attributeTags = new JsonUtils<ComponentPropertyMap>().readJsonFile(filePath, ComponentPropertyMap.class);
-        return attributeTags;
+        return new JsonUtils<ComponentPropertyMap>().readJsonFile(filePath, ComponentPropertyMap.class);
     }
 }

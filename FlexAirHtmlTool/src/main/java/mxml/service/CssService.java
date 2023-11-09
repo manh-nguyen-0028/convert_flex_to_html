@@ -6,6 +6,10 @@ import mxml.dto.parser.CssParser;
 import java.util.List;
 
 public class CssService {
+
+    private CssService() {
+    }
+
     /**
      * @param cssParsers
      * @return create syntax css
@@ -14,7 +18,7 @@ public class CssService {
         StringBuilder cssBuilder = new StringBuilder();
         // css
         for (CssParser css : cssParsers) {
-            cssBuilder.append(css.getKey()).append(Constants.SYNTAX_COLON).append(css.getValue()).append(Constants.SYNTAX_SEMICOLON);
+            cssBuilder.append(css.getKey()).append(Constants.COLON_CHAR).append(css.getValue()).append(Constants.SYNTAX_SEMICOLON);
         }
         return cssBuilder;
     }

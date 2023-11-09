@@ -79,9 +79,10 @@ public class ReservedWords {
     public static final String STRING = "String";
     public static final String SIMPLEDATEFORMAT = "SimpleDateFormat";
     public static final String MODEL = "Model";
+    public static final String RECORD = "Record";
     public static final String CONTROLLER = "Controller";
     public static final String WRITEINFOLOG = "writeInfoLog";
     public static final String WRITEERRORLOG = "writeErrorLog";
     public static final String ACC_CONTROLLER_BASE = "ACCControllerBase";
-
+    public static final String CLASSNAME = "className";
 }

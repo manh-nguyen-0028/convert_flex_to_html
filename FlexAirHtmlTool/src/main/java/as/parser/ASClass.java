@@ -65,8 +65,44 @@ public class ASClass {
             fieldMap.put(name, fieldMap.getOrDefault(name, value));
         }
     }
-
-    public String generateModelString(Map<String, List<String>> xmlObjectInline) {
+    public String generateRecordString(Map<String, List<String>> xmlObjectInline) {
+        StringBuilder buffer = new StringBuilder();
+        List<ASVariable> lstProperties = new ArrayList<>();
+        // getterとsetterの生成
+        StringBuilder propBuilder = new StringBuilder();
+        StringBuilder propGetSetBuilder = new StringBuilder();
+        StringBuilder[] getSetPPs;
+        //XML object
+        if (xmlObjectInline != null && xmlObjectInline.size() > 0) {
+            for (String key : xmlObjectInline.keySet()) {
+                List<String> properties = xmlObjectInline.get(key);
+                for (String pp : properties) {
+                    getSetPPs = generateProperty(pp, ReservedWords.STRING);
+                    if (getSetPPs != null && getSetPPs.length > 0) {
+                        propBuilder.append(getSetPPs[0]);
+                        propGetSetBuilder.append(getSetPPs[1]);
+                    }
+                }
+            }
+        }
+        if (propBuilder != null && propBuilder.length() > 0) {
+            buffer.append(propBuilder);
+            buffer.append("\n");
+        }
+        if (propGetSetBuilder != null && propGetSetBuilder.length() > 0) {
+            buffer.append(propGetSetBuilder);
+        }
+        String result = buffer.toString();
+        result = result.replaceAll("^;", "");
+        // Remove duplicate new line
+        result = result.replaceAll("\n\n", "\n");
+        // Replace 4 spaces to tab
+        result = result.replaceAll("    ", "\t");
+        //Remove 2 tabs identify
+        result = result.replaceAll("\n\t\t\t", "\n\t");
+        return result;
+    }
+    public String generateModelString(List<ASMember> modelMembers) {
         StringBuilder buffer = new StringBuilder();
         List<ASVariable> lstProperties = new ArrayList<>();
         //Process require package
@@ -76,7 +112,7 @@ public class ASClass {
             for (ASMember m : this.members) {
                 if (m instanceof ASFunction) {
                     //Ignore setForm/clearForm
-                    //if (StringUtils.isMatched(Constants.SET_CLEAR_FORM_PATTERN, m.getName())) continue;
+                    //if (CommonUtils.isMatched(Constants.SET_CLEAR_FORM_PATTERN, m.getName())) continue;
                     // buffer.append(stringifyFunc(m, true));
                 } else {
                     ASVariable currentVar = (ASVariable) m;
@@ -102,7 +138,7 @@ public class ASClass {
                                 .replace("{name}", m.getName())
                                 .replace("{value}", value);
                     } else {
-                        if (m.getValue() == null) {
+                        if (m.getValue() == null){
                             tmpVar = Templates.VARIABLE;
                             tmpVar = tmpVar.replace("{type}", type)
                                     .replace("{name}", m.getName());
@@ -130,25 +166,28 @@ public class ASClass {
             StringBuilder propBuilder = new StringBuilder();
             StringBuilder propGetSetBuilder = new StringBuilder();
             StringBuilder[] getSetPPs;
-            //XML object
-            if (xmlObjectInline != null && xmlObjectInline.size() > 0) {
-                for (String key : xmlObjectInline.keySet()) {
-                    List<String> properties = xmlObjectInline.get(key);
-                    for (String pp : properties) {
-                        getSetPPs = generateProperty(pp, ReservedWords.STRING);
-                        if (getSetPPs != null && getSetPPs.length > 0) {
-                            propBuilder.append(getSetPPs[0]);
-                            propGetSetBuilder.append(getSetPPs[1]);
-                        }
-                    }
-                }
-            }
             //[Bindable] properties
-            for (ASVariable var : lstProperties) {
+            for (ASVariable var: lstProperties) {
                 getSetPPs = generateProperty(var.getName(), CommonUtils.convertType(var.getType()));
                 if (getSetPPs != null && getSetPPs.length > 0) {
                     //propBuilder.append(getSetPPs[0]);
                     propGetSetBuilder.append(getSetPPs[1]);
+                }
+            }
+            // Add className model property
+            getSetPPs = generateProperty(ReservedWords.CLASSNAME, ReservedWords.STRING);
+            if (getSetPPs != null && getSetPPs.length > 0) {
+                propBuilder.append(getSetPPs[0]);
+                propGetSetBuilder.append(getSetPPs[1]);
+            }
+            //XML object
+            if (modelMembers != null && modelMembers.size() > 0) {
+                for (ASMember pp : modelMembers) {
+                    getSetPPs = generateProperty(pp.getName(), pp.getType());
+                    if (getSetPPs != null && getSetPPs.length > 0) {
+                        propBuilder.append(getSetPPs[0]);
+                        propGetSetBuilder.append(getSetPPs[1]);
+                    }
                 }
             }
             if (propBuilder != null && propBuilder.length() > 0) {
@@ -169,7 +208,6 @@ public class ASClass {
         result = result.replaceAll("\n\t\t\t", "\n\t");
         return result;
     }
-
     public String generateString() {
         StringBuilder buffer = new StringBuilder();
         //Process require package
@@ -188,7 +226,7 @@ public class ASClass {
                 if (m instanceof ASFunction) {
                     buffer.append(stringifyFunc(m, false));
                 } else {
-                    ASVariable currentVar = (ASVariable) m;
+                    ASVariable currentVar = (ASVariable)m;
                     String type;
                     String value = currentVar.getValue();
                     type = CommonUtils.convertType(currentVar.getType());
@@ -203,21 +241,21 @@ public class ASClass {
                     }
                     buffer.append(currentVar.getComment());
                     String tmpVar = "";
-                    if (currentVar.isStatic()) {
-                        tmpVar = Templates.VARIABLE_STATIC;
-                        tmpVar = tmpVar.replace("{type}", type)
-                                .replace("{name}", m.getName())
-                                .replace("{value}", value);
-                    } else if (m.getValue() == null) {
-                        tmpVar = Templates.VARIABLE;
-                        tmpVar = tmpVar.replace("{type}", type)
-                                .replace("{name}", m.getName());
-                    } else {
-                        tmpVar = Templates.VARIABLE_ASSIGN;
-                        tmpVar = tmpVar.replace("{type}", type)
-                                .replace("{name}", m.getName())
-                                .replace("{value}", value);
-                    }
+                   if (currentVar.isStatic()) {
+                       tmpVar = Templates.VARIABLE_STATIC;
+                       tmpVar = tmpVar.replace("{type}", type)
+                               .replace("{name}", m.getName())
+                               .replace("{value}", value);
+                   } else if (m.getValue() == null){
+                       tmpVar = Templates.VARIABLE;
+                       tmpVar = tmpVar.replace("{type}", type)
+                               .replace("{name}", m.getName());
+                   } else {
+                       tmpVar = Templates.VARIABLE_ASSIGN;
+                       tmpVar = tmpVar.replace("{type}", type)
+                               .replace("{name}", m.getName())
+                               .replace("{value}", value);
+                   }
                     tmpVar = tmpVar.replace("{const}", m.isConst() ? " final" : "");
                     tmpVar = tmpVar.replace("{encap}", m.getEncapsulation());
                     buffer.append(tmpVar);
@@ -229,11 +267,10 @@ public class ASClass {
         result = result.replaceAll("\n\t\t", "\n\t");
         return result;
     }
-
     public String stringifyFunc(ASMember fn, boolean isModel) {
         StringBuilder buffer = new StringBuilder();
         if (fn instanceof ASFunction) {
-            ASFunction function = (ASFunction) fn;
+            ASFunction function = (ASFunction)fn;
             String fncStr = function.getComment();
             String fncName = function.getName();
             if (function.isStatic()) {
@@ -242,16 +279,17 @@ public class ASClass {
             } else if (getOrgClassName().equals(function.getName())) {
                 // Constructor
                 fncStr += Templates.FUNCTION_CTOR;
-                fncName = getClassName() + (isModel ? ReservedWords.MODEL : ReservedWords.CONTROLLER);
-            } else if (ASKeyword.SET.equals(function.getSubType())) {
+                fncName = getClassName() + (isModel? ReservedWords.MODEL : ReservedWords.CONTROLLER);
+            } else if (ASKeyword.SET.equals(function.getSubType())){
                 fncName = ASKeyword.SET + CommonUtils.capitalize(fncName);
                 // Set functions
                 fncStr += Templates.FUNCTION;
-            } else if (ASKeyword.GET.equals(function.getSubType())) {
+            } else if (ASKeyword.GET.equals(function.getSubType())){
                 fncName = ASKeyword.GET + CommonUtils.capitalize(fncName);
                 // Set functions
                 fncStr += Templates.FUNCTION;
-            } else {
+            }
+            else {
                 // Normal functions
                 fncStr += Templates.FUNCTION;
             }
@@ -263,11 +301,11 @@ public class ASClass {
             fncStr = fncStr.replace("{name}", fncName);
             // Params
             List<String> tmpArr = new ArrayList<>();
-            for (ASVariable arg : ((ASFunction) fn).getArgList()) {
-                if (!((ASArgument) arg).isRestParam()) {
+            for (ASVariable arg : ((ASFunction)fn).getArgList()) {
+                if (!((ASArgument)arg).isRestParam()) {
                     String paramVar = "";
                     paramVar = Templates.VARIABLE_PARAM.replace("{type}", arg.getType())
-                            .replace("{name}", arg.getName());
+                                                        .replace("{name}", arg.getName());
                     tmpArr.add(paramVar);
                 }
             }
@@ -301,7 +339,6 @@ public class ASClass {
             }
         }
     }
-
     public void modelProcess() {
         ASClass self = this;
         ASParser parser = new ASParser();
@@ -322,7 +359,6 @@ public class ASClass {
             }
         }
     }
-
     public void process() {
         ASClass self = this;
         ASParser parser = new ASParser();
@@ -331,7 +367,7 @@ public class ASClass {
         for (i = 0; i < members.size(); i++) {
             if (members.get(i) instanceof ASFunction) {
                 //Parse function
-                ASFunction func = (ASFunction) members.get(i);
+                ASFunction func = (ASFunction)members.get(i);
                 func.setValue(parser.parseFunc(self, func.getValue(), func.buildLocalVariableStack())[0]);
             }
             if (members.get(i) instanceof ASVariable) {
@@ -344,6 +380,12 @@ public class ASClass {
         }
     }
 
+    /**
+     * Generate getter/setter property
+     * @param ppName property name
+     * @param ppType property type
+     * @return
+     */
     private StringBuilder[] generateProperty(String ppName, String ppType) {
         StringBuilder propBuilder = new StringBuilder();
         StringBuilder propGetSetBuilder = new StringBuilder();
@@ -360,27 +402,17 @@ public class ASClass {
             getSetStr = Templates.FUNCTION_GET.replace("{type}", ppType)
                     .replace("{pp}", ppName).replace("{Pp}", CommonUtils.capitalize(ppName));
         }
-
-        propGetSetBuilder.append("\n");
         propGetSetBuilder.append(getSetStr);
+        propGetSetBuilder.append("\n");
         getSetStr = Templates.FUNCTION_SET.replace("{type}", ppType)
                 .replace("{pp}", ppName).replace("{Pp}", CommonUtils.capitalize(ppName));
         propGetSetBuilder.append(getSetStr);
         propGetSetBuilder.append("\n");
-        return new StringBuilder[]{propBuilder, propGetSetBuilder};
+        return new StringBuilder[]{ propBuilder, propGetSetBuilder};
     }
     //----------------------------------------------
     // getterとsetter生成
     //----------------------------------------------
-
-
-    public List<ASMember> getImportsPkg() {
-        return importsPkg;
-    }
-
-    public void setImportsPkg(List<ASMember> importsPkg) {
-        this.importsPkg = importsPkg;
-    }
 
     public String getPackageName() {
         return packageName;
@@ -454,22 +486,6 @@ public class ASClass {
         this.membersWithAssignments = membersWithAssignments;
     }
 
-    public Map<String, ASMember> getFieldMap() {
-        return fieldMap;
-    }
-
-    public void setFieldMap(Map<String, ASMember> fieldMap) {
-        this.fieldMap = fieldMap;
-    }
-
-    public Map<String, ASMember> getStaticFieldMap() {
-        return staticFieldMap;
-    }
-
-    public void setStaticFieldMap(Map<String, ASMember> staticFieldMap) {
-        this.staticFieldMap = staticFieldMap;
-    }
-
     public Map<String, ASClass> getClassMap() {
         return classMap;
     }
@@ -484,14 +500,6 @@ public class ASClass {
 
     public void setClassMapFiltered(Map<String, ASClass> classMapFiltered) {
         this.classMapFiltered = classMapFiltered;
-    }
-
-    public Map<String, ASClass> getPackageMap() {
-        return packageMap;
-    }
-
-    public void setPackageMap(Map<String, ASClass> packageMap) {
-        this.packageMap = packageMap;
     }
 
 }

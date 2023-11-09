@@ -11,4 +11,5 @@ public class PropertyMap {
     private String endTag;
     private String type;
     private boolean valueCompareTrue;
+    private boolean isGenerateHtml;
 }

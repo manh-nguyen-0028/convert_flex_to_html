@@ -14,6 +14,11 @@ public class ASMember {
     private boolean isConst;
     private boolean isBindable;
 
+    public ASMember(String name, String type) {
+        this.name = name;
+        this.type = type;
+    }
+
     public ASMember() {
         name = null;
         type = "*";

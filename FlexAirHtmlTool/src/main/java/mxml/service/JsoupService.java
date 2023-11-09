@@ -1,6 +1,7 @@
 package mxml.service;
 
-import mxml.dto.modify.CheckBoxReplace;
+import constants.Constants;
+import mxml.dto.modify.AjaxEvent;
 import mxml.dto.modify.ElementReplace;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jsoup.Jsoup;
@@ -13,6 +14,9 @@ import java.util.List;
 
 public class JsoupService {
 
+    private JsoupService() {
+    }
+
     public static String createJsoupDocument(StringBuilder baseHtml, ElementReplace elementReplace) {
         Document jsoupDoc = Jsoup.parse(baseHtml.toString(), "UTF-8", Parser.xmlParser());
         JsoupService.handleTagJsoup(jsoupDoc, elementReplace);
@@ -20,23 +24,25 @@ public class JsoupService {
     }
 
     public static void handleTagJsoup(Document jsoupDoc, ElementReplace elementReplace) {
-        // Handle tag p:selectBooleanCheckbox
-        handleCheckBoxHaveAjax(jsoupDoc, elementReplace);
+        // Handle tag p:ajax
+        handleAjaxElement(jsoupDoc, elementReplace);
     }
 
-    private static void handleCheckBoxHaveAjax(Document jsoupDoc, ElementReplace elementReplace) {
-        List<CheckBoxReplace> checkBoxReplaceList = elementReplace.getCheckBoxReplaces();
-        if (CollectionUtils.isNotEmpty(checkBoxReplaceList)) {
-            for (CheckBoxReplace item : checkBoxReplaceList) {
+    private static void handleAjaxElement(Document jsoupDoc, ElementReplace elementReplace) {
+        List<AjaxEvent> ajaxEventReplaces = elementReplace.getAjaxEventReplaces();
+        if (CollectionUtils.isNotEmpty(ajaxEventReplaces)) {
+            for (AjaxEvent item : ajaxEventReplaces) {
                 String id = item.getId();
-                for (Element checkbox : jsoupDoc.select("[id=" + id + "]")) {
-                    Attributes attributes = checkbox.attributes();
+                for (Element element : jsoupDoc.select(String.format("[id=%s]", id))) {
+                    Attributes attributes = element.attributes();
                     String valueEvent = attributes.get(item.getEvent());
-                    checkbox.removeAttr(item.getEvent());
-                    org.jsoup.nodes.Element ajaxTag = new org.jsoup.nodes.Element("p:ajax");
-                    ajaxTag.attr("event", item.getEvent());
-                    ajaxTag.attr("listener", valueEvent);
-                    checkbox.appendChild(ajaxTag);
+                    element.removeAttr(item.getEvent());
+                    if (!Constants.MXML_CONTROLS_ACC_RADIO_BUTTON.equals(item.getNodeName())) {
+                        Element ajaxTag = new Element(Constants.XHTML_P_AJAX);
+                        ajaxTag.attr(Constants.XHTML_AJAX_EVENT, item.getEvent());
+                        ajaxTag.attr(Constants.XHTML_AJAX_LISTENER, valueEvent);
+                        element.appendChild(ajaxTag);
+                    }
                 }
             }
         }

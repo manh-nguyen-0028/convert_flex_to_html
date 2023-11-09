@@ -54,6 +54,15 @@
     "xhtmlTagEnd": ""
   },
   {
+    "mxmlTag": "Controls:ACCTextInputMaskNumber",
+    "xhtmlTag": "acc:inputTextNumber",
+    "xhtmlTagStart": "<acc:inputTextNumber",
+    "xhtmlEndStartTag": "/>",
+    "isUseAjaxTag": false,
+    "isGenerateXHTML": true,
+    "xhtmlTagEnd": ""
+  },
+  {
     "mxmlTag": "Controls:ACCTextInputMaskZip",
     "xhtmlTag": "acc:inputTextZip",
     "xhtmlTagStart": "<acc:inputTextZip",
@@ -64,6 +73,15 @@
   },
   {
     "mxmlTag": "Controls:ACCTextInputMaskDate",
+    "xhtmlTag": "p:calendar",
+    "xhtmlTagStart": "<p:calendar pattern=\"yyyy/MM/dd\"",
+    "xhtmlEndStartTag": ">",
+    "isUseAjaxTag": false,
+    "isGenerateXHTML": true,
+    "xhtmlTagEnd": "</p:calendar>"
+  },
+  {
+    "mxmlTag": "Controls:ACCDateField",
     "xhtmlTag": "p:calendar",
     "xhtmlTagStart": "<p:calendar pattern=\"yyyy/MM/dd\"",
     "xhtmlEndStartTag": ">",
@@ -85,7 +103,7 @@
     "xhtmlTagStart": " <f:selectItem",
     "xhtmlEndStartTag": "/>",
     "isUseAjaxTag": true,
-    "isGenerateXHTML": true,
+    "isGenerateXHTML": false,
     "xhtmlTagEnd": "</f:selectItem>"
   },
   {
@@ -156,7 +174,16 @@
     "xhtmlTag": "p:selectOneMenu",
     "xhtmlTagStart": "<p:selectOneMenu",
     "xhtmlEndStartTag": " ><f:selectItem itemLabel=\"\" itemValue=\"\" /><f:selectItems value=\"\" itemLabel=\"\" itemValue=\"\"/>",
-    "isUseAjaxTag": false,
+    "isUseAjaxTag": true,
+    "isGenerateXHTML": true,
+    "xhtmlTagEnd": "</p:selectOneMenu>"
+  },
+  {
+    "mxmlTag": "Controls:ACCComboBox",
+    "xhtmlTag": "p:selectOneMenu",
+    "xhtmlTagStart": "<p:selectOneMenu",
+    "xhtmlEndStartTag": " >",
+    "isUseAjaxTag": true,
     "isGenerateXHTML": true,
     "xhtmlTagEnd": "</p:selectOneMenu>"
   },

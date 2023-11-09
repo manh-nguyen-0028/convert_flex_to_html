@@ -1,6 +1,7 @@
 package utils;
 
 import as.enums.ASKeyword;
+import constants.Constants;
 import constants.ReservedWords;
 
 import java.security.SecureRandom;
@@ -123,5 +124,9 @@ public class CommonUtils {
 
         }
         return javaType;
+    }
+
+    public static String getFormController(String fileName) {
+        return fileName + Constants.CLASS_CONTROLLER;
     }
 }

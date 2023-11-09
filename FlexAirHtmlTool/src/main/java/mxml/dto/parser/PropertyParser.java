@@ -18,4 +18,14 @@ public class PropertyParser {
         this.value = value;
         this.type = type;
     }
+
+    public PropertyParser() {
+    }
+
+    public PropertyParser(String key, String value, String type, boolean isGenerateHtml) {
+        this.key = key;
+        this.value = value;
+        this.type = type;
+        this.isGenerateHtml = isGenerateHtml;
+    }
 }

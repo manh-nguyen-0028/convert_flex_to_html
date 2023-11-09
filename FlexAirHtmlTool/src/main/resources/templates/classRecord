@@ -1,0 +1,18 @@
+package {{package}};
+
+import java.io.Serializable;
+
+/**
+ * {{classname}}
+ *--------------------------------------------------------------------------------------------*
+ * History
+ * Version     YYYY/MM/DD     Developer     Content
+ *--------------------------------------------------------------------------------------------*
+ * 1.0         {{created_dt}}     Nissho        Create
+ *--------------------------------------------------------------------------------------------*
+ */
+public class {{classname}} implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+{{classSource}}
+}
