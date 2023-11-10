@@ -53,7 +53,7 @@ public class Main {
                 if (filePaths.size() == 0) {
                     // No file to convert
                     logger.warn("There are no mxml files in the input folder to perform data conversion processing.");
-                    break;
+                    continue;
                 }
                 String savePath = outputPath + File.separator + pk;
                 // Create if output folder is not exist

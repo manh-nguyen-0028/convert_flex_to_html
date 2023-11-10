@@ -54,7 +54,10 @@ public class HtmlElementParser {
         List<PropertyParser> propertyParserList = getPropertyParsers();
         if (CollectionUtils.isNotEmpty(propertyParserList)) {
             this.mapPropertyParser = propertyParserList.stream()
-                    .collect(Collectors.toMap(PropertyParser::getKey, attribute -> attribute));
+                    .collect(Collectors.toMap(PropertyParser::getKey, attribute -> attribute
+                            , (existing, replacement) -> {
+                                return existing;
+                            }));
         }
         return mapPropertyParser;
     }
@@ -63,7 +66,10 @@ public class HtmlElementParser {
         List<CssParser> cssParserList = getCssParsers();
         if (CollectionUtils.isNotEmpty(cssParserList)) {
             this.mapCssParser = cssParserList.stream()
-                    .collect(Collectors.toMap(CssParser::getKey, attribute -> attribute));
+                    .collect(Collectors.toMap(CssParser::getKey, attribute -> attribute
+                            , (existing, replacement) -> {
+                                return existing;
+                            }));
         }
 
         return mapCssParser;

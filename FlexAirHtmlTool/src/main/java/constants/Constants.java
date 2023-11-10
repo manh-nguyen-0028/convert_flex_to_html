@@ -35,10 +35,12 @@ public class Constants {
     public static final String TEXT_PROP_END_PATTERN = "((.text))";
     public static final String STATEMENT_END_PATTERN = "[;\\r\\n]";
     public static final String NEW_DATETIME_PATTERN = "((new\\s+)(DateFormatter)(\\(\\)))";
-    public static final String CLASS_NAME_PATTERN = "((MG|CL)\\d{7}_\\d{2}_\\d{3})";
+    public static final String CLASS_NAME_PATTERN = "(([A-Z]{2})\\d{7}_\\d{2}_\\d{3})";
     public static final String BOOLEAN_TYPE_PATTERN = "(([\\t\\s])(Boolean)(\\s?))";
     public static final String FOR_INIT_PATTERN = "((for\\()(byte|short|int|long)(\\s+)([a-zA-Z_$<>.*][0-9a-zA-Z_$<>.]*)(;))";
     public static final String RETURN_PATTERN = "((return\\s+)(\\w+)(\\n))";
+    public static final String VIEW_INFO_PATTERN = "view.inCategoryInfo";
+    public static final String VIEW_GET_INFO_PATTERN = "view.getInCategoryInfo()";
 
     public static final String SCRIPT_TAG = "mx:Script";
     public static final String XML_TAG = "mx:XML";
@@ -54,6 +56,9 @@ public class Constants {
     public static final String SYNTAX_EQUAL = "=";
     public static final String SYNTAX_SPACE = " ";
     public static final String SYNTAX_DOUBLE_QUOTATION = "\"";
+    public static final String SYNTAX_LESS_THAN = "<";
+    public static final String SYNTAX_GREATER_THAN = ">";
+    public static final String SYNTAX_SLASH = "/";
 
     // mxml tag
     public static final String MXML_CONTAINERS_ACC_TEXT_INPUT = "Controls:ACCTextInput";

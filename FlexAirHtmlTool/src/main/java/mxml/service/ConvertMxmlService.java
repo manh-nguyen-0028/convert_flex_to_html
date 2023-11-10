@@ -214,42 +214,31 @@ public class ConvertMxmlService {
             PropertyParser labelFunctionProperty = hmAttribute.get(Constants.XHTML_CONVERTER);
             PropertyParser showDataTipProperty = hmAttribute.get(Constants.XHTML_SHOW_DATA_TIPS);
             PropertyParser idPropertyForChild = new PropertyParser();
+            List<PropertyParser> propertyForChild = new ArrayList<>();
 
             // If showDataTipProperty = true => tags have tooltip => Function Begin
-            // Generate If column have id => <h:outputText + id + sub fix Id + <p:tooltip for="updTimesId" (id of output text)
-            // Else => <h:outputText + id (id = dataField) + <p:tooltip for="updTimes" (id of output text)
-            // => Function End
-
-            // Else If showDataTipProperty = false
-            // Only genarete value output text Example <h:outputText value = "#{record.bunno}"
-
-            if (idProperty == null) {
-                idProperty = new PropertyParser(Constants.XHTML_ID, valueProperty.getValue(), valueProperty.getType());
+            if (showDataTipProperty != null && Constants.STRING_TRUE.equals(showDataTipProperty.getValue())) {
+                // Generate If column have id => <h:outputText + id + sub fix Id + <p:tooltip for="updTimesId" (id of output text)
+                // Else => <h:outputText + id (id = dataField) + <p:tooltip for="updTimes" (id of output text)
+                if (idProperty != null) {
+                    BeanUtils.copyProperties(idPropertyForChild, idProperty);
+                } else {
+                    idPropertyForChild = new PropertyParser(Constants.XHTML_ID, valueProperty.getValue(), Constants.XHTML_ATTRIBUTE_PROPERTY);
+                }
+                propertyForChild.add(idPropertyForChild);
+                propertyForChild.add(showDataTipProperty);
             }
 
-            BeanUtils.copyProperties(idPropertyForChild, idProperty);
-
-            List<PropertyParser> propertyForChild = new ArrayList<>();
             if (Constants.XHTML_P_COLUMN.equals(elementParser.getXhtmlTag())) {
                 String valueSyntax = String.format("#{record.%s}", valueProperty.getValue());
                 valueProperty.setValue(valueSyntax);
-                if (idProperty != null && showDataTipProperty != null) {
-                    String idForChild = idProperty.getValue() + "Id";
+                if (idProperty != null && StringUtils.isNotEmpty(idPropertyForChild.getValue())) {
+                    String idForChild = idPropertyForChild.getValue() + "Id";
                     idPropertyForChild.setValue(idForChild);
-                } else if (idProperty != null) {
-                    idPropertyForChild = null;
                 }
             }
 
-            if (idPropertyForChild != null && StringUtils.isNotEmpty(idPropertyForChild.getValue())) {
-                propertyForChild.add(idPropertyForChild);
-            }
-
             propertyForChild.add(valueProperty);
-
-            if (showDataTipProperty != null) {
-                propertyForChild.add(showDataTipProperty);
-            }
 
             if (labelFunctionProperty != null) {
                 propertyForChild.add(labelFunctionProperty);
@@ -259,8 +248,6 @@ public class ConvertMxmlService {
             elementParser.getPropertyParsers().removeIf(attribute -> attribute == valueProperty);
             elementParser.getPropertyParsers().removeIf(attribute -> attribute == showDataTipProperty);
             elementParser.getPropertyParsers().removeIf(attribute -> attribute == labelFunctionProperty);
-            PropertyParser finalIdProperty = idProperty;
-            elementParser.getPropertyParsers().removeIf(attribute -> attribute == finalIdProperty);
             elementParser.getPropertyForChild().addAll(propertyForChild);
         }
     }
@@ -282,18 +269,7 @@ public class ConvertMxmlService {
         handleRadioButtonGroup(element);
         handleSpecialParentNode(element);
         handleInputText(element);
-//        handleAccButton(element);
     }
-
- /*   private void handleAccButton(HtmlElementParser element) {
-        if (Constants.MXML_CONTAINERS_ACC_BUTTON.equals(element.getNodeName())) {
-            PropertyParser enabled = element.getMapPropertyParser().get(Constants.XHTML_ENABLED);
-            if (enabled != null) {
-                enabled.setKey(Constants.XHTML_DISABLED);
-                enabled.setValue(Constants.STRING_FALSE.equals(enabled.getValue()) ? Constants.STRING_TRUE : Constants.STRING_FALSE);
-            }
-        }
-    }*/
 
     private void handleInputText(HtmlElementParser element) {
         List<String> inputTexts = Arrays.asList(Constants.MXML_CONTAINERS_ACC_TEXT_INPUT,
@@ -431,17 +407,17 @@ public class ConvertMxmlService {
         List<PropertyParser> attributeList = htmlElementParser.getPropertyParsers();
 
         specialElementList.stream()
-                .filter(itemFilter -> htmlElementParser.getNodeName().equals(itemFilter.getElementFrom()))
+                .filter(itemFilter -> htmlElementParser.getNodeName().equals(itemFilter.getMxmlElementFrom()))
                 .filter(specialElement ->
                         attributeList.stream()
-                                .anyMatch(parser -> specialElement.getAttribute().equals(parser.getKey())
-                                        && (StringUtils.isEmpty(specialElement.getValue())
-                                        || parser.getValue().equals(specialElement.getValue()))
+                                .anyMatch(parser -> specialElement.getMxmlAttribute().equals(parser.getKey())
+                                        && (StringUtils.isEmpty(specialElement.getXhtmlValue())
+                                        || parser.getValue().equals(specialElement.getXhtmlValue()))
                                 )
                 )
                 .findFirst()
                 .ifPresent(specialElement -> {
-                    htmlElementParser.setXhtmlTag(specialElement.getElementTo());
+                    htmlElementParser.setXhtmlTag(specialElement.getXhtmlElementTo());
                     htmlElementParser.setStartTag(specialElement.getHtmlTagStart());
                     htmlElementParser.setEndTag(specialElement.getHtmlTagEnd());
                     htmlElementParser.setUseAjaxTag(specialElement.isUseAjaxTag());
@@ -463,9 +439,9 @@ public class ConvertMxmlService {
 
             propertyParserList.stream()
                     .forEach(propertyParser -> propertyByComponentList.stream()
-                            .filter(itemFilter -> itemFilter.getComponentName().equals(xhtmlTag) && itemFilter.getPropertyFrom().equals(propertyParser.getKey()))
+                            .filter(itemFilter -> itemFilter.getMxmlComponentName().equals(xhtmlTag) && itemFilter.getMxmlPropertyFrom().equals(propertyParser.getKey()))
                             .findFirst()
-                            .ifPresent(item -> propertyParser.setKey(item.getPropertyTo())));
+                            .ifPresent(item -> propertyParser.setKey(item.getXhtmlPropertyTo())));
         }
     }
 

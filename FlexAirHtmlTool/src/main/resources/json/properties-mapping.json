@@ -1,410 +1,410 @@
 [
   {
-    "name": "id",
-    "convertTo": "id",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "id",
+    "xhtmlConvertTo": "id",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "id"
+    "xhtmlType": "id"
   },
   {
-    "name": "backgroundColor",
-    "convertTo": "background-color",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "backgroundColor",
+    "xhtmlConvertTo": "background-color",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "css"
+    "xhtmlType": "css"
   },
   {
-    "name": "width",
-    "convertTo": "width",
-    "endTag": "px",
-    "valueCompareTrue": false,
+    "mxmlProperties": "width",
+    "xhtmlConvertTo": "width",
+    "xhtmlEndTag": "px",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "css"
+    "xhtmlType": "css"
   },
   {
-    "name": "height",
-    "convertTo": "height",
-    "endTag": "px",
-    "valueCompareTrue": false,
+    "mxmlProperties": "height",
+    "xhtmlConvertTo": "height",
+    "xhtmlEndTag": "px",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "css"
+    "xhtmlType": "css"
   },
   {
-    "name": "color",
-    "convertTo": "color",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "color",
+    "xhtmlConvertTo": "color",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "css"
+    "xhtmlType": "css"
   },
   {
-    "name": "fontStyle",
-    "convertTo": "font-style",
-    "endTag": "px",
-    "valueCompareTrue": false,
+    "mxmlProperties": "fontStyle",
+    "xhtmlConvertTo": "font-style",
+    "xhtmlEndTag": "px",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "css"
+    "xhtmlType": "css"
   },
   {
-    "name": "textDecoration",
-    "convertTo": "text-decoration",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "textDecoration",
+    "xhtmlConvertTo": "text-decoration",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "css"
+    "xhtmlType": "css"
   },
   {
-    "name": "borderColor",
-    "convertTo": "border-color",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "borderColor",
+    "xhtmlConvertTo": "border-color",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "css"
+    "xhtmlType": "css"
   },
   {
-    "name": "borderStyle",
-    "convertTo": "border-style",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "borderStyle",
+    "xhtmlConvertTo": "border-style",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "css"
+    "xhtmlType": "css"
   },
   {
-    "name": "verticalGap",
-    "convertTo": "margin-bottom",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "verticalGap",
+    "xhtmlConvertTo": "margin-bottom",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "css"
+    "xhtmlType": "css"
   },
   {
-    "name": "class",
-    "convertTo": "class",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "class",
+    "xhtmlConvertTo": "class",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "property"
+    "xhtmlType": "property"
   },
   {
-    "name": "tabOrder",
-    "convertTo": "tabindex",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "tabOrder",
+    "xhtmlConvertTo": "tabindex",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "property"
+    "xhtmlType": "property"
   },
   {
-    "name": "required",
-    "convertTo": "required",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "required",
+    "xhtmlConvertTo": "required",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "property"
+    "xhtmlType": "property"
   },
   {
-    "name": "readOnly",
-    "convertTo": "readOnly",
-    "endTag": "",
-    "valueCompareTrue": true,
+    "mxmlProperties": "readOnly",
+    "xhtmlConvertTo": "readOnly",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": true,
     "isGenerateHtml": true,
-    "type": "property"
+    "xhtmlType": "property"
   },
   {
-    "name": "text",
-    "convertTo": "value",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "text",
+    "xhtmlConvertTo": "value",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "property"
+    "xhtmlType": "property"
   },
   {
-    "name": "title",
-    "convertTo": "title",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "title",
+    "xhtmlConvertTo": "title",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "property"
+    "xhtmlType": "property"
   },
   {
-    "name": "headerText",
-    "convertTo": "headerText",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "headerText",
+    "xhtmlConvertTo": "headerText",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "property"
+    "xhtmlType": "property"
   },
   {
-    "name": "rowCount",
-    "convertTo": "rows",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "rowCount",
+    "xhtmlConvertTo": "rows",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "property"
+    "xhtmlType": "property"
   },
   {
-    "name": "dropEnabled",
-    "convertTo": "droppable",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "dropEnabled",
+    "xhtmlConvertTo": "droppable",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "property"
+    "xhtmlType": "property"
   },
   {
-    "name": "creationComplete",
-    "convertTo": "onTabShow",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "creationComplete",
+    "xhtmlConvertTo": "onTabShow",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "property"
+    "xhtmlType": "property"
   },
   {
-    "name": "allowMultipleSelection",
-    "convertTo": "allowMultipleSelection",
-    "endTag": "",
-    "valueCompareTrue": true,
+    "mxmlProperties": "allowMultipleSelection",
+    "xhtmlConvertTo": "allowMultipleSelection",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": true,
     "isGenerateHtml": true,
-    "type": "property"
+    "xhtmlType": "property"
   },
   {
-    "name": "dragEnabled",
-    "convertTo": "draggableColumns",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "dragEnabled",
+    "xhtmlConvertTo": "draggableColumns",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "property"
+    "xhtmlType": "property"
   },
   {
-    "name": "dragMoveEnabled",
-    "convertTo": "resizableColumns",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "dragMoveEnabled",
+    "xhtmlConvertTo": "resizableColumns",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "property"
+    "xhtmlType": "property"
   },
   {
-    "name": "dragDrop",
-    "convertTo": "dragListener",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "dragDrop",
+    "xhtmlConvertTo": "dragListener",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "property"
+    "xhtmlType": "property"
   },
   {
-    "name": "verticalScrollPolicy",
-    "convertTo": "scrollable",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "verticalScrollPolicy",
+    "xhtmlConvertTo": "scrollable",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "property"
+    "xhtmlType": "property"
   },
   {
-    "name": "dataField",
-    "convertTo": "value",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "dataField",
+    "xhtmlConvertTo": "value",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "property"
+    "xhtmlType": "property"
   },
   {
-    "name": "groupName",
-    "convertTo": "groupName",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "groupName",
+    "xhtmlConvertTo": "groupName",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": false,
-    "type": "property"
+    "xhtmlType": "property"
   },
   {
-    "name": "label",
-    "convertTo": "value",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "label",
+    "xhtmlConvertTo": "value",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "property"
+    "xhtmlType": "property"
   },
   {
-    "name": "minValue",
-    "convertTo": "minValue",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "minValue",
+    "xhtmlConvertTo": "minValue",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "property"
+    "xhtmlType": "property"
   },
   {
-    "name": "fillAlphas",
-    "convertTo": "fillAlphas",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "fillAlphas",
+    "xhtmlConvertTo": "fillAlphas",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "other"
+    "xhtmlType": "other"
   },
   {
-    "name": "fillColors",
-    "convertTo": "fillColors",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "fillColors",
+    "xhtmlConvertTo": "fillColors",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "other"
+    "xhtmlType": "other"
   },
   {
-    "name": "click",
-    "convertTo": "onclick",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "click",
+    "xhtmlConvertTo": "onclick",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "js"
+    "xhtmlType": "js"
   },
   {
-    "name": "change",
-    "convertTo": "change",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "change",
+    "xhtmlConvertTo": "change",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "js"
+    "xhtmlType": "js"
   },
   {
-    "name": "source",
-    "convertTo": "src",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "source",
+    "xhtmlConvertTo": "src",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "property"
+    "xhtmlType": "property"
   },
   {
-    "name": "maxByte",
-    "convertTo": "maxbytelength",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "maxByte",
+    "xhtmlConvertTo": "maxbytelength",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "property"
+    "xhtmlType": "property"
   },
   {
-    "name": "displayAsPassword",
-    "convertTo": "displayAsPassword",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "displayAsPassword",
+    "xhtmlConvertTo": "displayAsPassword",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "property"
+    "xhtmlType": "property"
   },
   {
-    "name": "showDataTips",
-    "convertTo": "showDataTips",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "showDataTips",
+    "xhtmlConvertTo": "showDataTips",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "property"
+    "xhtmlType": "property"
   },
   {
-    "name": "labelFunction",
-    "convertTo": "converter",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "labelFunction",
+    "xhtmlConvertTo": "converter",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "property"
+    "xhtmlType": "property"
   },
   {
-    "name": "enabled",
-    "convertTo": "enabled",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "enabled",
+    "xhtmlConvertTo": "enabled",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "property"
+    "xhtmlType": "property"
   },
   {
-    "name": "x",
-    "convertTo": "position: absolute; left",
-    "endTag": "px",
-    "valueCompareTrue": false,
+    "mxmlProperties": "x",
+    "xhtmlConvertTo": "position: absolute; left",
+    "xhtmlEndTag": "px",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "css"
+    "xhtmlType": "css"
   },
   {
-    "name": "y",
-    "convertTo": "top",
-    "endTag": "px",
-    "valueCompareTrue": false,
+    "mxmlProperties": "y",
+    "xhtmlConvertTo": "top",
+    "xhtmlEndTag": "px",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "css"
+    "xhtmlType": "css"
   },
   {
-    "name": "fontSize",
-    "convertTo": "font-size",
-    "endTag": "px",
-    "valueCompareTrue": false,
+    "mxmlProperties": "fontSize",
+    "xhtmlConvertTo": "font-size",
+    "xhtmlEndTag": "px",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "css"
+    "xhtmlType": "css"
   },
   {
-    "name": "fontWeight",
-    "convertTo": "font-weight",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "fontWeight",
+    "xhtmlConvertTo": "font-weight",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "css"
+    "xhtmlType": "css"
   },
   {
-    "name": "textAlign",
-    "convertTo": "text-align",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "textAlign",
+    "xhtmlConvertTo": "text-align",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "css"
+    "xhtmlType": "css"
   },
   {
-    "name": "backgroundAlpha",
-    "convertTo": "opacity",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "backgroundAlpha",
+    "xhtmlConvertTo": "opacity",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "css"
+    "xhtmlType": "css"
   },
   {
-    "name": "fontFamily",
-    "convertTo": "font-family",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "fontFamily",
+    "xhtmlConvertTo": "font-family",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "css"
+    "xhtmlType": "css"
   },
   {
-    "name": "layout",
-    "convertTo": "position",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "layout",
+    "xhtmlConvertTo": "position",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "css"
+    "xhtmlType": "css"
   },
   {
-    "name": "borderThicknessBottom",
-    "convertTo": " border-bottom-width",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "borderThicknessBottom",
+    "xhtmlConvertTo": " border-bottom-width",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "css"
+    "xhtmlType": "css"
   },
   {
-    "name": "borderThicknessLeft",
-    "convertTo": "border-left-width",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "borderThicknessLeft",
+    "xhtmlConvertTo": "border-left-width",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "css"
+    "xhtmlType": "css"
   },
   {
-    "name": "borderThicknessRight",
-    "convertTo": "border-right-width",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "borderThicknessRight",
+    "xhtmlConvertTo": "border-right-width",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "css"
+    "xhtmlType": "css"
   },
   {
-    "name": "borderThicknessTop",
-    "convertTo": "border-top-width",
-    "endTag": "",
-    "valueCompareTrue": false,
+    "mxmlProperties": "borderThicknessTop",
+    "xhtmlConvertTo": "border-top-width",
+    "xhtmlEndTag": "",
+    "xhtmlValueCompareTrue": false,
     "isGenerateHtml": true,
-    "type": "css"
+    "xhtmlType": "css"
   }
 ]

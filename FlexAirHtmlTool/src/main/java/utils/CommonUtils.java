@@ -129,4 +129,16 @@ public class CommonUtils {
     public static String getFormController(String fileName) {
         return fileName + Constants.CLASS_CONTROLLER;
     }
+
+    public static String getXHTMLTagOpen(String tagName) {
+        return Constants.SYNTAX_LESS_THAN + tagName;
+    }
+
+    public static String getXHTMLTagClose(String tagName) {
+        return Constants.SYNTAX_LESS_THAN + Constants.SYNTAX_SLASH + tagName + Constants.SYNTAX_GREATER_THAN;
+    }
+
+    public static String generateTagXHTML(String tagName, String attribute) {
+        return getXHTMLTagOpen(tagName) + attribute + Constants.SYNTAX_GREATER_THAN + getXHTMLTagClose(tagName);
+    }
 }

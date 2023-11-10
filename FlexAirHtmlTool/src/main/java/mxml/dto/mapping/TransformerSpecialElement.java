@@ -6,10 +6,10 @@ import lombok.Setter;
 @Setter
 @Getter
 public class TransformerSpecialElement {
-    private String elementFrom;
-    private String attribute;
-    private String value;
-    private String elementTo;
+    private String mxmlElementFrom;
+    private String mxmlAttribute;
+    private String xhtmlValue;
+    private String xhtmlElementTo;
     private String htmlTagStart;
     private String htmlTagStart2;
     private String htmlTagStart3;

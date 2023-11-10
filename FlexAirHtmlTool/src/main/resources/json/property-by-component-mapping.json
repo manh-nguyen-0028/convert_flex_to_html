@@ -1,42 +1,47 @@
 [
   {
-    "componentName": "inputTextNumber",
-    "propertyFrom": "maxByte",
-    "propertyTo": "maxlength"
+    "mxmlComponentName": "inputTextNumber",
+    "mxmlPropertyFrom": "maxByte",
+    "xhtmlPropertyTo": "maxlength"
   },
   {
-    "componentName": "p:password",
-    "propertyFrom": "maxbytelength",
-    "propertyTo": "maxlength"
+    "mxmlComponentName": "p:password",
+    "mxmlPropertyFrom": "maxbytelength",
+    "xhtmlPropertyTo": "maxlength"
   },
   {
-    "componentName": "p:commandButton",
-    "propertyFrom": "onclick",
-    "propertyTo": "actionListener"
+    "mxmlComponentName": "p:commandButton",
+    "mxmlPropertyFrom": "onclick",
+    "xhtmlPropertyTo": "actionListener"
   },
   {
-    "componentName": "p:tab",
-    "propertyFrom": "value",
-    "propertyTo": "title"
+    "mxmlComponentName": "p:tab",
+    "mxmlPropertyFrom": "value",
+    "xhtmlPropertyTo": "title"
   },
   {
-    "componentName": "p:selectBooleanCheckbox",
-    "propertyFrom": "value",
-    "propertyTo": "itemLabel"
+    "mxmlComponentName": "p:selectBooleanCheckbox",
+    "mxmlPropertyFrom": "value",
+    "xhtmlPropertyTo": "itemLabel"
   },
   {
-    "componentName": "p:selectBooleanCheckbox",
-    "propertyFrom": "onclick",
-    "propertyTo": "change"
+    "mxmlComponentName": "p:selectBooleanCheckbox",
+    "mxmlPropertyFrom": "onclick",
+    "xhtmlPropertyTo": "change"
   },
   {
-    "componentName": "acc:inputTextNumber",
-    "propertyFrom": "maxbytelength",
-    "propertyTo": "maxlength"
+    "mxmlComponentName": "acc:inputTextNumber",
+    "mxmlPropertyFrom": "maxbytelength",
+    "xhtmlPropertyTo": "maxlength"
   },
   {
-    "componentName": "p:panel",
-    "propertyFrom": "title",
-    "propertyTo": "header"
+    "mxmlComponentName": "p:panel",
+    "mxmlPropertyFrom": "title",
+    "xhtmlPropertyTo": "header"
+  },
+  {
+    "mxmlComponentName": "f:selectItem",
+    "mxmlPropertyFrom": "onclick",
+    "xhtmlPropertyTo": "click"
   }
 ]

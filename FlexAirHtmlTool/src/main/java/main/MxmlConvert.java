@@ -41,6 +41,7 @@ public class MxmlConvert {
     private List<ASMember> modelMembers;
     // xml properties list
     private Map<String, List<String>> xmlObjectInline;
+
     /**
      * Convert syntax mxml to syntax xhtml
      *
@@ -118,14 +119,16 @@ public class MxmlConvert {
             if (modelMembers == null) {
                 modelMembers = new ArrayList<>();
             }
-            ASMember member = new ASMember(currentElement.getId(), ReservedWords.STRING);
-            modelMembers.add(member);
+            if (!CommonUtils.isNullOrEmpty(currentElement.getId())) {
+                ASMember member = new ASMember(currentElement.getId(), ReservedWords.STRING);
+                modelMembers.add(member);
+            }
         }
         List<HtmlElementParser> childList = currentElement.getChildList();
         if (CollectionUtils.isNotEmpty(childList)) {
-            childList.stream().forEach(itemFor -> {
-                getModelMembers(itemFor);
-            });
+            childList.stream().forEach(itemFor ->
+                    getModelMembers(itemFor)
+            );
         }
     }
 
@@ -266,17 +269,6 @@ public class MxmlConvert {
                     CommonUtils.replaceInStringBuilder(baseHtml, targetSyntax, targetSyntax + selectItemList.get(i));
                 }
             }
-
-
-            /*String targetSyntax = String.format("id=\"%s\">", groupId);
-            if (i == 0 && item.getAjaxEvent() != null) {
-                AjaxEvent ajaxEvent = item.getAjaxEvent();
-                String ajaxSyntax = String.format("<p:ajax event=\"%s\" listener=\"%s\"/>", ajaxEvent.getEvent(), ajaxEvent.getListener());
-                String replaceSyntax = targetSyntax + item.getSelectItemList().get(i) + ajaxSyntax;
-                CommonUtils.replaceInStringBuilder(baseHtml, targetSyntax, replaceSyntax);
-            } else {
-                CommonUtils.replaceInStringBuilder(baseHtml, targetSyntax, targetSyntax + item.getSelectItemList().get(i));
-            }*/
         });
 
         // handle tool tip
@@ -391,7 +383,11 @@ public class MxmlConvert {
 
             // Add <p:tooltip> if showDataTips was "true"
             if (showDataTips != null && "true".equals(showDataTips)) {
-                modifiedHtml.append(String.format("\n<p:tooltip for=\"%s\" value=\"%s\" />", id, value));
+                modifiedHtml.append("\n<p:tooltip ");
+                if (StringUtils.isNotEmpty(id)) {
+                    modifiedHtml.append(String.format("for=\"%s\" ", id));
+                }
+                modifiedHtml.append(String.format("value=\"%s\" />", value));
             }
 
             modifiedHtml.append(endOfPattern);

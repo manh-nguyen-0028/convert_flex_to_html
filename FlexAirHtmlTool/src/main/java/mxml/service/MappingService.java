@@ -31,7 +31,7 @@ public class MappingService {
         String filePath = "json/properties-mapping.json";
         List<PropertyMap> attributeTags = new JsonUtils<PropertyMap>().readJsonFile(filePath, PropertyMap.class);
         for (PropertyMap attributeTag : attributeTags) {
-            hmAttributeTag.put(attributeTag.getName(), attributeTag);
+            hmAttributeTag.put(attributeTag.getMxmlProperties(), attributeTag);
         }
         return hmAttributeTag;
     }

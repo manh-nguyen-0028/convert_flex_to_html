@@ -1,9 +1,9 @@
 [
   {
-    "elementFrom": "Controls:ACCTextInput",
-    "attribute": "maxbytelength",
-    "value": "",
-    "elementTo": "acc:inputTextMaxByte",
+    "mxmlElementFrom": "Controls:ACCTextInput",
+    "mxmlAttribute": "maxbytelength",
+    "xhtmlValue": "",
+    "xhtmlElementTo": "acc:inputTextMaxByte",
     "htmlTagStart": "<acc:inputTextMaxByte",
     "htmlTagStart2": ">",
     "htmlTagStart3": "",
@@ -12,10 +12,10 @@
     "htmlTagEnd": "</acc:inputTextMaxByte>"
   },
   {
-    "elementFrom": "Controls:ACCTextInput",
-    "attribute": "displayAsPassword",
-    "value": "",
-    "elementTo": "p:password",
+    "mxmlElementFrom": "Controls:ACCTextInput",
+    "mxmlAttribute": "displayAsPassword",
+    "xhtmlValue": "",
+    "xhtmlElementTo": "p:password",
     "htmlTagStart": "<p:password",
     "htmlTagStart2": ">",
     "htmlTagStart3": "",

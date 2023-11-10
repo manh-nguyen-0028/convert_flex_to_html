@@ -10,7 +10,7 @@ public class PropertyParser {
     private String value;
     private String type;
     private boolean isHadValue;
-    private boolean isGenerateHtml;
+    private boolean isGenerateHtml = true;
     private boolean isUse = true;
 
     public PropertyParser(String key, String value, String type) {

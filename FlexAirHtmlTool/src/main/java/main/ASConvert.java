@@ -105,7 +105,7 @@ public class ASConvert {
 
             logger.info("END: compile actionscript inline-------------------------------");
         } catch (Exception ex) {
-            logger.error("[Error]:", ex);
+            logger.error("[Error-compileScriptInline]: " + inputPath, ex);
             return null;
         }
         return classModelTemplate;
@@ -156,7 +156,7 @@ public class ASConvert {
                 logger.info("END: Convert Actionscript & Actionscript Inline-------------------------------");
             }
         } catch (Exception ex) {
-            logger.error("[Error]:", ex);
+            logger.error("[Error-convert]: " + inputPath, ex);
         }
     }
 
@@ -255,7 +255,7 @@ public class ASConvert {
         try {
             content = FileUtils.readFileUTF8(asFilePath);
         } catch (IOException ex) {
-            logger.error("[Error]:", ex);
+            logger.error("[Error-readFileContent]: " + asFilePath, ex);
             return null;
         }
         if (CommonUtils.isNullOrEmpty(content)) {
@@ -289,7 +289,7 @@ public class ASConvert {
                 return null;
             }
         } catch (Exception ex){
-            logger.error("[Error]:", ex);
+            logger.error("[Error-getASFilePath]: "+ mxmlFile, ex);
             return null;
         }
     }
@@ -304,7 +304,7 @@ public class ASConvert {
             ClassLoader classloader = Thread.currentThread().getContextClassLoader();
             return new String(FileUtils.readAllBytes(classloader.getResourceAsStream(resourceName)), StandardCharsets.UTF_8);
         } catch (Exception ex) {
-            logger.error("[Error]:", ex);
+            logger.error("[Error-readClassTemplate]: "+resourceName, ex);
         }
         return null;
     }

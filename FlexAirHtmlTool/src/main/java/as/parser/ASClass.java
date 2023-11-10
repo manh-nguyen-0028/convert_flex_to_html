@@ -76,6 +76,7 @@ public class ASClass {
         if (xmlObjectInline != null && xmlObjectInline.size() > 0) {
             for (String key : xmlObjectInline.keySet()) {
                 List<String> properties = xmlObjectInline.get(key);
+                if (properties == null || properties.size() == 0) continue;
                 for (String pp : properties) {
                     getSetPPs = generateProperty(pp, ReservedWords.STRING);
                     if (getSetPPs != null && getSetPPs.length > 0) {
@@ -214,9 +215,21 @@ public class ASClass {
         // Import
         String[] tmpArr = null;
         // Add Class source
-        String strClass = Templates.CLASS_TEMPLATE.replace("{className}", getClassName() + ReservedWords.CONTROLLER)
-                .replace("{parentType}", ReservedWords.EXTENDS)
-                .replace("{parentName}", getParent());
+        String parent = getParent();
+        String parentType = ReservedWords.EXTENDS;
+        String className = getClassName();
+        if (CommonUtils.isMatched(Constants.CLASS_NAME_PATTERN, className)) {
+            className += ReservedWords.CONTROLLER;
+            parent = ReservedWords.ACC_CONTROLLER_BASE;
+        }
+        if (CommonUtils.isNullOrEmpty(parent)) {
+            parent = "";
+            parentType = "";
+        }
+        String strClass = Templates.CLASS_TEMPLATE.replace("{className}", className)
+                .replace("{parentType}", parentType)
+                .replace("{parentName}", parent);
+
         buffer.append(strClass);
         buffer.append("\n{");
         // Deal with static member assignments
@@ -245,7 +258,7 @@ public class ASClass {
                        tmpVar = Templates.VARIABLE_STATIC;
                        tmpVar = tmpVar.replace("{type}", type)
                                .replace("{name}", m.getName())
-                               .replace("{value}", value);
+                               .replace("{value}", value == null ? "null" : value);
                    } else if (m.getValue() == null){
                        tmpVar = Templates.VARIABLE;
                        tmpVar = tmpVar.replace("{type}", type)
@@ -286,7 +299,7 @@ public class ASClass {
                 fncStr += Templates.FUNCTION;
             } else if (ASKeyword.GET.equals(function.getSubType())){
                 fncName = ASKeyword.GET + CommonUtils.capitalize(fncName);
-                // Set functions
+                // Get functions
                 fncStr += Templates.FUNCTION;
             }
             else {
@@ -368,7 +381,8 @@ public class ASClass {
             if (members.get(i) instanceof ASFunction) {
                 //Parse function
                 ASFunction func = (ASFunction)members.get(i);
-                func.setValue(parser.parseFunc(self, func.getValue(), func.buildLocalVariableStack())[0]);
+                String[] parserData = parser.parseFunc(self, func.getValue(), func.buildLocalVariableStack());
+                func.setValue(parserData == null ? null : parserData[0]);
             }
             if (members.get(i) instanceof ASVariable) {
                 ASVariable tmpVar = (ASVariable) members.get(i);
@@ -387,6 +401,9 @@ public class ASClass {
      * @return
      */
     private StringBuilder[] generateProperty(String ppName, String ppType) {
+        if (CommonUtils.isNullOrEmpty(ppName) || CommonUtils.isNullOrEmpty(ppType)) {
+            return null;
+        }
         StringBuilder propBuilder = new StringBuilder();
         StringBuilder propGetSetBuilder = new StringBuilder();
         String getSetStr;

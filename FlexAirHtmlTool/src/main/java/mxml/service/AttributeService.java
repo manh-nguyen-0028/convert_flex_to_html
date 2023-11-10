@@ -36,7 +36,7 @@ public class AttributeService {
 
     public void attributeParseDetail(HtmlElementParser elementParser, PropertyMap propertyMap, Node nodeAtt) {
         String nodeValue = nodeAtt.getNodeValue();
-        String attType = propertyMap.getType();
+        String attType = propertyMap.getXhtmlType();
 
         switch (attType) {
             case "css":
@@ -64,14 +64,14 @@ public class AttributeService {
     }
 
     private static HtmlElementParser cssParser(HtmlElementParser elementParser, PropertyMap propertyMap, String nodeValue) {
-        String startTag = propertyMap.getConvertTo();
+        String startTag = propertyMap.getXhtmlConvertTo();
         CssParser cssParser = null;
         if ("opacity".equals(startTag)) {
             if (Double.parseDouble(nodeValue) > 0) {
-                cssParser = new CssParser(propertyMap.getConvertTo(), nodeValue + propertyMap.getEndTag());
+                cssParser = new CssParser(propertyMap.getXhtmlConvertTo(), nodeValue + propertyMap.getXhtmlEndTag());
             }
         } else {
-            cssParser = new CssParser(propertyMap.getConvertTo(), nodeValue + propertyMap.getEndTag());
+            cssParser = new CssParser(propertyMap.getXhtmlConvertTo(), nodeValue + propertyMap.getXhtmlEndTag());
         }
         if (cssParser != null) {
             String cssValue = cssParser.getValue();
@@ -87,9 +87,9 @@ public class AttributeService {
 
     private static HtmlElementParser propertyParser(HtmlElementParser elementParser, PropertyMap propertyMap, String nodeValue) {
         // handle when att = img
-        String convertTo = propertyMap.getConvertTo();
-        boolean compareTrueWithValue = propertyMap.isValueCompareTrue();
-        PropertyParser propertyParser = new PropertyParser(convertTo, nodeValue, propertyMap.getType(), propertyMap.isGenerateHtml());
+        String convertTo = propertyMap.getXhtmlConvertTo();
+        boolean compareTrueWithValue = propertyMap.isXhtmlValueCompareTrue();
+        PropertyParser propertyParser = new PropertyParser(convertTo, nodeValue, propertyMap.getXhtmlType(), propertyMap.isGenerateHtml());
         if ("src".equals(convertTo)) {
             nodeValue = nodeValue.replace("@Embed('", "").replace("')", "").replace("/", ":");
             CssParser cssParser = new CssParser("background-image", "url(#{resource['" + nodeValue + "']})");
@@ -103,11 +103,11 @@ public class AttributeService {
     }
 
     private HtmlElementParser javascriptParser(HtmlElementParser elementParser, PropertyMap propertyMap, String nodeValue) {
-        String startTag = propertyMap.getConvertTo();
+        String startTag = propertyMap.getXhtmlConvertTo();
         if (nodeValue.contains("script.")) {
             nodeValue = nodeValue.replaceAll("script\\.(.*?)\\((.*?)\\)", "#{" + xmlFileName + Constants.CLASS_CONTROLLER + Constants.DOT_CHAR + "$1}");
         }
-        elementParser.getPropertyParsers().add(new PropertyParser(startTag, nodeValue, propertyMap.getType()));
+        elementParser.getPropertyParsers().add(new PropertyParser(startTag, nodeValue, propertyMap.getXhtmlType()));
         return elementParser;
     }
 }

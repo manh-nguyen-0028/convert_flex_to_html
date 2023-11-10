@@ -97,8 +97,10 @@ public class FileUtils {
 //                DataOutputStream outputStream = new DataOutputStream(fileOut);
 //                //Writing UTF data to the output stream
 //                outputStream.writeUTF(compiledSource);
+            Path path = Paths.get(strFilePath);
+            FileUtils.createIfNotExistFolder(path.getParent().toString());
             //Creating a BufferedWriter object
-            BufferedWriter writer = Files.newBufferedWriter(Paths.get(strFilePath), StandardCharsets.UTF_8);
+            BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8);
             //Appending the UTF-8 String to the file
             writer.write(text);
             //Flushing data to the file

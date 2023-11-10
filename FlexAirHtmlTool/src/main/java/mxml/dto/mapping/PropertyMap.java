@@ -6,10 +6,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PropertyMap {
-    private String name;
-    private String convertTo;
-    private String endTag;
-    private String type;
-    private boolean valueCompareTrue;
+    private String mxmlProperties;
+    private String xhtmlConvertTo;
+    private String xhtmlEndTag;
+    private String xhtmlType;
+    private boolean xhtmlValueCompareTrue;
     private boolean isGenerateHtml;
 }

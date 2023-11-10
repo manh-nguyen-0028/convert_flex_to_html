@@ -141,8 +141,6 @@ public class ASParser {
                         index = currToken.getIndex();
                         currToken = nextWord(src, index, ASPattern.IDENTIFIER[0], ASPattern.IDENTIFIER[1]);
                         index = currToken.getIndex();
-                        // TODO: Extends ACCControllerBase
-                        currToken.setToken(ReservedWords.ACC_CONTROLLER_BASE);
                         //The token following 'extends' must be the parent class
                         cls.setParent(currToken.getToken());
                         //Prep the next token
@@ -202,7 +200,9 @@ public class ASParser {
                         currMember.setBindable(currToken.isBindable());
                         if (CommonUtils.isNullOrEmpty(currMember.getComment())) {
                             // Replace [Bindable] annotation
-                            currMember.setComment(removeCurlyBrace(currToken.getExtra().replaceAll("\\[Bindable\\]", "")));
+                            currMember.setComment(removeCurlyBrace(currToken.getExtra()
+                                    .replaceAll("\"\\)]\n", "")
+                                    .replaceAll("\\[Bindable\\]", "")));
                         }
                         logger.debug("->Member encapsulation set to " + currMember.getEncapsulation());
                     } else if (currToken.getToken() != null && currToken.getToken().equals(ASKeyword.STATIC)) {
@@ -236,8 +236,14 @@ public class ASParser {
                     } else if (currToken.getToken() != null && currToken.getToken().equals(ReservedWords.OVERRIDE)) {
                         // Add override annotation
                         String extraComment = currToken.getExtra();
-                        int lastNewLine = extraComment.lastIndexOf('\n');
-                        String newLine = extraComment.substring(lastNewLine);
+                        String newLine = "\n";
+                        if (CommonUtils.isNullOrEmpty(extraComment) || extraComment.trim().length() == 0) {
+                            extraComment = currMember.getComment();
+                        }
+                        if (!CommonUtils.isNullOrEmpty(extraComment)) {
+                            int lastNewLine = extraComment.lastIndexOf('\n');
+                            newLine = extraComment.substring(lastNewLine);
+                        }
                         extraComment += "@Override";
                         extraComment += newLine;
                         currMember.setComment(extraComment);
@@ -261,22 +267,23 @@ public class ASParser {
                     logger.debug("---->Variable type for " + currMember.getName() + " declared as: " + currToken.getToken());
                 }
                 // Check arguments assign
-                if (argumentCheck(src, index)) {
-                    currToken = nextWord(src, index, ASPattern.ASSIGN_START[0], ASPattern.ASSIGN_START[1]);
-                    if (currToken.getToken().equals(Constants.EQUAL_OPERATOR)) {
-                        //Use all characters after self symbol to set value
-                        index = currToken.getIndex();
-                        tmpArr = extractUpTo(src, index, Constants.STATEMENT_END_PATTERN);
-                        //Store value
-                        currMember.setValue(tmpArr[0].trim());
-                        index = Integer.parseInt(tmpArr[1]) - 1;
-                        // Check initialize model variable
-                        if (CommonUtils.isMatched(Constants.MODEL_VARIABLE_PATTERN, currMember.getValue())) {
-                            currMember.setValue(" new " + currMember.getType() + "()");
-                        }
-                        cls.getMembersWithAssignments().add(currMember);
-                        logger.debug("---->Variable with assignment value: " + tmpArr[0]);
+//                if (argumentCheck(src, index)) {
+//
+//                }
+                currToken = nextWord(src, index, ASPattern.ASSIGN_START[0], ASPattern.ASSIGN_START[1]);
+                if (currToken.getToken().equals(Constants.EQUAL_OPERATOR)) {
+                    //Use all characters after self symbol to set value
+                    index = currToken.getIndex();
+                    tmpArr = extractUpTo(src, index, Constants.STATEMENT_END_PATTERN);
+                    //Store value
+                    currMember.setValue(tmpArr[0].trim());
+                    index = Integer.parseInt(tmpArr[1]) - 1;
+                    // Check initialize model variable
+                    if (CommonUtils.isMatched(Constants.MODEL_VARIABLE_PATTERN, currMember.getValue())) {
+                        currMember.setValue(" new " + currMember.getType() + "()");
                     }
+                    cls.getMembersWithAssignments().add(currMember);
+                    logger.debug("---->Variable with assignment value: " + tmpArr[0]);
                 }
                 //Store and delete current member and exit
                 cls.getMembers().add(currMember);
@@ -353,8 +360,10 @@ public class ASParser {
                 //Save the function body
                 PREVIOUS_BLOCK = currMember.getName() + ":Function";
                 tmpArr = extractBlock(src, index, null, null);
-                index = Integer.parseInt(tmpArr[1]);
-                currMember.setValue(tmpArr[0]);
+                if (tmpArr != null) {
+                    index = Integer.parseInt(tmpArr[1]);
+                    currMember.setValue(tmpArr[0]);
+                }
 
                 //Store and delete current member and exit
                 cls.getMembers().add(currMember);
@@ -520,8 +529,9 @@ public class ASParser {
             i++;
         }
         if (!started) {
-            throw new Error("Error, no starting '" + opening + "' found for method body while parsing "
-                    + PREVIOUS_BLOCK);
+//            throw new Error("Error, no starting '" + opening + "' found for method body while parsing "
+//                    + PREVIOUS_BLOCK);
+            return null;
         } else if (count > 0) {
             throw new Error("Error, no closing '" + closing + "' found for method body while parsing "
                     + PREVIOUS_BLOCK);
@@ -582,6 +592,9 @@ public class ASParser {
     }
 
     public String[] parseFunc(ASClass cls, String fnText, List<ASVariable> stack) {
+        if (CommonUtils.isNullOrEmpty(fnText)) {
+            return null;
+        }
         int index;
         String result = "";
         ASMember tmpMember;
@@ -638,23 +651,27 @@ public class ASParser {
                             result += currToken.getToken();
                         }
                     } else {
-                        //TODO
                         // Check Object type is MODEL class following patter: MGNNNNNNN_NN_NNN then convert it to
                         // MGNNNNNNN_NN_NNN + MODEL class
                         //Likely a local variable, argument, or static reference
                         objBuffer += currToken.getToken();
                         // Check model variable
+                        // Correct document as MG1001001_01_000 => new MG1001001_01_000Model();
                         if (prevToken != null
                                 && ReservedWords.AS.equals(prevToken.getToken())
                                 && currToken.getToken().equals(cls.getClassName())) {
                             result = result.substring(0, result.indexOf(Constants.EQUAL_OPERATOR) + 1 + 1); //Extra space
                             result += ReservedWords.NEW + " " + currToken.getToken() + ReservedWords.MODEL + "()";
                             index = currToken.getIndex();
-                        } else if (prevToken != null
+                        }
+                        // Correct new ACCTransmissionBaseInfo => new ACCTransmissionBaseInfo()
+                        else if (prevToken != null
                                 && ReservedWords.NEW.equals(prevToken.getToken())
                                 && fnText.charAt(index) == Constants.SEMICOLON_CHAR) {
                             result += currToken.getToken() + "()";
-                        } else if (CommonUtils.isMatched(Constants.CLASS_NAME_PATTERN, currToken.getToken())
+                        }
+                        // Correct MG3001008_00_000 pop = MG3001008_00_000(..) => MG3001008_00_000 pop = new MG3001008_00_000(..)
+                        else if (CommonUtils.isMatched(Constants.CLASS_NAME_PATTERN, currToken.getToken())
                                 && currToken.getExtra().trim().equals(Constants.EQUAL_OPERATOR)
                                 && fnText.charAt(index) == '(') {
                             //Extract param
@@ -666,7 +683,7 @@ public class ASParser {
                                 result += currToken.getToken();
                             }
                         } else {
-                            result += currToken.getToken();
+                            result += CommonUtils.convertType(currToken.getToken());
                         }
                     }
                     if (tmpStatic) {
@@ -703,7 +720,7 @@ public class ASParser {
                             currToken = nextWord(fnText, index, ASPattern.VARIABLE[0], ASPattern.VARIABLE[1]);
                         }
                         //Check Datetime type
-                        if (isDateTimeType(cls, objBuffer)) {
+                        if (isDateTimeType(cls, objBuffer) || (tmpMember != null && tmpMember.getType().equals(ASKeyword.DATEFORMATTER))) {
                             // Get '=' token
                             ASToken tmpToken = nextWord(fnText, index, ASPattern.VARIABLE[0], ASPattern.VARIABLE[1]);
                             if (tmpToken.getToken().equals(ASKeyword.FORMATSTRING_METHOD)) {
@@ -737,10 +754,10 @@ public class ASParser {
                                     if (tmpField instanceof ASFunction) {
                                         if (tmpField.getSubType() != null && (tmpField.getSubType().equals("get") || tmpField.getSubType().equals("set"))) {
                                             tmpPeek = lookAhead(fnText, index);
-                                            if (tmpPeek != null) {
+                                            if (!CommonUtils.isNullOrEmpty(tmpPeek.getToken())) {
                                                 //Handle differently if we are assigning a setter
-                                                objBuffer += ".get_" + currToken.getToken() + "()";
-                                                result += "set_" + currToken.getToken() + "(";
+                                                objBuffer += ".get" + CommonUtils.capitalize(currToken.getToken()) + "()";
+                                                result += "set" + CommonUtils.capitalize(currToken.getToken()) + "(";
                                                 index = tmpPeek.getEndIndex();
                                                 if (tmpPeek.getToken().equals("++")) {
                                                     result += objBuffer + " + 1";
@@ -755,9 +772,10 @@ public class ASParser {
                                                     }
                                                 }
                                                 result += ")";
+
                                             } else {
-                                                objBuffer += ".get_" + currToken.getToken() + "()";
-                                                result += "get_" + currToken.getToken() + "()";
+                                                objBuffer += ".get" + CommonUtils.capitalize(currToken.getToken()) + "()";
+                                                result += "get" + CommonUtils.capitalize(currToken.getToken()) + "()";
                                             }
                                             //console.log("set get flag: " + currToken.getToken());
                                         } else {
@@ -798,7 +816,7 @@ public class ASParser {
                         result += tmpParse[0];
                     }
                     tmpStatic = false; //Static can no longer be possible after the second field
-                    if (!String.valueOf(fnText.charAt(index)).matches("[.\\[]")) {
+                    if (index == fnText.length() || !String.valueOf(fnText.charAt(index)).matches("[.\\[]")) {
                         objBuffer = ""; //Clear out the current object buffer
                         index--;
                         break;
@@ -831,12 +849,13 @@ public class ASParser {
         // convert variable
         result = result.replaceAll(Constants.FUNC_VARIABLE_PATTERN, "$6$3");
         // Convert variable type
-        result = result.replaceAll(Constants.BOOLEAN_TYPE_PATTERN, "$2" + ReservedWords.BOOLEAN + "$4");
+        //result = result.replaceAll(Constants.BOOLEAN_TYPE_PATTERN, "$2" + ReservedWords.BOOLEAN + "$4");
         // Convert init for statement:
         // for(int i;i<this.codeMaster.length;i++) => for(int i = 0;i<this.codeMaster.length;i++)
         result = result.replaceAll(Constants.FOR_INIT_PATTERN, "$2$3$4$5 = 0$6");
         result = result.replaceAll(Constants.RETURN_PATTERN, "$2$3;$4");
         result = result.replaceAll(Constants.NUMBER_VARIABLE_PATTERN, "int$3$4$5$6$7Integer.parseInt");
+        result = result.replaceAll(Constants.VIEW_INFO_PATTERN, Constants.VIEW_GET_INFO_PATTERN);
         return new String[]{result, String.valueOf(index)};
     }
 
@@ -848,7 +867,7 @@ public class ASParser {
         String token = "";
         String extracted = "";
         //Not a setter if there is a dot operator immediately after
-        if (str.charAt(index) == Constants.DOT_CHAR) {
+        if (index == str.length() || str.charAt(index) == Constants.DOT_CHAR) {
             return new Peek(null, "", startIndex, endIndex);
         }
         for (; index < str.length(); index++) {
